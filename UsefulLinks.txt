@@ -1,0 +1,5 @@
+http://cocos2d.org/
+http://appwarp.shephertz.com/create-cocos2dx-multiplayer-game/
+
+Python Plugin für Eclipse
+http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclipse
