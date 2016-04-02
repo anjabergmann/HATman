@@ -30,6 +30,7 @@ class HelloWorld(cocos.layer.Layer):
         label.position = 320, 240
         self.add(label)
 
+#    def on_enter(self):
         # similar to cocos.text.Label, a cocos.sprite.Sprite
         # is a subclass of pyglet.sprite.Sprite with the befits of
         # being a CocosNode.
