@@ -52,6 +52,10 @@ class TitleSubTitleLayer(cocos.layer.Layer):
             font_size=20, anchor_x='center', anchor_y='center')
         self.add(self.subtitle2)
 
+        bgimage = Sprite('background.jpg')
+        bgimage.scale = 0.8
+        bgimage.position = x/2, y/2 - 200
+        self.add(bgimage, z=-1)
 
 class BulletListLayer(cocos.layer.Layer):
 
@@ -79,6 +83,10 @@ class BulletListLayer(cocos.layer.Layer):
             i += 1
             self.add(line_text)
 
+        bgimage = Sprite('background.jpg')
+        bgimage.scale = 0.8
+        bgimage.position = x/2, y/2 - 200
+        self.add(bgimage, z=-1)
 
 class TransitionControl(cocos.layer.Layer):
     is_event_handler = True
@@ -227,8 +235,7 @@ if __name__ == "__main__":
 
 
     for s in scenes:
-            s.add(cocos.layer.ColorLayer(32, 32, 32, 255), z=-1)
-
+            s.add(cocos.layer.ColorLayer(0, 0, 0, 255), z=-1)
     transitions = [None] * (len(scenes) - 1)
     all_t = [
         #'ZoomTransition',
