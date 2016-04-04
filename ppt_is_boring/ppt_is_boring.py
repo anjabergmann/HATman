@@ -23,6 +23,7 @@ from cocos import text
 
 import demo_grid_effects
 
+
 basepath = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
 pyglet.resource.path.append(basepath)
 pyglet.resource.reindex()
@@ -31,20 +32,25 @@ pyglet.resource.reindex()
 
 class TitleSubTitleLayer(cocos.layer.Layer):
 
-    def __init__(self, title, subtitle):
+    def __init__(self, title, subtitle, subtitle2=""):
         super(TitleSubTitleLayer, self).__init__()
 
         x, y = director.get_window_size()
 
         self.title = text.Label(
-            title, (x // 2, y // 2 + 50), font_name='Gill Sans',
-            font_size=30, anchor_x='center', anchor_y='center')
+            title, (x // 2, y // 2 + 50), font_name='Consolas',
+            font_size=28, anchor_x='center', anchor_y='center')
         self.add(self.title)
 
         self.subtitle = text.Label(
-            subtitle, (x // 2, y // 2 - 30), font_name='Gill Sans',
+            subtitle, (x // 2, y // 2 - 30), font_name='Consolas',
             font_size=20, anchor_x='center', anchor_y='center')
         self.add(self.subtitle)
+
+        self.subtitle2 = text.Label(
+            subtitle2, (x // 2, y // 2 - 70), font_name='Consolas',
+            font_size=20, anchor_x='center', anchor_y='center')
+        self.add(self.subtitle2)
 
 
 class BulletListLayer(cocos.layer.Layer):
@@ -54,22 +60,21 @@ class BulletListLayer(cocos.layer.Layer):
         x, y = director.get_window_size()
 
         self.title = text.Label(
-            title, (x // 2, y - 50), font_name='Gill Sans',
-            font_size=30, anchor_x='center', anchor_y='center')
+            title, (x // 2, y - 100), font_name='Consolas',
+            font_size=46, anchor_x='center', anchor_y='center')
         self.add(self.title)
 
         start_y = (y // 12) * 8
-        font_size = 52 // (len(lines) / 2.2 + 1)
-        font_size = min(font_size, 52)
-        line_font = font.load('Gill Sans', font_size)
+        font_size = 22
+        line_font = font.load('Consolas', font_size)
         tot_height = 0
         max_width = 0
         rendered_lines = []
-        step = 300 // max(len(lines), 1)
+        step = 40
         i = 0
         for line in lines:
             line_text = text.Label(
-                line, (x // 2, y - 150 - step * i), font_name='Gill Sans',
+                line, (x // 2, y - 185 - step * i), font_name='Consolas',
                 font_size=font_size, anchor_x='center', anchor_y='center')
             i += 1
             self.add(line_text)
@@ -143,8 +148,8 @@ class HelloWorld(cocos.layer.Layer):
         # a cocos.text.Label is a wrapper of pyglet.text.Label
         # with the benefit of being a cocosnode
         label = cocos.text.Label('Thank you for your attention!',
-                                 font_name='Times New Roman',
-                                 font_size=32,
+                                 font_name='Consolas',
+                                 font_size=28,
                                  anchor_x='center', anchor_y='center')
 
         label.position = 320, 240
@@ -184,37 +189,34 @@ if __name__ == "__main__":
 
     pyglet.font.add_directory('..')
 
-    slide1 = Sprite("slide1.png")
-    slide2 = Sprite("slide2.png")
-    slide3 = Sprite("slide3.png")
-
-    slide1.scale = 0.4
-    slide2.scale = 0.4
-    slide3.scale = 0.4
-    
-    slide1.position = x/2, y/2
-    slide2.position = x/2 + 30, y/2
-    slide3.position = x/2 + 30, y/2
-
     scenes = [
 
         cocos.scene.Scene(
-            BulletListLayer("", []).add(
-                slide1),
+            TitleSubTitleLayer("Game development with Python", "Team: Bergmann, Halmschlager & Kirchmaier", "Tutor: FH-Prof. Mag. Dr. Wilhelm Zugaj"),
         ),
 
         cocos.scene.Scene(
-            BulletListLayer("", []).add(
-                slide2),
+            BulletListLayer("Central problem", ["Is it possible to use a high-level", "programming language, that is not", "very common for games, for the", "purpose of developing a", "simple game?"]),
         ),
 
         cocos.scene.Scene(
-            BulletListLayer("", []).add(
-                slide3),
+            BulletListLayer("Solution -> Python", ["(= mainly used as scripting language)"]),
         ),
 
         cocos.scene.Scene(
-            TitleSubTitleLayer("Presentation made with cocos2d", "(Powerpoint is boring! xD)"),
+            BulletListLayer("Goal:", ["modified version of the", "classic game Pacman"]),
+        ),
+        
+        cocos.scene.Scene(
+            BulletListLayer("Implementation:", ["Using cocos2D, an open source framework", "for game development, cross-platform", "games and apps", "", "Making it possible to play the game in", "multiplayer-mode"]),
+        ),
+
+        cocos.scene.Scene(
+            BulletListLayer("Steps", ["x Research concerning cocos2D", "and multiplayer possibilities", "x Assessment of OS-requirements", "x Designing a paper prototype", "x Programming & designing the game", "x Final result: Multiplayer Pacman"]),
+        ),
+
+        cocos.scene.Scene(
+            TitleSubTitleLayer("Presentation made with cocos2D", "(Powerpoint is boring! xD)"),
         ),
 
         cocos.scene.Scene(
@@ -240,13 +242,13 @@ if __name__ == "__main__":
 
         #'FadeTRTransition', 'FadeBLTransition',
         #'FadeUpTransition', 'FadeDownTransition',
-        'ShuffleTransition',
+        #'ShuffleTransition',
 
-        'SplitRowsTransition', 'SplitColsTransition',
+        #'SplitRowsTransition', 'SplitColsTransition',
 
         #'RotoZoomTransition',
 
-        #'FadeTransition',
+        'FadeTransition',
 
         #'CornerMoveTransition',
         #'EnvelopeTransition',
@@ -268,7 +270,7 @@ if __name__ == "__main__":
             cocos.layer.ColorLayer(*color).add(
                 cocos.text.Label(
                     name, (x / 2, y / 2),
-                    font_name='Gill Sans', font_size=64,
+                    font_name='Consolas', font_size=64,
                     anchor_x='center', anchor_y='center'
                 )
             )
