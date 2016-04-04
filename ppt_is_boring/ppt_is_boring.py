@@ -38,18 +38,18 @@ class TitleSubTitleLayer(cocos.layer.Layer):
         x, y = director.get_window_size()
 
         self.title = text.Label(
-            title, (x // 2, y // 2 + 50), font_name='Consolas',
-            font_size=28, anchor_x='center', anchor_y='center')
+            title, (x // 2, y // 2 + 50), font_name='joystix monospace',
+            font_size=18, anchor_x='center', anchor_y='center')
         self.add(self.title)
 
         self.subtitle = text.Label(
-            subtitle, (x // 2, y // 2 - 30), font_name='Consolas',
-            font_size=20, anchor_x='center', anchor_y='center')
+            subtitle, (x // 2, y // 2 - 30), font_name='joystix monospace',
+            font_size=14, anchor_x='center', anchor_y='center')
         self.add(self.subtitle)
 
         self.subtitle2 = text.Label(
-            subtitle2, (x // 2, y // 2 - 70), font_name='Consolas',
-            font_size=20, anchor_x='center', anchor_y='center')
+            subtitle2, (x // 2, y // 2 - 70), font_name='joystix monospace',
+            font_size=14, anchor_x='center', anchor_y='center')
         self.add(self.subtitle2)
 
         bgimage = Sprite('background.jpg')
