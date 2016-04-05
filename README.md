@@ -3,14 +3,12 @@ _Projektarbeit 1 - Gamedevelopment with Python_
 
 
 #Team
-
 	* Tabea Halmschlager
 	* Johanna Kirchmaier
 	* Anja Bergmann
 
 
 #Dependencies: 
-
 	* Python 3.4 
 	* Cocos2D (can be installed via 'pip install cocos2d')
 	* Pyglet 1.2.4 ('pip install pyglet')
@@ -21,5 +19,4 @@ _Projektarbeit 1 - Gamedevelopment with Python_
 
 
 #To-Do
-
 	* Everything 
