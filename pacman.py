@@ -13,6 +13,7 @@ from cocos.director import director
 from cocos.layer import Layer
 from cocos.scene import Scene
 from cocos.sprite import Sprite
+from cocos.rect import Rect
 
 
 
@@ -34,26 +35,29 @@ class PacmanLayer(Layer):
 		self.pacmans.append(self.pacman1);
 		self.pacmans.append(self.pacman2);
 
+		self.pacmanRect = Rect(0, 0, self.pacman1.width * 0.1, self.pacman1.height * 0.1);
+		self.labRect = Rect(0, 0, director.window.width, director.window.height);
+
 		for pacman in self.pacmans:
 			self.add(pacman);
-			pacman.position = 320, 300;
+			pacman.position = self.pacmanRect.center;
 			pacman.scale = 0.1;
 
-		# self.add(self.pacman1);
-		# self.add(self.pacman2);
+		print("labRect.top", self.labRect.top);
+		print("labRect.bottom", self.labRect.bottom);
+		print("labRect.left", self.labRect.left);
+		print("labRect.right", self.labRect.right);
 
-		# self.pacman1.position = 320, 300;
-		# self.pacman2.position = 320, 300;
+		print("pacman.top ", self.pacmanRect.top);
+		print("pacman.bottom ", self.pacmanRect.bottom);
+		print("pacman.left ", self.pacmanRect.left);
+		print("pacman.right ", self.pacmanRect.right);
 
-		# self.pacman1.scale = 0.1;
-		# self.pacman2.scale = 0.1;
 
-		self.moveUp = MoveBy((0, 10), 0.1);
-		self.moveDown = MoveBy((0, -10), 0.1);
-		self.moveLeft = MoveBy((-10, 0), 0.1);
-		self.moveRight = MoveBy((10, 0), 0.1);
-		self.direction = self.moveRight;
 
+
+
+		#Animate pacman
 		self.pacman2.do(Repeat(Blink(1, 0.3)));
 
 		#Save pressed key
@@ -62,42 +66,53 @@ class PacmanLayer(Layer):
 		#add schedule method
 		self.schedule(self.update);
 
-
+	#_______________________________________________
+	#
 	#Eventhandler for key presses
+	#_______________________________________________
+	
 	def on_key_press(self, keys, mod):
-		print("Key pressed ", keys);
+		print("[INFO] Key pressed ", keys);
 		if keys == key.RIGHT:
-			print("KEY RIGHT");
 			self.pressed_key = key.RIGHT;
 		if keys == key.LEFT:
-			print("KEY LEFT");
 			self.pressed_key = key.LEFT;
 		if keys == key.UP:
-			print("KEY UP");
 			self.pressed_key = key.UP;
 		if keys == key.DOWN:
-			print("KEY DOWN");
 			self.pressed_key = key.DOWN;
+	#_______________________________________________
 
 
 
 	# Method that is called with schedule() on every new frame
 	def update(self, director):
-		if self.pressed_key == key.RIGHT:
-			self.direction = self.moveRight;
-			self.pacman1.rotation = None;
-		elif self.pressed_key == key.LEFT:
-			self.direction = self.moveLeft;
-			self.pacman1.rotation = 180;
-		elif self.pressed_key == key.UP:
-			self.direction = self.moveUp;
-			self.pacman1.rotation = 270;
-		elif self.pressed_key == key.DOWN:
-			self.direction = self.moveDown;
-			self.pacman1.rotation = 90;
-		for pacman in self.pacmans:
-			pacman.do(self.direction);
+		#_______________________________________________
+		#
+		# Move and rotate pacman
+		#_______________________________________________
 
+		if self.pressed_key == key.RIGHT:
+			self.pacman1.rotation = None;
+			if self.pacmanRect.right < self.labRect.right:
+				self.pacmanRect.x += 1;
+		elif self.pressed_key == key.LEFT:
+			self.pacman1.rotation = 180;
+			if self.pacmanRect.left > self.labRect.left:
+				self.pacmanRect.x -= 1;
+		elif self.pressed_key == key.UP:
+			self.pacman1.rotation = 270;
+			if self.pacmanRect.top < self.labRect.top:
+				self.pacmanRect.y += 1
+		elif self.pressed_key == key.DOWN:
+			self.pacman1.rotation = 90;
+			if self.pacmanRect.bottom > self.labRect.bottom:
+				self.pacmanRect.y -= 1
+			
+		for pacman in self.pacmans:
+			pacman.position = self.pacmanRect.center;
+
+		#________________________________________________
 
 
 if __name__ == "__main__":
