@@ -97,7 +97,7 @@ class GameScene(Scene):
 	def setDirection(self):
 		self.pressedKey = self.pacmanLayer.pressedKey;
 		if self.pressedKey != self.direction:
-			if self.pressedKey == (key.RIGHT and self.direction == key.LEFT) or (self.pressedKey == key.LEFT and self.direction == key.RIGHT) or (self.pressedKey == key.DOWN and self.direction == key.UP) or (self.pressedKey == key.UP and self.direction == key.DOWN):
+			if (self.pressedKey == key.RIGHT and self.direction == key.LEFT) or (self.pressedKey == key.LEFT and self.direction == key.RIGHT) or (self.pressedKey == key.DOWN and self.direction == key.UP) or (self.pressedKey == key.UP and self.direction == key.DOWN):
 				self.direction = self.pressedKey;
 				self.pacmanLayer.direction = self.direction;
 			else:
