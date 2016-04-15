@@ -185,6 +185,13 @@ class LabLayer(Layer):
 		self.crossNodes[3].nodeDown = self.crossNodes[1];
 
 
+		for i in range(0, 4):
+			tempSprite = Sprite('images/node.png');
+			tempSprite.x = self.crossNodes[i].x;
+			tempSprite.y = self.crossNodes[i].y
+			self.add(tempSprite);
+
+
 		print("INFO labRect.top", self.labRect.top);
 		print("INFO labRect.bottom", self.labRect.bottom);
 		print("INFO labRect.left", self.labRect.left);
