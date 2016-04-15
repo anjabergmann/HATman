@@ -62,6 +62,97 @@ class LabNode():
 	def __str__(self):
 		return "labNode [x: " + str(self.x) + ", y: " + str(self.y) + "]";
 
+
+
+
+
+
+#Game Scene --> Contains all needed Layers [not yet, but ...]
+class GameScene(Scene):
+
+
+	def __init__(self):
+		super(GameScene, self).__init__();
+		
+		#add Layers to scene
+		self.labLayer = LabLayer();
+		self.pacmanLayer = PacmanLayer();
+
+		self.add(self.labLayer);
+		self.add(self.pacmanLayer);
+
+		#add schedule method
+		self.schedule(self.update);
+
+		self.pressedKey = None;
+		self.direction = key.RIGHT;
+
+	#TODO:
+	# Überprüfen, ob Pacman sich an einem Node befindet,
+	# an dem er in die gewünschte Richtung abbiegen kann
+	# Wenn möglich: Direction auf die gewünschte Direction ändern
+	# Sonst in die aktuelle Direction weiterfahren bis anstehen
+	def setDirection(self):
+		print("TODO GameScene.setDirection()");
+		self.pressedKey = self.pacmanLayer.pressedKey;
+		self.direction = self.pressedKey;
+		self.pacmanLayer.direction = self.direction;
+
+	#Check if pacman reaches border or deadlock
+	def checkBorders(self):
+		if self.pacmanLayer.direction == key.RIGHT:
+			if self.pacmanLayer.pacmanRect.right >= self.labLayer.labRect.right:
+				self.pacmanLayer.direction = None;
+		elif self.pacmanLayer.direction == key.LEFT:
+			if self.pacmanLayer.pacmanRect.left <= self.labLayer.labRect.left:
+				self.pacmanLayer.direction = None;
+		elif self.pacmanLayer.direction == key.UP:
+			if self.pacmanLayer.pacmanRect.top >= self.labLayer.labRect.top:
+				self.pacmanLayer.direction = None;
+		elif self.pacmanLayer.direction == key.DOWN:
+			if self.pacmanLayer.pacmanRect.bottom <= self.labLayer.labRect.bottom:
+				self.pacmanLayer.direction = None;
+
+	def update(self, director):
+		self.setDirection();
+		self.checkBorders();
+		self.pacmanLayer.update(director);
+
+
+
+#____________________________________________________________________
+
+
+class LabLayer(Layer):
+
+	def __init__(self):
+		super(LabLayer, self).__init__();
+
+		self.labRect = Rect(20, 40, 600, 400);
+		self.potentialNodes = [];
+		self.crossNodes = [];
+
+		# write every "point" of the Labyrinth into a list
+		for i in range (2, 22):
+			for j in range (2, 31): 
+				tempNode = LabNode(x = j*20, y = i*20);
+				self.potentialNodes.append(tempNode);
+
+		#TODO Choose some Nodes that are crossNodes (random?)
+		self.crossNodes = self.potentialNodes;
+
+
+		print("INFO labRect.top", self.labRect.top);
+		print("INFO labRect.bottom", self.labRect.bottom);
+		print("INFO labRect.left", self.labRect.left);
+		print("INFO labRect.right", self.labRect.right);
+
+
+#____________________________________________________________________
+
+
+
+
 class PacmanLayer(Layer):
 
 	#enable pyglet events
@@ -80,26 +171,12 @@ class PacmanLayer(Layer):
 		self.pacmans.append(self.pacman2);
 
 		self.pacmanRect = Rect(20, 40, self.pacman1.width * 0.1, self.pacman1.height * 0.1);
-		self.labRect = Rect(20, 40, 600, 400);
-		self.potentialNodes = [];
-		
-		# write every "point" of the Labyrinth into a list
-		for i in range (2, 22):
-			for j in range (2, 31): 
-				tempNode = LabNode(x = j*20, y = i*20);
-				self.potentialNodes.append(tempNode);
-				print("INFO", tempNode);
-
 
 		for pacman in self.pacmans:
 			self.add(pacman);
 			pacman.position = self.pacmanRect.center;
 			pacman.scale = 0.1;
 
-		print("INFO labRect.top", self.labRect.top);
-		print("INFO labRect.bottom", self.labRect.bottom);
-		print("INFO labRect.left", self.labRect.left);
-		print("INFO labRect.right", self.labRect.right);
 
 		print("INFO pacman.top ", self.pacmanRect.top);
 		print("INFO pacman.bottom ", self.pacmanRect.bottom);
@@ -107,80 +184,57 @@ class PacmanLayer(Layer):
 		print("INFO pacman.right ", self.pacmanRect.right);
 
 
-
 		#Animate pacman
 		self.pacman2.do(Repeat(Blink(1, 0.3)));
 
 		#Save pressed key
-		self.pressed_key = None;
+		self.pressedKey = None;
 
 		#Save direciton
 		self.direction = key.RIGHT;
 
-		#add schedule method
-		self.schedule(self.update);
-
 	#_______________________________________________
 	#
-	#Eventhandler for key presses
+	# Eventhandler for key presses
 	#_______________________________________________
 	
 	def on_key_press(self, keys, mod):
 		print("INFO Key pressed ", keys);
 		if keys == key.RIGHT:
-			self.pressed_key = key.RIGHT;
+			self.pressedKey = key.RIGHT;
 		if keys == key.LEFT:
-			self.pressed_key = key.LEFT;
+			self.pressedKey = key.LEFT;
 		if keys == key.UP:
-			self.pressed_key = key.UP;
+			self.pressedKey = key.UP;
 		if keys == key.DOWN:
-			self.pressed_key = key.DOWN;
+			self.pressedKey = key.DOWN;
 	#_______________________________________________
 
 
-	#TODO:
-	# Überprüfen, ob Pacman sich an einem Node befindet,
-	# an dem er in die gewünschte Richtung abbiegen kann
-	# Wenn möglich: Direction auf die gewünschte Direction ändern
-	# Sonst in die aktuelle Direction weiterfahren bis anstehen
-
 	def setDirection(self):
-		if self.pressed_key != self.direction:
-			if self.pressed_key == key.RIGHT:
-				print("RIGHT");
-			elif self.pressed_key == key.LEFT:
-				print("LEFT");
-			elif self.pressed_key == key.UP:
-				print("UP");
-			elif self.pressed_key == key.DOWN:
-				print("DOWN");
+		self.direction = self.pressedKey;
 
 
 	# Method that is called with schedule() on every new frame
 	def update(self, director):
-		self.setDirection();
 
 		#_______________________________________________
 		#
 		# Move and rotate pacman
 		#_______________________________________________
 
-		if self.pressed_key == key.RIGHT:
+		if self.direction == key.RIGHT:
 			self.pacman1.rotation = None;
-			if self.pacmanRect.right < self.labRect.right:
-				self.pacmanRect.x += 2;
-		elif self.pressed_key == key.LEFT:
+			self.pacmanRect.x += 2;
+		elif self.direction == key.LEFT:
 			self.pacman1.rotation = 180;
-			if self.pacmanRect.left > self.labRect.left:
-				self.pacmanRect.x -= 2;
-		elif self.pressed_key == key.UP:
+			self.pacmanRect.x -= 2;
+		elif self.direction == key.UP:
 			self.pacman1.rotation = 270;
-			if self.pacmanRect.top < self.labRect.top:
-				self.pacmanRect.y += 2;
-		elif self.pressed_key == key.DOWN:
+			self.pacmanRect.y += 2;
+		elif self.direction == key.DOWN:
 			self.pacman1.rotation = 90;
-			if self.pacmanRect.bottom > self.labRect.bottom:
-				self.pacmanRect.y -= 2;
+			self.pacmanRect.y -= 2;
 			
 		for pacman in self.pacmans:
 			pacman.position = self.pacmanRect.center;
@@ -191,4 +245,4 @@ class PacmanLayer(Layer):
 if __name__ == "__main__":
 	director.init(resizable=False, caption='HATman')
 	#director.window.set_fullscreen(True)
-	director.run(Scene(PacmanLayer()));
+	director.run(GameScene());
