@@ -182,11 +182,23 @@ class LabLayer(Layer):
 		self.crossNodes[3].nodeLeft = self.crossNodes[2];
 		self.crossNodes[3].nodeDown = self.crossNodes[1];
 
+		#TODO Add connections between two neighboured crossNodes to wayNodes[]
+		for cNode in self.crossNodes:
+			if cNode.nodeRight != None:
+				for pNode in self.potentialNodes:
+					if pNode.y == cNode.y and pNode.x >= cNode.x and pNode.x <= cNode.nodeRight.x:
+						self.wayNodes.append(pNode);
+			if cNode.nodeDown != None:
+				for pNode in self.potentialNodes:
+					if pNode.x == cNode.x and pNode.y <= cNode.y and pNode.y >= cNode.nodeDown.y:
+						self.wayNodes.append(pNode);
 
-		for i in range(0, 4):
-			tempSprite = Sprite('images/node.png');
-			tempSprite.x = self.crossNodes[i].x;
-			tempSprite.y = self.crossNodes[i].y
+
+		for wayNode in self.wayNodes:
+			print("WayNode");
+			tempSprite = Sprite("images/node.png");
+			tempSprite.x = wayNode.x;
+			tempSprite.y = wayNode.y;
 			self.add(tempSprite);
 
 		print("INFO labRect.top", self.labRect.top);
