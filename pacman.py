@@ -31,6 +31,8 @@ class LabNode():
 		self.nodeUp = nodeUp;
 		self.nodeDown = nodeDown;
 
+		self.nodeRect = Rect(self.x, self.y, 10, 10);
+
 	#_________________________________________________________________
 	#
 	# Find out if it is possible to go from this knot to direction x
@@ -89,11 +91,10 @@ class GameScene(Scene):
 
 		self.crossNodes = self.labLayer.crossNodes;
 
-	#TODO:
-	# Überprüfen, ob Pacman sich an einem Node befindet,
-	# an dem er in die gewünschte Richtung abbiegen kann
-	# Wenn möglich: Direction auf die gewünschte Direction ändern
-	# Sonst in die aktuelle Direction weiterfahren bis anstehen
+
+	# If the currently pressed key != direction,
+	# try to change the direction to pressedKey if it is possible 
+	#		(= if pacman reaches a node with a neighbor-node in the pressedKey-direction)
 	def setDirection(self):
 		self.pressedKey = self.pacmanLayer.pressedKey;
 		if self.pressedKey != self.direction:
@@ -103,16 +104,16 @@ class GameScene(Scene):
 			else:
 				for cn in self.crossNodes:
 					if self.pacmanLayer.pacmanRect.x == cn.x and self.pacmanLayer.pacmanRect.y == cn.y:
-						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
+						if self.pressedKey == key.RIGHT and cn.goRight():
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
-						elif self.pressedKey == key.LEFT and cn.nodeLeft != None:
+						elif self.pressedKey == key.LEFT and cn.goLeft():
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
-						elif self.pressedKey == key.UP and cn.nodeUp != None:
+						elif self.pressedKey == key.UP and cn.goUp():
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
-						elif self.pressedKey == key.DOWN and cn.nodeDown != None:
+						elif self.pressedKey == key.DOWN and cn.goDown():
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
 
@@ -125,20 +126,16 @@ class GameScene(Scene):
 	# --> stand still
 	def checkBorders(self):
 		if self.pacmanLayer.direction == key.RIGHT:
-			#if self.pacmanLayer.pacmanRect.right >= self.labLayer.labRect.right:
-			if self.pacmanLayer.pacmanRect.x >= 600:
+			if self.pacmanLayer.pacmanRect.x >= self.labLayer.labRect.right - self.pacmanLayer.pacmanRect.width/2:
 				self.pacmanLayer.direction = None;
 		elif self.pacmanLayer.direction == key.LEFT:
-			#if self.pacmanLayer.pacmanRect.left <= self.labLayer.labRect.left:
-			if self.pacmanLayer.pacmanRect.x <= 40:
+			if self.pacmanLayer.pacmanRect.x <= self.labLayer.labRect.left + self.pacmanLayer.pacmanRect.width/2:
 				self.pacmanLayer.direction = None;
 		elif self.pacmanLayer.direction == key.UP:
-			#if self.pacmanLayer.pacmanRect.top >= self.labLayer.labRect.top:
-			if self.pacmanLayer.pacmanRect.y >= 420:
+			if self.pacmanLayer.pacmanRect.y >= self.labLayer.labRect.top - self.pacmanLayer.pacmanRect.height/2:
 				self.pacmanLayer.direction = None;
 		elif self.pacmanLayer.direction == key.DOWN:
-			#if self.pacmanLayer.pacmanRect.bottom <= self.labLayer.labRect.bottom:
-			if self.pacmanLayer.pacmanRect.y <= 40:
+			if self.pacmanLayer.pacmanRect.y <= self.labLayer.labRect.bottom:
 				self.pacmanLayer.direction = None;
 
 	def update(self, director):
@@ -158,6 +155,7 @@ class LabLayer(Layer):
 
 		self.labRect = Rect(20, 40, 600, 400);
 		self.potentialNodes = []; #Zweidimensionale Arrays wären vielleicht besser ...
+		self.wayNodes = [];
 		self.crossNodes = [];
 
 		# write every "point" of the Labyrinth into a list
@@ -190,7 +188,6 @@ class LabLayer(Layer):
 			tempSprite.x = self.crossNodes[i].x;
 			tempSprite.y = self.crossNodes[i].y
 			self.add(tempSprite);
-
 
 		print("INFO labRect.top", self.labRect.top);
 		print("INFO labRect.bottom", self.labRect.bottom);
