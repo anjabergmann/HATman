@@ -79,6 +79,7 @@ class GameScene(Scene):
 		#add Layers to scene
 		self.labLayer = LabLayer();
 		self.pacmanLayer = PacmanLayer();
+		self.pacmanLayer.pacmanRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y);
 
 		self.add(self.labLayer);
 		self.add(self.pacmanLayer);
@@ -103,7 +104,7 @@ class GameScene(Scene):
 				self.pacmanLayer.direction = self.direction;
 			else:
 				for cn in self.crossNodes:
-					if self.pacmanLayer.pacmanRect.x == cn.x and self.pacmanLayer.pacmanRect.y == cn.y:
+					if self.pacmanLayer.pacmanRect.center == (cn.x, cn.y):
 						if self.pressedKey == key.RIGHT and cn.goRight():
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
@@ -126,16 +127,16 @@ class GameScene(Scene):
 	# --> stand still
 	def checkBorders(self):
 		if self.pacmanLayer.direction == key.RIGHT:
-			if self.pacmanLayer.pacmanRect.x >= self.labLayer.labRect.right - self.pacmanLayer.pacmanRect.width/2:
+			if self.pacmanLayer.pacmanRect.center[0] >= self.labLayer.labRect.right:
 				self.pacmanLayer.direction = None;
 		elif self.pacmanLayer.direction == key.LEFT:
-			if self.pacmanLayer.pacmanRect.x <= self.labLayer.labRect.left + self.pacmanLayer.pacmanRect.width/2:
+			if self.pacmanLayer.pacmanRect.center[0] <= self.labLayer.labRect.left:
 				self.pacmanLayer.direction = None;
 		elif self.pacmanLayer.direction == key.UP:
-			if self.pacmanLayer.pacmanRect.y >= self.labLayer.labRect.top - self.pacmanLayer.pacmanRect.height/2:
+			if self.pacmanLayer.pacmanRect.center[1] >= self.labLayer.labRect.top:
 				self.pacmanLayer.direction = None;
 		elif self.pacmanLayer.direction == key.DOWN:
-			if self.pacmanLayer.pacmanRect.y <= self.labLayer.labRect.bottom:
+			if self.pacmanLayer.pacmanRect.center[1] <= self.labLayer.labRect.y:
 				self.pacmanLayer.direction = None;
 
 	def update(self, director):
@@ -153,7 +154,7 @@ class LabLayer(Layer):
 	def __init__(self):
 		super(LabLayer, self).__init__();
 
-		self.labRect = Rect(20, 40, 600, 400);
+		self.labRect = Rect(40, 40, 560, 380);
 		self.potentialNodes = []; #Zweidimensionale Arrays wären vielleicht besser ...
 		self.wayNodes = [];
 		self.crossNodes = [];
@@ -195,7 +196,6 @@ class LabLayer(Layer):
 
 
 		for wayNode in self.wayNodes:
-			print("WayNode");
 			tempSprite = Sprite("images/node.png");
 			tempSprite.x = wayNode.x;
 			tempSprite.y = wayNode.y;
@@ -234,7 +234,7 @@ class PacmanLayer(Layer):
 		for pacman in self.pacmans:
 			self.add(pacman);
 			pacman.position = self.pacmanRect.center;
-			pacman.scale = 0.1;
+			pacman.scale = 0.05;
 
 
 		print("INFO pacman.top ", self.pacmanRect.top);
