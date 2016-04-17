@@ -35,7 +35,7 @@ class LabNode():
 
 	#_________________________________________________________________
 	#
-	# Find out if it is possible to go from this knot to direction x
+	# Find out if it is possible to go from this node to direction x
 	#_________________________________________________________________
 
 	def goRight(self):
@@ -129,7 +129,7 @@ class GameScene(Scene):
 	# Stand still
 	#_________________________________________________________________________________________
 
-	#Check if pacman reaches border or [TODO] blind end
+	#Check if pacman reaches border or blind end
 	# = if pacman reaches a node where neither "direction" nor "pressedKey" is a possible option
 	def checkBorders(self):
 		for cNode in self.labLayer.crossNodes:
@@ -164,7 +164,7 @@ class GameScene(Scene):
 
 	#_________________________________________________________________________________________
 	#
-	# Updated method (called on every new frame)
+	# Update method (called on every new frame)
 	#_________________________________________________________________________________________
 
 	def update(self, director):
