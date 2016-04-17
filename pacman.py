@@ -33,37 +33,11 @@ class LabNode():
 
 		self.nodeRect = Rect(self.x, self.y, 10, 10);
 
-	#_________________________________________________________________
-	#
-	# Find out if it is possible to go from this node to direction x
-	#_________________________________________________________________
-
-	def goRight(self):
-		if self.nodeRight == None:
-			return False;
-		return True;
-
-	def goLeft(self):
-		if self.nodeLeft == None:
-			return False;
-		return True;
-
-	def goUp(self):
-		if self.nodeUp == None:
-			return False;
-		return True;
-
-	def goDown(self):
-		if self.nodeDown == None:
-			return False;
-		return True;
-
-	#_________________________________________________________________
-
 
 	def __str__(self):
 		return "labNode [x: " + str(self.x) + ", y: " + str(self.y) + "]";
 
+#___________________________________________________________________________________________________________
 
 
 
@@ -110,16 +84,16 @@ class GameScene(Scene):
 			else:
 				for cn in self.crossNodes:
 					if self.pacmanLayer.pacmanRect.center == (cn.x, cn.y):
-						if self.pressedKey == key.RIGHT and cn.goRight():
+						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
-						elif self.pressedKey == key.LEFT and cn.goLeft():
+						elif self.pressedKey == key.LEFT and cn.nodeLeft != None:
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
-						elif self.pressedKey == key.UP and cn.goUp():
+						elif self.pressedKey == key.UP and cn.nodeUp != None:
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
-						elif self.pressedKey == key.DOWN and cn.goDown():
+						elif self.pressedKey == key.DOWN and cn.nodeDown != None:
 							self.direction = self.pressedKey;
 							self.pacmanLayer.direction = self.direction;
 
@@ -159,7 +133,7 @@ class GameScene(Scene):
 			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite);
 				self.labLayer.nodeSprites.remove(nodeSprite);
-				self.pacmanLayer.score = self.pacmanLayer.score + 1;
+				self.pacmanLayer.updateScore(1);
 
 
 	#_________________________________________________________________________________________
@@ -307,7 +281,6 @@ class PacmanLayer(Layer):
 		print("INFO pacmanRect.x ", self.pacmanRect.x);
 		print("INFO pacmanRect.y ", self.pacmanRect.y);
 
-		self.score = 0;
 
 		#Save pressed key
 		self.pressedKey = None;
@@ -315,8 +288,19 @@ class PacmanLayer(Layer):
 		#Save direciton
 		self.direction = key.RIGHT;
 
-		def setDirection(self):
-			self.direction = self.pressedKey;
+		self._score = 0;
+
+
+	# Getter and setter for score
+	def getScore(self):
+		return self._score;
+
+	def setScore(self, score):
+		self._sore = score;
+
+	def updateScore(self, score):
+		self._score = self._score + score;
+
 
 	#_______________________________________________
 	#
