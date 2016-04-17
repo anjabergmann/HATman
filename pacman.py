@@ -139,9 +139,17 @@ class GameScene(Scene):
 			if self.pacmanLayer.pacmanRect.center[1] <= self.labLayer.labRect.y:
 				self.pacmanLayer.direction = None;
 
+	def eatDots(self):
+		for nodeSprite in self.labLayer.nodeSprites:
+			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
+				self.labLayer.remove(nodeSprite);
+				self.labLayer.nodeSprites.remove(nodeSprite);
+				print("Blub");
+
 	def update(self, director):
 		self.setDirection();
 		self.checkBorders();
+		self.eatDots();
 		self.pacmanLayer.update(director);
 
 
@@ -194,12 +202,16 @@ class LabLayer(Layer):
 					if pNode.x == cNode.x and pNode.y <= cNode.y and pNode.y >= cNode.nodeDown.y:
 						self.wayNodes.append(pNode);
 
+		self.nodeSprites = [];
 
 		for wayNode in self.wayNodes:
 			tempSprite = Sprite("images/node.png");
 			tempSprite.x = wayNode.x;
 			tempSprite.y = wayNode.y;
-			self.add(tempSprite);
+			self.nodeSprites.append(tempSprite);
+
+		for nodeSprite in self.nodeSprites:
+			self.add(nodeSprite);
 
 		print("INFO labRect.top", self.labRect.top);
 		print("INFO labRect.bottom", self.labRect.bottom);
