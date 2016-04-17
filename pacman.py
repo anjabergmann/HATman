@@ -91,6 +91,7 @@ class GameScene(Scene):
 		self.direction = key.RIGHT;
 
 		self.crossNodes = self.labLayer.crossNodes;
+		self.counter = 1;
 
 
 	# If the currently pressed key != direction,
@@ -139,17 +140,20 @@ class GameScene(Scene):
 			if self.pacmanLayer.pacmanRect.center[1] <= self.labLayer.labRect.y:
 				self.pacmanLayer.direction = None;
 
+
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
 			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite);
 				self.labLayer.nodeSprites.remove(nodeSprite);
-				print("Blub");
+				print(self.counter);
+				print(len(self.labLayer.nodeSprites));
+				self.counter = self.counter + 1;
 
 	def update(self, director):
+		self.eatDots();
 		self.setDirection();
 		self.checkBorders();
-		self.eatDots();
 		self.pacmanLayer.update(director);
 
 
@@ -191,17 +195,18 @@ class LabLayer(Layer):
 		self.crossNodes[3].nodeLeft = self.crossNodes[2];
 		self.crossNodes[3].nodeDown = self.crossNodes[1];
 
-		#TODO Add connections between two neighboured crossNodes to wayNodes[]
+		#Add connections between two neighboured crossNodes to wayNodes[]
 		for cNode in self.crossNodes:
+			self.wayNodes.append(cNode);
 			if cNode.nodeRight != None:
 				for pNode in self.potentialNodes:
-					if pNode.y == cNode.y and pNode.x >= cNode.x and pNode.x <= cNode.nodeRight.x:
+					if pNode.y == cNode.y and pNode.x > cNode.x and pNode.x < cNode.nodeRight.x:
 						self.wayNodes.append(pNode);
 			if cNode.nodeDown != None:
 				for pNode in self.potentialNodes:
-					if pNode.x == cNode.x and pNode.y <= cNode.y and pNode.y >= cNode.nodeDown.y:
+					if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
 						self.wayNodes.append(pNode);
-
+		print("DEBUG wayNodes: " + str(len(self.wayNodes)));
 		self.nodeSprites = [];
 
 		for wayNode in self.wayNodes:
@@ -212,6 +217,8 @@ class LabLayer(Layer):
 
 		for nodeSprite in self.nodeSprites:
 			self.add(nodeSprite);
+
+		print("DEBUG nodeSprites: " + str(len(self.nodeSprites)));
 
 		print("INFO labRect.top", self.labRect.top);
 		print("INFO labRect.bottom", self.labRect.bottom);
