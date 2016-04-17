@@ -91,15 +91,19 @@ class GameScene(Scene):
 		self.direction = key.RIGHT;
 
 		self.crossNodes = self.labLayer.crossNodes;
-		self.counter = 1;
 
 
-	# If the currently pressed key != direction,
-	# try to change the direction to pressedKey if it is possible 
+	#_________________________________________________________________________________________
+	#
+	# Change direction 
+	#_________________________________________________________________________________________
+
+	# Change the direction to pressedKey if it is possible 
 	#		(= if pacman reaches a node with a neighbor-node in the pressedKey-direction)
 	def setDirection(self):
 		self.pressedKey = self.pacmanLayer.pressedKey;
 		if self.pressedKey != self.direction:
+			# invert direction --> always possible
 			if (self.pressedKey == key.RIGHT and self.direction == key.LEFT) or (self.pressedKey == key.LEFT and self.direction == key.RIGHT) or (self.pressedKey == key.DOWN and self.direction == key.UP) or (self.pressedKey == key.UP and self.direction == key.DOWN):
 				self.direction = self.pressedKey;
 				self.pacmanLayer.direction = self.direction;
@@ -120,35 +124,48 @@ class GameScene(Scene):
 							self.pacmanLayer.direction = self.direction;
 
 
+	#_________________________________________________________________________________________
+	#
+	# Stand still
+	#_________________________________________________________________________________________
 
-	#Check if pacman reaches border 
-	#or [TODO] deadlock
-	#	if pacman reaches Node where neither "direction" nor "pressedKey"
-	#	is a possible option
-	# --> stand still
+	#Check if pacman reaches border or [TODO] blind end
+	# = if pacman reaches a node where neither "direction" nor "pressedKey" is a possible option
 	def checkBorders(self):
-		if self.pacmanLayer.direction == key.RIGHT:
-			if self.pacmanLayer.pacmanRect.center[0] >= self.labLayer.labRect.right:
-				self.pacmanLayer.direction = None;
-		elif self.pacmanLayer.direction == key.LEFT:
-			if self.pacmanLayer.pacmanRect.center[0] <= self.labLayer.labRect.left:
-				self.pacmanLayer.direction = None;
-		elif self.pacmanLayer.direction == key.UP:
-			if self.pacmanLayer.pacmanRect.center[1] >= self.labLayer.labRect.top:
-				self.pacmanLayer.direction = None;
-		elif self.pacmanLayer.direction == key.DOWN:
-			if self.pacmanLayer.pacmanRect.center[1] <= self.labLayer.labRect.y:
-				self.pacmanLayer.direction = None;
+		for cNode in self.labLayer.crossNodes:
+			#only check if pacman reaches a crossNode (blind ends HAVE to be crossNodes)
+			if self.pacmanLayer.pacmanRect.center == (cNode.x, cNode.y):
+				if self.pacmanLayer.direction == key.RIGHT:
+					if cNode.nodeRight == None:
+						self.pacmanLayer.direction = None;
+				elif self.pacmanLayer.direction == key.LEFT:
+					if cNode.nodeLeft == None:
+						self.pacmanLayer.direction = None;
+				elif self.pacmanLayer.direction == key.UP:
+					if cNode.nodeUp == None:
+						self.pacmanLayer.direction = None;
+				elif self.pacmanLayer.direction == key.DOWN:
+					if cNode.nodeDown == None:
+						self.pacmanLayer.direction = None;
 
+	#_________________________________________________________________________________________
+	#
+	# Eat dots
+	#_________________________________________________________________________________________
 
+	# Remove wayNodes and wayNodeSprites if pacman reaches them
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
 			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite);
 				self.labLayer.nodeSprites.remove(nodeSprite);
-				print(self.counter);
-				print(len(self.labLayer.nodeSprites));
-				self.counter = self.counter + 1;
+				self.pacmanLayer.score = self.pacmanLayer.score + 1;
+
+
+	#_________________________________________________________________________________________
+	#
+	# Updated method (called on every new frame)
+	#_________________________________________________________________________________________
 
 	def update(self, director):
 		self.eatDots();
@@ -158,7 +175,7 @@ class GameScene(Scene):
 
 
 
-#____________________________________________________________________
+#___________________________________________________________________________________________________________
 
 
 class LabLayer(Layer):
@@ -166,20 +183,38 @@ class LabLayer(Layer):
 	def __init__(self):
 		super(LabLayer, self).__init__();
 
+		# Size of the labyrinth
 		self.labRect = Rect(40, 40, 560, 380);
-		self.potentialNodes = []; #Zweidimensionale Arrays wären vielleicht besser ...
-		self.wayNodes = [];
-		self.crossNodes = [];
 
-		# write every "point" of the Labyrinth into a list
+		print("INFO labRect.top", self.labRect.top);
+		print("INFO labRect.bottom", self.labRect.bottom);
+		print("INFO labRect.left", self.labRect.left);
+		print("INFO labRect.right", self.labRect.right);
+
+		#_________________________________________________________________________________________
+		#
+		# Potential Nodes
+		#_________________________________________________________________________________________
+
+		# Every "point" inside the rect that is either part of a way or a barrier
+		self.potentialNodes = [];
+
+		# write every node of the Labyrinth into the list
 		for i in range (2, 22):
 			for j in range (2, 31): 
 				tempNode = LabNode(x = j*20, y = i*20);
 				self.potentialNodes.append(tempNode);
 
-		#TODO Choose some Nodes that are crossNodes (random?)
-		#self.crossNodes = self.potentialNodes;
+		#__________________________________________________________________________________________
+		#
+		# CrossNodes
+		#__________________________________________________________________________________________
 
+		# Nodes within the labyrinth where a change of direction (crossroad) is possible or a way ends (blind end)
+		# Needed for navigation
+		self.crossNodes = []; 
+
+		#TODO Choose some Nodes that are crossNodes (random?)
 		#For testing purposes only four nodes in the corners are crossNodes
 		self.crossNodes.append(self.potentialNodes[0]); #links unten
 		self.crossNodes.append(self.potentialNodes[28]); #rechts unten
@@ -195,7 +230,18 @@ class LabLayer(Layer):
 		self.crossNodes[3].nodeLeft = self.crossNodes[2];
 		self.crossNodes[3].nodeDown = self.crossNodes[1];
 
-		#Add connections between two neighboured crossNodes to wayNodes[]
+
+		#__________________________________________________________________________________________
+		#
+		# WayNodes
+		#__________________________________________________________________________________________
+
+		# Every node that belongs to a way within the labyrinth
+		# Only needed to draw the dots that are eaten by the pacman
+		# Irrelevant for navigation
+		self.wayNodes = [];
+
+		#Add crossNodes and connections between two neighboured crossNodes to wayNodes[]
 		for cNode in self.crossNodes:
 			self.wayNodes.append(cNode);
 			if cNode.nodeRight != None:
@@ -206,7 +252,8 @@ class LabLayer(Layer):
 				for pNode in self.potentialNodes:
 					if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
 						self.wayNodes.append(pNode);
-		print("DEBUG wayNodes: " + str(len(self.wayNodes)));
+
+		#Sprites for the wayNodes = dots that are eaten by pacman
 		self.nodeSprites = [];
 
 		for wayNode in self.wayNodes:
@@ -215,18 +262,12 @@ class LabLayer(Layer):
 			tempSprite.y = wayNode.y;
 			self.nodeSprites.append(tempSprite);
 
+		# Add sprites to the layer
 		for nodeSprite in self.nodeSprites:
 			self.add(nodeSprite);
 
-		print("DEBUG nodeSprites: " + str(len(self.nodeSprites)));
 
-		print("INFO labRect.top", self.labRect.top);
-		print("INFO labRect.bottom", self.labRect.bottom);
-		print("INFO labRect.left", self.labRect.left);
-		print("INFO labRect.right", self.labRect.right);
-
-
-#____________________________________________________________________
+#___________________________________________________________________________________________________________
 
 
 
@@ -255,24 +296,27 @@ class PacmanLayer(Layer):
 			pacman.position = self.pacmanRect.center;
 			pacman.scale = 0.05;
 
+		#Animate pacman
+		self.pacman2.do(Repeat(Blink(1, 0.3)));
+
 
 		print("INFO pacman.top ", self.pacmanRect.top);
 		print("INFO pacman.bottom ", self.pacmanRect.bottom);
 		print("INFO pacman.left ", self.pacmanRect.left);
 		print("INFO pacman.right ", self.pacmanRect.right);
-
 		print("INFO pacmanRect.x ", self.pacmanRect.x);
 		print("INFO pacmanRect.y ", self.pacmanRect.y);
 
-
-		#Animate pacman
-		self.pacman2.do(Repeat(Blink(1, 0.3)));
+		self.score = 0;
 
 		#Save pressed key
 		self.pressedKey = None;
 
 		#Save direciton
 		self.direction = key.RIGHT;
+
+		def setDirection(self):
+			self.direction = self.pressedKey;
 
 	#_______________________________________________
 	#
@@ -289,20 +333,15 @@ class PacmanLayer(Layer):
 			self.pressedKey = key.UP;
 		if keys == key.DOWN:
 			self.pressedKey = key.DOWN;
+
+
+	#_______________________________________________
+	#
+	# Move and rotate pacman
 	#_______________________________________________
 
-
-	def setDirection(self):
-		self.direction = self.pressedKey;
-
-
-	# Method that is called with schedule() on every new frame
+	# Method is called with schedule() on every new frame
 	def update(self, director):
-
-		#_______________________________________________
-		#
-		# Move and rotate pacman
-		#_______________________________________________
 
 		if self.direction == key.RIGHT:
 			self.pacman1.rotation = None;
@@ -320,7 +359,9 @@ class PacmanLayer(Layer):
 		for pacman in self.pacmans:
 			pacman.position = self.pacmanRect.center;
 
-		#________________________________________________
+
+#___________________________________________________________________________________________________________
+
 
 
 if __name__ == "__main__":
