@@ -2,7 +2,7 @@ from __future__ import division, print_function, unicode_literals
 
 import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from pyglet import font
 from pyglet.gl import *
@@ -54,9 +54,23 @@ class GameScene(Scene):
 		self.labLayer = LabLayer();
 		self.pacmanLayer = PacmanLayer();
 		self.pacmanLayer.pacmanRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y);
+		self.ghostLayerBlue = GhostLayer("blue");
+		self.ghostLayerRed = GhostLayer("red");
+		self.ghostLayerOrange = GhostLayer("orange");
+		self.ghostLayerPink = GhostLayer("pink");
+		self.ghostLayers = [];
+		self.ghostLayers.append(self.ghostLayerBlue);
+		self.ghostLayers.append(self.ghostLayerRed);
+		self.ghostLayers.append(self.ghostLayerOrange);
+		self.ghostLayers.append(self.ghostLayerPink);
+
+
 
 		self.add(self.labLayer);
 		self.add(self.pacmanLayer);
+		for ghostLayer in self.ghostLayers:
+			ghostLayer.ghostRect.center = (self.labLayer.crossNodes[2].x, self.labLayer.crossNodes[2].y);
+			self.add(ghostLayer);
 
 		#add schedule method
 		self.schedule(self.update);
@@ -255,15 +269,15 @@ class PacmanLayer(Layer):
 		super(PacmanLayer, self).__init__();
 
 		#create and add Sprites for pacman
-		self.pacman1 = Sprite(pyglet.resource.image('images/pacman1.png'));
-		self.pacman2 = Sprite(pyglet.resource.image('images/pacman2.png'));
+		self.pacman1 = Sprite(pyglet.resource.image("images/pacman1.png"));
+		self.pacman2 = Sprite(pyglet.resource.image("images/pacman2.png"));
 
 		self.pacmans = [];
 
 		self.pacmans.append(self.pacman1);
 		self.pacmans.append(self.pacman2);
 
-		self.pacmanRect = Rect(40, 40, self.pacman1.width * 0.1, self.pacman1.height * 0.1);
+		self.pacmanRect = Rect(40, 40, self.pacman1.width * 0.05, self.pacman1.height * 0.05);
 
 		for pacman in self.pacmans:
 			self.add(pacman);
@@ -348,7 +362,110 @@ class PacmanLayer(Layer):
 
 
 
+
+
+class GhostLayer(Layer):
+
+	#enable pyglet events
+	is_event_handler = True
+
+	def __init__(self, color = "blue"):
+		super(GhostLayer, self).__init__();
+
+		#create and add Sprites for ghost
+		self.ghost1 = Sprite(pyglet.resource.image("images/" + color + "1.png"));
+		self.ghost2 = Sprite(pyglet.resource.image("images/" + color + "2.png"));
+		self.eyes = Sprite(pyglet.resource.image("images/eyesDown.png"))
+
+		self.ghosts = [];
+
+		self.ghosts.append(self.ghost1);
+		self.ghosts.append(self.ghost2);
+		self.ghosts.append(self.eyes);
+
+		self.ghostRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12);
+
+		for ghost in self.ghosts:
+			self.add(ghost);
+			ghost.position = self.ghostRect.center;
+			ghost.scale = 0.12;
+
+		#Animate ghost
+		self.ghost1.do(Repeat(Blink(1, 0.3)));
+
+
+		print("INFO ghost.top ", self.ghostRect.top);
+		print("INFO ghost.bottom ", self.ghostRect.bottom);
+		print("INFO ghost.left ", self.ghostRect.left);
+		print("INFO ghost.right ", self.ghostRect.right);
+		print("INFO ghostRect.x ", self.ghostRect.x);
+		print("INFO ghostRect.y ", self.ghostRect.y);
+
+
+		#Save pressed key
+		self.pressedKey = None;
+
+		#Save direciton
+		self.direction = key.RIGHT;
+
+		self._score = 0;
+
+
+	# Getter and setter for score
+	def getScore(self):
+		return self._score;
+
+	def setScore(self, score):
+		self._sore = score;
+
+	def updateScore(self, score):
+		self._score = self._score + score;
+
+
+	#_______________________________________________
+	#
+	# Eventhandler for key presses
+	#_______________________________________________
+	
+	def on_key_press(self, keys, mod):
+		print("INFO Key pressed ", keys);
+		if keys == key.RIGHT:
+			self.pressedKey = key.RIGHT;
+		if keys == key.LEFT:
+			self.pressedKey = key.LEFT;
+		if keys == key.UP:
+			self.pressedKey = key.UP;
+		if keys == key.DOWN:
+			self.pressedKey = key.DOWN;
+
+
+	#_______________________________________________
+	#
+	# Move ghost
+	#_______________________________________________
+
+	# Method is called with schedule() on every new frame
+	def update(self, director):
+		#TODO: "Rotate" Eyes
+		if self.direction == key.RIGHT:
+			self.ghostRect.x += 2;
+		elif self.direction == key.LEFT:
+			self.ghostRect.x -= 2;
+		elif self.direction == key.UP:
+			self.ghostRect.y += 2;
+		elif self.direction == key.DOWN:
+			self.ghostRect.y -= 2;
+			
+		for ghost in self.ghosts:
+			ghost.position = self.ghostRect.center;
+
+
+#___________________________________________________________________________________________________________
+
+
+
+
 if __name__ == "__main__":
-	director.init(resizable=False, caption='HATman')
+	director.init(resizable=False, caption="HATman")
 	#director.window.set_fullscreen(True)
 	director.run(GameScene());
