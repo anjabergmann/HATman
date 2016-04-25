@@ -17,7 +17,6 @@ from cocos.rect import Rect
 
 
 
-
 class LabNode():
 	def __init__(self, x, y, nodeRight = None, nodeLeft = None, nodeUp = None, nodeDown = None):
 		

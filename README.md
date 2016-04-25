@@ -13,6 +13,7 @@ _Projektarbeit 1 - Gamedevelopment with Python_
 	* Cocos2D (can be installed via 'pip install cocos2d')
 	* Pyglet 1.2.4 ('pip install pyglet')
 	* [numPy1.11.0 - not yet, but possibly later ('pip install numpy')]
+	* Twisted 16.1.1 ('pip install twisted')
 
 	* Other versions might work too, but we don't guarantee ;)
 	* There can be problems with the sprites on Windows 7.
