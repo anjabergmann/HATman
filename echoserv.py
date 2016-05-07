@@ -8,20 +8,15 @@ from twisted.internet import reactor
 
 ### Protocol Implementation
 
-# This is just about the simplest possible protocol
 class Echo(Protocol):
     def dataReceived(self, data):
-        """
-        As soon as any data is received, write it back.
-        """
         self.transport.write(data)
 
+class EchoFactory(Factory):
+    def buildProtocol(self, addr):
+        return Echo()
 
-def main():
-    f = Factory()
-    f.protocol = Echo
-    reactor.listenTCP(8000, f)
-    reactor.run()
+reactor.run()
 
 if __name__ == '__main__':
     main()
