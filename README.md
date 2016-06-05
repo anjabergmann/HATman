@@ -15,6 +15,14 @@ _Project Work 1 - Gamedevelopment with Python_
 		> Download Marauroa from https://github.com/arianne/marauroa
 		> From commandline: Run "ant dist" in the marauroa directory
 
+
+#Probably useful links:
+	* Ant download: http://ant.apache.org/
+	* Marauora download: https://github.com/arianne/marauroa
+	* Marauora initial steps: https://stendhalgame.org/wiki/InitialStepsWithMarauroa
+	* How to Arianne: https://stendhalgame.org/wiki/How_to_write_games_using_Arianne_in_Python#How_to_write_a_game_using_Arianne
+
+
 #To-Do
 	* Basically Everything (list might not be complete)
 	* Pacman
