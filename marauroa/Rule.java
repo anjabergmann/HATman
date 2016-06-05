@@ -1,5 +1,7 @@
 //shamelessly stolen from https://stendhalgame.org/wiki/Marauroa_Chat_Tutorial/Server
+import java.io.InputStream;
 import java.sql.SQLException;
+import java.util.*;
 
 import marauroa.common.crypto.Hash;
 import marauroa.common.game.AccountResult;
@@ -30,6 +32,7 @@ public class Rule implements IRPRuleProcessor {
     }
     return instance;
   }
+
 
   @Override
   public void setContext(RPServerManager rpman) {
@@ -126,4 +129,18 @@ public class Rule implements IRPRuleProcessor {
       return new CharacterResult(Result.FAILED_EXCEPTION, characterName, template);
     }
   }
+
+
+@Override
+public String getMimeTypeForResource(String arg0) {
+  // TODO Auto-generated method stub
+  return null;
+}
+
+
+@Override
+public InputStream getResource(String arg0) {
+  // TODO Auto-generated method stub
+  return null;
+}
 }
