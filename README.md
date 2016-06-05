@@ -1,28 +1,28 @@
 # HATman
-_Projektarbeit 1 - Gamedevelopment with Python_
+_Project Work 1 - Gamedevelopment with Python_
 
 
 #Team
-	* Tabea Halmschlager
 	* Johanna Kirchmaier
 	* Anja Bergmann
+	* Tabea Halmschlager
 
 
 #Dependencies: 
-	* Python 3.4 
-	* Cocos2D (can be installed via 'pip install cocos2d')
-	* Pyglet 1.2.4 ('pip install pyglet')
-	* [numPy1.11.0 - not yet, but possibly later ('pip install numpy')]
-	* Twisted 16.1.1 ('pip install twisted')
-
-	* Other versions might work too, but we don't guarantee ;)
-	* There can be problems with the sprites on Windows 7.
-
+	* Python 3
+	* Ant (to compile Marauroa; http://ant.apache.org/)
+	* Arianne respectively Marauroa
+		> Download Marauroa from https://github.com/arianne/marauroa
+		> From commandline: Run "ant dist" in the marauroa directory
 
 #To-Do
+	* Basically Everything (list might not be complete)
+	* Pacman
 	* Ghosts (similar to Pacman)
+	* Labyrinth
 	* Pacman-can-hunt-ghosts-mode (after pacman ate one of these bigger dots)
 	* Collision detection between Pacman and Ghosts
+	* Collision detection between Pacman/Ghosts and Labyrinth walls 
 	* Create labyrinth randomly
 	* Multiplayer
 	* Start-Screen
