@@ -10,7 +10,8 @@ _Project Work 1 - Gamedevelopment with Python_
 
 #Dependencies: 
 	* Python 3
-	* Ant (to compile Marauroa; http://ant.apache.org/)
+	* Java Developer Kit
+	* Ant (to compile Marauroa)
 	* Arianne respectively Marauroa
 		> Download Marauroa from https://github.com/arianne/marauroa
 		> From commandline: Run "ant dist" in the marauroa directory
@@ -18,9 +19,11 @@ _Project Work 1 - Gamedevelopment with Python_
 
 #Probably useful links:
 	* Ant download: http://ant.apache.org/
+	* Java Developer Kit Download: http://www.oracle.com/technetwork/java/javase/downloads/index.html
 	* Marauora download: https://github.com/arianne/marauroa
 	* Marauora initial steps: https://stendhalgame.org/wiki/InitialStepsWithMarauroa
 	* How to Arianne: https://stendhalgame.org/wiki/How_to_write_games_using_Arianne_in_Python#How_to_write_a_game_using_Arianne
+	* Marauora on Eclipse: https://stendhalgame.org/wiki/Marauroa_on_Eclipse
 
 
 #To-Do
