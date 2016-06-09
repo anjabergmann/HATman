@@ -25,6 +25,11 @@ _Project Work 1 - Gamedevelopment with Python_
 	* How to Arianne: https://stendhalgame.org/wiki/How_to_write_games_using_Arianne_in_Python#How_to_write_a_game_using_Arianne
 	* Marauora on Eclipse: https://stendhalgame.org/wiki/Marauroa_on_Eclipse
 
+# How to bla
+	* Import project into Eclipse
+	* Run src/marauroa/server/marauroad.java
+	* --> Tadaaah - Database connection
+
 
 #To-Do
 	* Basically Everything (list might not be complete)
