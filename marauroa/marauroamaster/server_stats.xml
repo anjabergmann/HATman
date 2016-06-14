@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Cp1252"?>
-<statistics time="1465904726">
-  <uptime value="900.278"/>
-  <memory total="251392" used="27617"/>
+<statistics time="1465905446">
+  <uptime value="1620.296"/>
+  <memory total="251392" used="28928"/>
 <attrib name="Bytes recv" value="402" />
 <attrib name="Players timeout" value="0" />
 <attrib name="Message recv" value="1" />
