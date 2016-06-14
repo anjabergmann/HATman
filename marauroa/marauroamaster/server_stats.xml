@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="Cp1252"?>
-<statistics time="1465905446">
-  <uptime value="1620.296"/>
-  <memory total="251392" used="28928"/>
-<attrib name="Bytes recv" value="402" />
+<statistics time="1465906247">
+  <uptime value="0.224"/>
+  <memory total="251392" used="24996"/>
+<attrib name="Bytes recv" value="0" />
 <attrib name="Players timeout" value="0" />
-<attrib name="Message recv" value="1" />
 <attrib name="Bytes send" value="0" />
-<attrib name="Objects now" value="0" />
 <attrib name="Players logged" value="0" />
 <attrib name="Players online" value="0" />
 <attrib name="Ips online" value="0" />

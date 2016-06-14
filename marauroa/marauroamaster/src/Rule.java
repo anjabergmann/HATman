@@ -34,48 +34,41 @@ public class Rule implements IRPRuleProcessor {
   }
 
 
-  @Override
   public void setContext(RPServerManager rpman) {
     manager = rpman;
   }
 
-  @Override
   public boolean checkGameVersion(String game, String version) {
     return game.equals("Chat");
   }
 
-  @Override
   public synchronized void onTimeout(RPObject character) {
     onExit(character);
   }
 
-  @Override
   public synchronized boolean onExit(RPObject character) {
     world.remove(character.getID());
     return true;
   }
 
-  @Override
   public synchronized boolean onInit(RPObject character) {
     IRPZone zone = world.getRPZone(new IRPZone.ID("lobby"));
     zone.add(character);
     return true;
   }
 
-  @Override
   public synchronized void beginTurn() {
+	  //dummy
   }
 
-  @Override
   public boolean onActionAdd(RPObject caster, RPAction action, List<RPAction> actionList) {
     return true;
   }
 
-  @Override
   public synchronized void endTurn() {
+	  //dummy
   }
 
-  @Override
   public void execute(RPObject caster, RPAction action) {
     if (action.get("type").equals("chat")) {
       RPObject chatEntry = new RPObject();
@@ -88,7 +81,6 @@ public class Rule implements IRPRuleProcessor {
     }
   }
 
-  @Override
   public AccountResult createAccount(String username, String password, String email) {
     TransactionPool transactionPool = TransactionPool.get();
     DBTransaction trans = transactionPool.beginWork();
@@ -107,7 +99,6 @@ public class Rule implements IRPRuleProcessor {
     }
   }
 
-  @Override
   public CharacterResult createCharacter(String username, String characterName, RPObject template) {
     TransactionPool transactionPool = TransactionPool.get();
     DBTransaction trans = transactionPool.beginWork();
@@ -130,15 +121,12 @@ public class Rule implements IRPRuleProcessor {
     }
   }
 
-
-@Override
 public String getMimeTypeForResource(String arg0) {
   // TODO Auto-generated method stub
   return null;
 }
 
 
-@Override
 public InputStream getResource(String arg0) {
   // TODO Auto-generated method stub
   return null;

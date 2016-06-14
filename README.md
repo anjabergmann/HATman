@@ -26,6 +26,7 @@ _Project Work 1 - Gamedevelopment with Python_
 	
 2. Marauroa setupt and start		
 	* Import Marauroa into Eclipse
+	* Adjust file server.ini in directory marauroamaster
 	* Run src/marauroa/server/marauroad.java
 
 
