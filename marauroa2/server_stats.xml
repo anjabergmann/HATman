@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="Cp1252"?>
+<statistics time="1465987917">
+  <uptime value="0.232"/>
+  <memory total="251392" used="24907"/>
+<attrib name="Bytes recv" value="0" />
+<attrib name="Players timeout" value="0" />
+<attrib name="Bytes send" value="0" />
+<attrib name="Players logged" value="0" />
+<attrib name="Players online" value="0" />
+<attrib name="Ips online" value="0" />
+<attrib name="Players login" value="0" />
+<attrib name="Players logout" value="0" />
+</statistics>
