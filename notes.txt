@@ -1,3 +1,0 @@
-important (or not so much) notes:
-
-falls es nicht funktioniert in server.ini --> PORT ÄNDERN!

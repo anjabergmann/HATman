@@ -10,41 +10,34 @@ _Project Work 1 - Gamedevelopment with Python_
 
 #Dependencies: 
 * Python 3
-* Java Developer Kit
-* Ant (to compile Marauroa)
-* Arianne respectively Marauroa
-	* Download Marauroa from https://github.com/arianne/marauroa
-	* From commandline: Run "ant dist" in the marauroa directory
+* Cocos2D
+	git install cocos2D
 
 
 # Setup
-1. Database:
-	* You need to create a database for the project. In our case we used MariaDB which is an MySQL database. 
-		> create database marauroa;
-	* Now we need a user who has all rights on this database. Our users name is "hatman" and the password is "keines". 
-		> grant all on marauroa.* to hatman@localhost identified by 'keines';
-	
-2. Marauroa setupt and start		
-	* Import Marauroa into Eclipse
-	* Adjust file server.ini in directory marauroamaster
-	* Run src/marauroa/server/marauroad.java
+TBA
 
 
 
 #Probably useful links:
-* Ant download: http://ant.apache.org/
-* Java Developer Kit Download: http://www.oracle.com/technetwork/java/javase/downloads/index.html
-* Marauora download: https://github.com/arianne/marauroa
-* Marauora initial steps: https://stendhalgame.org/wiki/InitialStepsWithMarauroa
-* Marauroa Server: https://stendhalgame.org/wiki/Marauroa_Chat_Tutorial/Server
-* How to Arianne: https://stendhalgame.org/wiki/How_to_write_games_using_Arianne_in_Python#How_to_write_a_game_using_Arianne
-* Marauora on Eclipse: https://stendhalgame.org/wiki/Marauroa_on_Eclipse
-* How to server.ini: https://stendhalgame.org/wiki/
-
+* http://cocos2d.org/
+* http://python.cocos2d.org/
+* http://appwarp.shephertz.com/create-cocos2dx-multiplayer-game/
+* Python Plugin für Eclipse: http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclipse
+* https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python
+* https://www.raywenderlich.com/46843/multiplayer-game-programming-for-teens-with-python-part-2
+* http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python
+* http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python
+* https://docs.python.org/2/howto/sockets.html
+* https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/
+* http://www.binarytides.com/python-socket-programming-tutorial/
+* https://twistedmatrix.com/trac/
+* https://github.com/twisted/twisted
+* https://en.wikipedia.org/wiki/Twisted_(software)
 
 
 #To-Do
-* Basically Everything (list might not be complete)
+* list might not be complete
 * Pacman
 * Ghosts (similar to Pacman)
 * Labyrinth
