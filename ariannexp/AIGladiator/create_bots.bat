@@ -1,7 +1,0 @@
-start debug\aigladiator "bot_1" "nopass" "bot_1"
-start debug\aigladiator "bot_2" "nopass" "bot_2"
-start debug\aigladiator "bot_3" "nopass" "bot_3"
-start debug\aigladiator "bot_4" "nopass" "bot_4"
-start debug\aigladiator "bot_5" "nopass" "bot_5"
-start debug\aigladiator "bot_6" "nopass" "bot_6"
-start debug\aigladiator "bot_7" "nopass" "bot_7"
