@@ -1,14 +1,6 @@
 from twisted.web import server, resource
 from twisted.internet import reactor, endpoints
-
-# -------------------------------------
-# config
-# -------------------------------------
-
-protocol = "tcp";
-port = "8080";
-
-# ------------------------------------
+from config import port, protocol
 
 
 print("INFO Server running on port " + port);
