@@ -33,7 +33,7 @@ TBA
 	- [http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python](http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python)
 	- [https://docs.python.org/2/howto/sockets.html](https://docs.python.org/2/howto/sockets.html)
 	- [https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/](https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/)
-		- [http://www.binarytides.com/python-socket-programming-tutorial/](http://www.binarytides.com/python-socket-programming-tutorial/)
+	- [http://www.binarytides.com/python-socket-programming-tutorial/](http://www.binarytides.com/python-socket-programming-tutorial/)
 * Twisted
 	- [https://twistedmatrix.com/trac/](https://twistedmatrix.com/trac/)
 	- [https://github.com/twisted/twisted](https://github.com/twisted/twisted)
