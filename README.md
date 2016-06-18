@@ -11,7 +11,7 @@ _Project Work 1 - Gamedevelopment with Python_
 #Dependencies: 
 * Python 3
 * Cocos2D
-	git install cocos2D
+	> `git install cocos2D`
 
 
 # Setup
@@ -20,20 +20,24 @@ TBA
 
 
 #Probably useful links:
-* http://cocos2d.org/
-* http://python.cocos2d.org/
-* http://appwarp.shephertz.com/create-cocos2dx-multiplayer-game/
-* Python Plugin für Eclipse: http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclipse
-* https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python
-* https://www.raywenderlich.com/46843/multiplayer-game-programming-for-teens-with-python-part-2
-* http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python
-* http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python
-* https://docs.python.org/2/howto/sockets.html
-* https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/
-* http://www.binarytides.com/python-socket-programming-tutorial/
-* https://twistedmatrix.com/trac/
-* https://github.com/twisted/twisted
-* https://en.wikipedia.org/wiki/Twisted_(software)
+* Python Plugin for Eclipse
+	- [http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclips](http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclipse) 
+* Cocos2d
+	- [http://cocos2d.org/](http://cocos2d.org/)
+	- [http://python.cocos2d.org/](http://python.cocos2d.org/)
+* Multiplayer game programming for teens with python
+	- [https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python](https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python)
+	- [https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python-part-2]( https://www.raywenderlich.com/46843/multiplayer-game-programming-for-teens-with-python-part-2)
+* Sockets and multiplayer in python
+	- [http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python](http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python)
+	- [http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python](http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python)
+	- [https://docs.python.org/2/howto/sockets.html](https://docs.python.org/2/howto/sockets.html)
+	- [https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/](https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/)
+		- [http://www.binarytides.com/python-socket-programming-tutorial/](http://www.binarytides.com/python-socket-programming-tutorial/)
+* Twisted
+	- [https://twistedmatrix.com/trac/](https://twistedmatrix.com/trac/)
+	- [https://github.com/twisted/twisted](https://github.com/twisted/twisted)
+	- [https://en.wikipedia.org/wiki/Twisted_(software)](https://en.wikipedia.org/wiki/Twisted_(software))
 
 
 #To-Do
