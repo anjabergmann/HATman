@@ -11,11 +11,11 @@ _Project Work 1 - Gamedevelopment with Python_
 #Dependencies: 
 * Python 3
 * Cocos2D
-	> `pip install cocos2D`
+	- `pip install cocos2D`
 * Twisted
-	> `pip install twisted`
-	> `pip install pypiwin32`
-	> `pip install twisted-win`
+	- `pip install twisted`
+	- `pip install pypiwin32`
+	- `pip install twisted-win`
 
 
 # Setup
