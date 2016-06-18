@@ -42,6 +42,8 @@ TBA
 	- [https://twistedmatrix.com/trac/](https://twistedmatrix.com/trac/)
 	- [https://github.com/twisted/twisted](https://github.com/twisted/twisted)
 	- [https://en.wikipedia.org/wiki/Twisted_(software)](https://en.wikipedia.org/wiki/Twisted_(software))
+	- [https://twistedmatrix.com/documents/current/api/twisted.web.html](https://twistedmatrix.com/documents/current/api/twisted.web.html)
+	- [https://twistedmatrix.com/documents/current/api/twisted.internet.html](https://twistedmatrix.com/documents/current/api/twisted.internet.html)
 
 
 #To-Do
