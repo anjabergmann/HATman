@@ -1,0 +1,13 @@
+user,gameid,character,positionx,positiony,running
+
+user		username
+gameid		id of the game --> to coordinate the players
+character	character the user is playing
+positionx	change of x-position
+positiony	change of y-position
+running		true = game still running || false = game over
+
+e.g.
+sheld0r,42,hatman,0,-2,true
+doctor,42,fox,2,0,true
+NewtScamander,3,blueghost,0,0,false

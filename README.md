@@ -3,9 +3,9 @@ _Project Work 1 - Gamedevelopment with Python_
 
 
 #Team
-* Johanna Kirchmaier
-* Anja Bergmann
-* Tabea Halmschlager
+* Jo**H**anna Kirchmaier
+* **A**nja Bergmann
+* **T**abea Halmschlager
 
 
 #Dependencies: 
@@ -38,13 +38,13 @@ TBA
 	- [https://docs.python.org/2/howto/sockets.html](https://docs.python.org/2/howto/sockets.html)
 	- [https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/](https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/)
 	- [http://www.binarytides.com/python-socket-programming-tutorial/](http://www.binarytides.com/python-socket-programming-tutorial/)
-* Twisted
+* **Twisted**
 	- [https://twistedmatrix.com/trac/](https://twistedmatrix.com/trac/)
 	- [https://github.com/twisted/twisted](https://github.com/twisted/twisted)
 	- [https://en.wikipedia.org/wiki/Twisted_(software)](https://en.wikipedia.org/wiki/Twisted_(software))
 	- [https://twistedmatrix.com/documents/current/api/twisted.web.html](https://twistedmatrix.com/documents/current/api/twisted.web.html)
 	- [https://twistedmatrix.com/documents/current/api/twisted.internet.html](https://twistedmatrix.com/documents/current/api/twisted.internet.html)
-
+	- [http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/](http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/)
 
 #To-Do
 * list might not be complete
