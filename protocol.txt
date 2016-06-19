@@ -1,13 +1,45 @@
-user,gameid,character,positionx,positiony,running
+STXcommand,param1,param2,...,paramxETX
 
-user		username
-gameid		id of the game --> to coordinate the players
-character	character the user is playing
-positionx	change of x-position
-positiony	change of y-position
-running		true = game still running || false = game over
+STX		Start of Text (ASCII 2)		\x02
+ETX		End of Text (ASCII 3)		\x03
 
-e.g.
-sheld0r,42,hatman,0,-2,true
-doctor,42,fox,2,0,true
-NewtScamander,3,blueghost,0,0,false
+
+
+commands:
+move a character
+	move,user,gameid,character,positionx,positiony
+
+tell the server that game is over
+	die,user,gameid,scorepacman,scoreghosts
+
+
+user			String		username
+gameid			int			id of the game --> to coordinate the players
+character		String		character the user is playing
+positionx		int			change of x-position
+positiony		int			change of y-position
+scorepacman		int			score of the pacman
+scoreghosts		int			score of the ghosts
+
+
+
+How to string handling in python:
+
+teststring = "\x02command,param1,param2,...,paramx\x03"
+
+teststring
+	'\x02command,param1,param2,...,paramxE\x03'
+
+teststring[1:-1]
+	'command,param1,param2,...,paramx'
+
+teslist = teststring[1:-1].split(",")
+
+testlist
+	['command', 'param1', 'param2', 'param3']
+
+len(testlist)
+	4
+
+testlist[0]
+	'command'
