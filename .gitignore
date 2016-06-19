@@ -1,4 +1,5 @@
-./twisted_playground
+-./twisted_playground/
+-./twisted-intro-master.zip
 
 -# Byte-compiled / optimized / DLL files
 -__pycache__/
