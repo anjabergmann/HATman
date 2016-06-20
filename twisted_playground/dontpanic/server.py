@@ -52,6 +52,12 @@ class HatmanProtocol(NetstringReceiver):
 	def __init__(self):
 		print("HatmanProtocol Init");
 
+
+	def connectionMade(self):
+		self.factory.clients.append(self);
+		print("Clients:", self.factory.clients);
+
+
 	def stringReceived(self, request):
 		if ',' not in request.decode("utf-8"): #bad request
 			# self.transport.loseConnection();
@@ -87,6 +93,8 @@ def main():
 	service = HatmanService();
 
 	factory = HatmanFactory(service);
+
+	factory.clients = []
 
 	port = reactor.listenTCP(options.port or 0, factory, interface=options.iface);
 
