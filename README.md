@@ -22,7 +22,6 @@ _Project Work 1 - Gamedevelopment with Python_
 TBA
 
 
-
 #Probably useful links:
 * Python Plugin for Eclipse
 	- [http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclips](http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclipse) 
