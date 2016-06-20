@@ -51,17 +51,16 @@ ports for that to work.
 
 class HatmanClientProtocol(NetstringReceiver):
 
-	command = "\x02command,param1,param2,param3\x03";
-
 	def __init__(self):
 		print("ClientProtocol Init");
 
-	def sendRequest(self, command):
-		self.sendString(command.encode("utf-8"));
-
 
 	def connectionMade(self):
-		self.sendRequest(self.command)
+		self.sendRequest(self.factory.command.encode("utf-8"))
+
+
+	def sendRequest(self, command):
+		self.sendString(command);
 
 
 	def stringReceived(self, command):
@@ -117,13 +116,15 @@ def hatmanMain():
 	addresses = parse_args();
 	address = addresses.pop(0);
 
+	command = "\x02command,param1,param2,param3\x03"
+
 	print(addresses);
 
 	proxy = HatmanProxy(*address);
 
 	print("I like cookies.");
 
-	d = proxy.xform("");
+	d = proxy.xform(command);
 
 	def try_to_send(command):
 
@@ -138,7 +139,7 @@ def hatmanMain():
 
 	print("Are you my mummy?");
 	host, port = address;
-	try_to_send("\x02command,param1,param2,param3\x03");
+	try_to_send(command);
 
 	reactor.run();
 
