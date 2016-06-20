@@ -70,7 +70,7 @@ TBA
 * All the graphical stuff (draw sprites and a fancy designed labyrinth [only peaces so that they can be used 
 		to make a random created labyrinth] and so on)
 * Music (for Hatman-Version perhaps: Moonlight Sonata)
-* Mobile ... ?
+* Mobile ...?
 * Login
 
 #Q>A
