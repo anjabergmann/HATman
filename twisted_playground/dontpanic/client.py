@@ -64,9 +64,9 @@ class HatmanClientProtocol(NetstringReceiver):
 		self.sendRequest(self.command)
 
 
-	def stringReceived(self, s):
+	def stringReceived(self, command):
 		self.transport.loseConnection();
-		self.factory.handleString(s);
+		self.factory.handleString(command);
 
 
 
@@ -80,9 +80,9 @@ class HatmanClientFactory(ClientFactory):
 		self.deferred = defer.Deferred();
 		print("ClientFactory Init");
 
-	def handleString(s):
+	def handleString(self, command):
 		d, self.deferred = self.deferred, None;
-		d.callback(s);
+		d.callback(command);
 
 	def clientConnectionLost(self, _, reason):
 		if self.deferred is not None:
@@ -123,7 +123,7 @@ def hatmanMain():
 
 	print("I like cookies.");
 
-	d = proxy.xform("command");
+	d = proxy.xform("");
 
 	def try_to_send(command):
 
@@ -131,14 +131,14 @@ def hatmanMain():
 
 		def fail(err):
 			print("Sending failed", file=sys.stderr);
+			print(err);
 			return command;
 		return d.addErrback(fail);
 
 
 	print("Are you my mummy?");
 	host, port = address;
-	d.addCallback(try_to_send);
-
+	try_to_send("\x02command,param1,param2,param3\x03");
 
 	reactor.run();
 
