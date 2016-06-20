@@ -116,6 +116,8 @@ def hatmanMain():
 	address = addresses.pop(0);
 
 	#command = "\x02command,param1,param2,param3\x03"
+	#move = "\x02move,user,gameid,character,positionx,positiony\x03"
+	#die = "\x02die,user,gameid,scorepacman,scoreghosts\x03"
 	command = "\x02move,sheld0r,param2,param3\x03"
 
 	proxy = HatmanProxy(*address);
