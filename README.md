@@ -28,9 +28,6 @@ TBA
 * Cocos2d
 	- [http://cocos2d.org/](http://cocos2d.org/)
 	- [http://python.cocos2d.org/](http://python.cocos2d.org/)
-* Multiplayer game programming for teens with python
-	- [https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python](https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python)
-	- [https://www.raywenderlich.com/38732/multiplayer-game-programming-for-teens-with-python-part-2]( https://www.raywenderlich.com/46843/multiplayer-game-programming-for-teens-with-python-part-2)
 * Sockets and multiplayer in python
 	- [http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python](http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python)
 	- [http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python](http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python)
