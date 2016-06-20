@@ -36,30 +36,36 @@ to provide poetry transformation on port 11000.
 	return options;
 
 
+
 class HatmanService(object):
 
 	def someFancyMethod(self, command):
+		print("INFO Doing someFancyMethod with command", command);
+		returnString = "";
 		if(command[0] == "move"):
-			print(command[1] + " is moving");
+			#character is moving
+			#todo
+			returnString = str(command);
 		else:
-			print("Hello World!");
-		return "Hello World!".encode("utf-8");
+			#another command
+			#todo
+			returnString = "Hello World!".encode("utf-8");
+		return returnString.encode("utf-8");
 
 
 
+#New instance is created whenever a new client connects
 class HatmanProtocol(NetstringReceiver):
-
-	def __init__(self):
-		print("HatmanProtocol Init");
-
 
 	def connectionMade(self):
 		self.factory.clients.append(self);
-		print("Clients:", self.factory.clients);
+		print("\nINFO A new client connected.")
+		print("INFO Number of clients connected: {}\n".format(len(self.factory.clients)));
 
 	def connectionLost(self, reason):
-		print("Client removed");
 		self.factory.clients.remove(self)
+		print("\nINFO A client disconnected.");
+		print("INFO Number of clients connected: {}\n".format(len(self.factory.clients)));
 
 
 	def stringReceived(self, request):
@@ -68,40 +74,32 @@ class HatmanProtocol(NetstringReceiver):
 			return;
 
 		command = request.decode("utf-8")[1:-1].split(",");
-		# ... to something with command ...
 
-		print("Received command.");
-		print(command);
+		print("INFO Received command", command);
 
-		self.sendString(self.factory.doSomeFancyMethod(command));
+		#self.sendString(self.factory.doSomeFancyMethod(command));
+		self.factory.doSomeFancyMethod(command);
 
 		# self.transport.loseConnection();
 
 
 
-
+#An instance is created once at the beginning
 class HatmanFactory(ServerFactory):
 
 	protocol = HatmanProtocol;
 
 	def __init__(self, service):
 		self.service = service
-		print("HatmanFactory Init");
 
 	def doSomeFancyMethod(self, command):
-		print("Blablablubberfasel");
-		self.doSomethingElse(command);
-		return self.service.someFancyMethod(command);
-
-
-	def doSomethingElse(self, command):
 		index = 1;
+		stringToSend = self.service.someFancyMethod(command);
 		for client in self.clients:
-			print("Writing to client #" + str(index));
-			print(client);
-			#client.transport.write(("You are client #" + str(index)).encode("utf-8"));
-			client.sendString(("You are client #" + str(index)).encode("utf-8"));
+			print("INFO Writing to client #" + str(index));
+			client.sendString(stringToSend);
 			index += 1;
+		return stringToSend;
 
 
 def main():
@@ -115,7 +113,9 @@ def main():
 
 	port = reactor.listenTCP(options.port or 0, factory, interface=options.iface);
 
+	print("\n------------------------------------------------------------------\n");
 	print("Hatman Server running on %s." % (port.getHost(),));
+	print("\n------------------------------------------------------------------\n");
 
 	reactor.run();
 

@@ -49,11 +49,8 @@ ports for that to work.
 	return list(map(parse_address, addresses))
 
 
+
 class HatmanClientProtocol(NetstringReceiver):
-
-	def __init__(self):
-		print("ClientProtocol Init");
-
 
 	def connectionMade(self):
 		self.sendRequest(self.factory.command.encode("utf-8"))
@@ -65,6 +62,7 @@ class HatmanClientProtocol(NetstringReceiver):
 
 	def stringReceived(self, command):
 		# self.transport.loseConnection();
+		print("INFO Received data from server:", command.decode("utf-8"));
 		self.factory.handleString(command);
 
 
@@ -77,10 +75,8 @@ class HatmanClientFactory(ClientFactory):
 	def __init__(self, command):
 		self.command = command;
 		self.deferred = defer.Deferred();
-		print("ClientFactory Init");
 
 	def handleString(self, command):
-		print("handleString", command);
 		d, self.deferred = self.deferred, None;
 		#d.callback(command);
 
@@ -100,19 +96,21 @@ class HatmanProxy(object):
 	def __init__(self, host, port):
 		self.host = host
 		self.port = port
-		print("Proxy init");
 
 	def xform(self, command):
 		factory = HatmanClientFactory(command)
 		reactor.connectTCP(self.host, self.port, factory)
-		print("Reactor connected");
+		print("INFO Connected to server {}:{}".format(self.host, self.port));
+		print("\n------------------------------------------------------------------\n");
 		return factory.deferred
 
 
 
 def hatmanMain():
 
-	print("Client started.");
+
+	print("\n------------------------------------------------------------------\n");
+	print("INFO HatmanClient started.");
 
 	addresses = parse_args();
 	address = addresses.pop(0);
@@ -120,26 +118,19 @@ def hatmanMain():
 	#command = "\x02command,param1,param2,param3\x03"
 	command = "\x02move,sheld0r,param2,param3\x03"
 
-	print(addresses);
-
 	proxy = HatmanProxy(*address);
-
-	print("I like cookies.");
 
 	d = proxy.xform(command);
 
 	def try_to_send(command):
-
-		print("I have no idea what I'm doing.");
+		print("INFO Sending data to server", command);
 
 		def fail(err):
-			print("Sending failed", file=sys.stderr);
+			print("ERROR Sending failed", file=sys.stderr);
 			print(err);
 			return command;
 		return d.addErrback(fail);
 
-
-	print("Are you my mummy?");
 	host, port = address;
 	try_to_send(command);
 
