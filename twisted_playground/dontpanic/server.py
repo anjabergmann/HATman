@@ -46,6 +46,10 @@ class HatmanService(object):
 			#character is moving
 			#todo
 			returnString = str(command);
+		elif(command[0] == "die"):
+			#character is dying
+			#todo
+			returnString = str(command);
 		else:
 			#another command
 			#todo
