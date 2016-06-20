@@ -57,6 +57,10 @@ class HatmanProtocol(NetstringReceiver):
 		self.factory.clients.append(self);
 		print("Clients:", self.factory.clients);
 
+	def connectionLost(self, reason):
+		print("Client removed");
+		self.factory.clients.remove(self)
+
 
 	def stringReceived(self, request):
 		if ',' not in request.decode("utf-8"): #bad request
@@ -74,6 +78,8 @@ class HatmanProtocol(NetstringReceiver):
 		# self.transport.loseConnection();
 
 
+
+
 class HatmanFactory(ServerFactory):
 
 	protocol = HatmanProtocol;
@@ -84,7 +90,18 @@ class HatmanFactory(ServerFactory):
 
 	def doSomeFancyMethod(self, command):
 		print("Blablablubberfasel");
+		self.doSomethingElse(command);
 		return self.service.someFancyMethod(command);
+
+
+	def doSomethingElse(self, command):
+		index = 1;
+		for client in self.clients:
+			print("Writing to client #" + str(index));
+			print(client);
+			#client.transport.write(("You are client #" + str(index)).encode("utf-8"));
+			client.sendString(("You are client #" + str(index)).encode("utf-8"));
+			index += 1;
 
 
 def main():

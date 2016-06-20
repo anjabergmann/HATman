@@ -80,8 +80,9 @@ class HatmanClientFactory(ClientFactory):
 		print("ClientFactory Init");
 
 	def handleString(self, command):
+		print("handleString", command);
 		d, self.deferred = self.deferred, None;
-		d.callback(command);
+		#d.callback(command);
 
 	def clientConnectionLost(self, _, reason):
 		if self.deferred is not None:
