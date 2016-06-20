@@ -18,7 +18,7 @@ _Project Work 1 - Gamedevelopment with Python_
 	- `pip install twisted-win`
 
 
-# Setup
+# Setup:
 TBA
 
 
