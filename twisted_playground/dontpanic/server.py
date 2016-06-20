@@ -39,7 +39,10 @@ to provide poetry transformation on port 11000.
 class HatmanService(object):
 
 	def someFancyMethod(self, command):
-		print("Hello World!");
+		if(command[0] == "move"):
+			print(command[1] + " is moving");
+		else:
+			print("Hello World!");
 		return "Hello World!".encode("utf-8");
 
 
@@ -51,7 +54,7 @@ class HatmanProtocol(NetstringReceiver):
 
 	def stringReceived(self, request):
 		if ',' not in request.decode("utf-8"): #bad request
-			self.transport.loseConnection();
+			# self.transport.loseConnection();
 			return;
 
 		command = request.decode("utf-8")[1:-1].split(",");
@@ -60,9 +63,9 @@ class HatmanProtocol(NetstringReceiver):
 		print("Received command.");
 		print(command);
 
-		self.sendString(self.factory.doSomeFancyMethod("TEST".encode("utf-8")));
+		self.sendString(self.factory.doSomeFancyMethod(command));
 
-
+		# self.transport.loseConnection();
 
 
 class HatmanFactory(ServerFactory):

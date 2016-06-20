@@ -64,7 +64,7 @@ class HatmanClientProtocol(NetstringReceiver):
 
 
 	def stringReceived(self, command):
-		self.transport.loseConnection();
+		# self.transport.loseConnection();
 		self.factory.handleString(command);
 
 
@@ -116,7 +116,8 @@ def hatmanMain():
 	addresses = parse_args();
 	address = addresses.pop(0);
 
-	command = "\x02command,param1,param2,param3\x03"
+	#command = "\x02command,param1,param2,param3\x03"
+	command = "\x02move,sheld0r,param2,param3\x03"
 
 	print(addresses);
 
