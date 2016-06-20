@@ -51,13 +51,13 @@ class HatmanProtocol(NetstringReceiver):
 			self.transport.loseConnection();
 			return;
 
-		command = request[1:-1].split(",");
+		command = request.decode("utf-8")[1:-1].split(",");
 		# ... to something with command ...
 
 		print("Received command.");
 		print(command);
 
-		self.sendString(self.factory.doSomeFancyMethod());
+		self.sendString(self.factory.doSomeFancyMethod(command));
 
 
 

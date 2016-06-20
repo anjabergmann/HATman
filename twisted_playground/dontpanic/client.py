@@ -56,6 +56,10 @@ class HatmanClientProtocol(NetstringReceiver):
 	def __init__(self):
 		print("ClientProtocol Init");
 
+	def sendRequest(self, command):
+		self.sendString(command.encode("utf-8"));
+
+
 	def connectionMade(self):
 		self.sendRequest(self.command)
 
@@ -99,7 +103,7 @@ class HatmanProxy(object):
 		print("Proxy init");
 
 	def xform(self, command):
-		factory = HatmanFactory(command)
+		factory = HatmanClientFactory(command)
 		reactor.connectTCP(self.host, self.port, factory)
 		print("Reactor connected");
 		return factory.deferred
@@ -111,12 +115,19 @@ def hatmanMain():
 	print("Client started.");
 
 	addresses = parse_args();
+	address = addresses.pop(0);
 
-	proxy = HatmanProxy(*addresses.pop(0));
+	print(addresses);
 
+	proxy = HatmanProxy(*address);
+
+	print("I like cookies.");
+
+	d = proxy.xform("command");
 
 	def try_to_send(command):
-		d = proxy.xform(command);
+
+		print("I have no idea what I'm doing.");
 
 		def fail(err):
 			print("Sending failed", file=sys.stderr);
@@ -124,9 +135,9 @@ def hatmanMain():
 		return d.addErrback(fail);
 
 
-	for address in addresses:
-		host, port = address;
-		d.addCallback(try_to_send);
+	print("Are you my mummy?");
+	host, port = address;
+	d.addCallback(try_to_send);
 
 
 	reactor.run();
