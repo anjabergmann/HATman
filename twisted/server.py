@@ -58,7 +58,15 @@ class HatmanService(object):
 
 
 
-#New instance is created whenever a new client connects
+# An instance is created whenever a new client connects
+# The protocol is created by the factory when the reactor receives a request
+# A protocol basically has the methods: 
+# connectionMade, connectionLost, dataReceived
+# The NetstringReceiver also has the method stringReceived
+# --> is called if a string is received, not only the first characters or something
+# --> with dataReceived you'd have to buffer the data received to get the whole string
+# DON'T implement dataReceived AND stringReceived --> will be tricky
+# Docu: http://twistedmatrix.com/documents/current/api/twisted.protocols.basic.NetstringReceiver.html
 class HatmanProtocol(NetstringReceiver):
 
 	def connectionMade(self):
@@ -68,6 +76,7 @@ class HatmanProtocol(NetstringReceiver):
 
 	def connectionLost(self, reason):
 		self.factory.clients.remove(self)
+		#print("\nINFO A client disconnected.", reason);
 		print("\nINFO A client disconnected.");
 		print("INFO Number of clients connected: {}\n".format(len(self.factory.clients)));
 
@@ -88,7 +97,11 @@ class HatmanProtocol(NetstringReceiver):
 
 
 
-#An instance is created once at the beginning
+# An instance is created once at the beginning
+# If a client sends a request to the port the reactor is listening on, 
+# the factory has the purpose to return a protocol.
+# So each connection gets its own protocol object. 
+# If the factory doesn't return a protocol, the connection is rejected. 
 class HatmanFactory(ServerFactory):
 
 	protocol = HatmanProtocol;
@@ -115,6 +128,8 @@ def main():
 
 	factory.clients = []
 
+
+	# The reactor (= event loop) listens on a port
 	port = reactor.listenTCP(options.port or 0, factory, interface=options.iface);
 
 	print("\n------------------------------------------------------------------\n");
