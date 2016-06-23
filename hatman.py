@@ -2,6 +2,7 @@ from __future__ import division, print_function, unicode_literals
 
 import os
 import sys
+import threading
 
 from pyglet.gl import *
 from pyglet.window import key
@@ -13,6 +14,9 @@ from layers.lab import LabLayer
 from layers.pacman import PacmanLayer
 from layers.ghost import GhostLayer
 
+import client
+
+
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 #
@@ -21,6 +25,8 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 class GameScene(Scene):
 	def __init__(self):
 		super(GameScene, self).__init__()  # MaKno says: In Python 3, "super.__init__()" us sufficient.
+
+		self.reactor = False;
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
@@ -129,10 +135,15 @@ class GameScene(Scene):
 		self.setDirection()
 		self.checkBorders()
 		self.pacmanLayer.update(director)
+		if (self.reactor == False):
+			client.hatmanMain();
+			self.reactor = True;
 
 
 
 if __name__ == "__main__":
+
 	director.init(resizable=False, caption="HATman")
 	# director.window.set_fullscreen(True)
 	director.run(GameScene())
+

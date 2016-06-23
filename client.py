@@ -1,10 +1,6 @@
 import optparse;
 import sys;
 
-from hatman import GameScene;
-
-from cocos.director import director;
-
 from twisted.internet import reactor;
 from twisted.internet import defer;
 from twisted.internet.protocol import Protocol, ClientFactory;
@@ -142,12 +138,8 @@ def hatmanMain():
 	try_to_send(command);
 
 
-	director.init(resizable=False, caption="HATman")
-	# director.window.set_fullscreen(True)
-	director.run(GameScene())
-
-
 	reactor.run();
+
 
 
 
