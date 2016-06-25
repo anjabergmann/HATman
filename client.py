@@ -1,5 +1,6 @@
 import optparse;
 import sys;
+import time;
 
 from twisted.internet import reactor;
 from twisted.internet import defer;
@@ -58,6 +59,7 @@ class HatmanClientProtocol(NetstringReceiver):
 
 
 	def sendRequest(self, command):
+		# print("INFO Sending data to server:", command);
 		self.sendString(command);
 
 
@@ -71,15 +73,21 @@ class HatmanClientProtocol(NetstringReceiver):
 
 class HatmanClientFactory(ClientFactory):
 
-	protocol = HatmanClientProtocol;
 
 	def __init__(self, command):
+		self.protocol = HatmanClientProtocol;
 		self.command = command;
 		self.deferred = defer.Deferred();
+
+
+	def sendCommand(self, command):
+		self.protocol.sendRequest(command);
+
 
 	def handleString(self, command):
 		d, self.deferred = self.deferred, None;
 		#d.callback(command);
+
 
 	def clientConnectionLost(self, _, reason):
 		if self.deferred is not None:
@@ -109,12 +117,27 @@ def hatmanMain():
 	print("\n------------------------------------------------------------------\n");
 
 
+	d = factory.deferred;
+
+	def tryToSend(command):
+		print("INFO Sending data to server", command);
+
+		def fail(err):
+			print("ERROR Sending failed", file=sys.stderr);
+			print(err);
+			return command;
+		return d.addErrback(fail);
+
+
+	tryToSend(command);
+
+	factory.sendCommand("Hallo, ich bin ein Kommando.");
+
 
 
 
 	reactor.run();
 	# reactor.run(installSignalHandlers=0);
-
 
 
 if __name__ == '__main__':
