@@ -135,15 +135,26 @@ class GameScene(Scene):
 		self.setDirection()
 		self.checkBorders()
 		self.pacmanLayer.update(director)
-		if (self.reactor == False):
-			client.hatmanMain();
-			self.reactor = True;
+		# if (self.reactor == False):
+		# 	client.hatmanMain();
+		# 	self.reactor = True;
 
 
+
+class networkThread(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self);
+		print("networkThread");
+
+	def run(self):
+		client.hatmanMain();
 
 if __name__ == "__main__":
+
+	thread = networkThread();
+	thread.start();
+
 
 	director.init(resizable=False, caption="HATman")
 	# director.window.set_fullscreen(True)
 	director.run(GameScene())
-
