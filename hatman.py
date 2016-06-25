@@ -135,9 +135,11 @@ class GameScene(Scene):
 		self.setDirection()
 		self.checkBorders()
 		self.pacmanLayer.update(director)
-		# if (self.reactor == False):
-		# 	client.hatmanMain();
-		# 	self.reactor = True;
+
+		addresses = client.parse_args();
+		address = addresses.pop(0);
+		test = client.HatmanProxy(*address);
+		testd = test.xform("LALALALALAAAA");
 
 
 

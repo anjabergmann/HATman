@@ -121,6 +121,8 @@ def hatmanMain():
 	#die = "\x02die,user,gameid,scorepacman,scoreghosts\x03"
 	command = "\x02move,sheld0r,1,pacman,123,321\x03"
 
+	print(*address);
+
 	proxy = HatmanProxy(*address);
 
 	d = proxy.xform(command);
@@ -138,7 +140,7 @@ def hatmanMain():
 	try_to_send(command);
 
 
-	reactor.run();
+	reactor.run(installSignalHandlers=0);
 
 
 
