@@ -86,7 +86,7 @@ class HatmanClientFactory(ClientFactory):
 
 	def handleString(self, command):
 		d, self.deferred = self.deferred, None;
-		#d.callback(command);
+		d.callback(command);
 
 
 	def clientConnectionLost(self, _, reason):
@@ -122,16 +122,17 @@ def hatmanMain():
 	def tryToSend(command):
 		print("INFO Sending data to server", command);
 
+		def notfail(data):
+			factory.sendCommand("Hallo, ich bin ein Kommando.");
 		def fail(err):
 			print("ERROR Sending failed", file=sys.stderr);
 			print(err);
 			return command;
-		return d.addErrback(fail);
+		return d.addCallbacks(notfail, fail);
 
 
 	tryToSend(command);
 
-	factory.sendCommand("Hallo, ich bin ein Kommando.");
 
 
 
