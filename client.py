@@ -59,7 +59,7 @@ class HatmanClientProtocol(NetstringReceiver):
 
 
 	def sendRequest(self, command):
-		# print("INFO Sending data to server:", command);
+		print("INFO Sending data to server:", command);
 		self.sendString(command);
 
 
@@ -81,11 +81,11 @@ class HatmanClientFactory(ClientFactory):
 
 
 	def sendCommand(self, command):
-		self.protocol.sendRequest(command);
+		self.protocol.sendRequest(self.protocol, command);
 
 
 	def handleString(self, command):
-		d, self.deferred = self.deferred, None;
+		d, self.deferred = self.deferred, defer.Deferred();
 		d.callback(command);
 
 
@@ -122,17 +122,16 @@ def hatmanMain():
 	def tryToSend(command):
 		print("INFO Sending data to server", command);
 
-		def notfail(data):
-			factory.sendCommand("Hallo, ich bin ein Kommando.");
 		def fail(err):
 			print("ERROR Sending failed", file=sys.stderr);
 			print(err);
 			return command;
-		return d.addCallbacks(notfail, fail);
+		return d.addErrback(fail);
 
 
 	tryToSend(command);
 
+	#factory.sendCommand("Hallo, ich bin ein Kommando.");
 
 
 
