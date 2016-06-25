@@ -136,10 +136,7 @@ class GameScene(Scene):
 		self.checkBorders()
 		self.pacmanLayer.update(director)
 
-		addresses = client.parse_args();
-		address = addresses.pop(0);
-		test = client.HatmanProxy(*address);
-		testd = test.xform("LALALALALAAAA");
+		test.xform("LALALALALAAAA");
 
 
 
@@ -156,6 +153,11 @@ if __name__ == "__main__":
 
 	thread = networkThread();
 	thread.start();
+
+
+	addresses = client.parse_args();
+	address = addresses.pop(0);
+	test = client.HatmanProxy(*address);
 
 
 	director.init(resizable=False, caption="HATman")

@@ -89,59 +89,31 @@ class HatmanClientFactory(ClientFactory):
 	clientConnectionFailed = clientConnectionLost
 
 
-class HatmanProxy(object):
-	"""
-	I proxy requests to a transformation service.
-	"""
-
-	def __init__(self, host, port):
-		self.host = host
-		self.port = port
-
-	def xform(self, command):
-		factory = HatmanClientFactory(command)
-		reactor.connectTCP(self.host, self.port, factory)
-		print("INFO Connected to server {}:{}".format(self.host, self.port));
-		print("\n------------------------------------------------------------------\n");
-		return factory.deferred
-
-
 
 def hatmanMain():
-
 
 	print("\n------------------------------------------------------------------\n");
 	print("INFO HatmanClient started.");
 
+
+	#command = "\x02move,user,gameid,character,positionx,positiony\x03"
+	command = "\x02move,sheld0r,1,pacman,123,321\x03"
 	addresses = parse_args();
 	address = addresses.pop(0);
-
-	#command = "\x02command,param1,param2,param3\x03"
-	#move = "\x02move,user,gameid,character,positionx,positiony\x03"
-	#die = "\x02die,user,gameid,scorepacman,scoreghosts\x03"
-	command = "\x02move,sheld0r,1,pacman,123,321\x03"
-
-	print(*address);
-
-	proxy = HatmanProxy(*address);
-
-	d = proxy.xform(command);
-
-	def try_to_send(command):
-		print("INFO Sending data to server", command);
-
-		def fail(err):
-			print("ERROR Sending failed", file=sys.stderr);
-			print(err);
-			return command;
-		return d.addErrback(fail);
-
 	host, port = address;
-	try_to_send(command);
 
 
-	reactor.run(installSignalHandlers=0);
+	factory = HatmanClientFactory(command)
+	reactor.connectTCP(host, port, factory)
+	print("INFO Connected to server {}:{}".format(host, port));
+	print("\n------------------------------------------------------------------\n");
 
+
+
+
+
+	reactor.run();
+	# reactor.run(installSignalHandlers=0);
 
 
 
