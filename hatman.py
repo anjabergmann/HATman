@@ -149,6 +149,7 @@ class networkThread(threading.Thread):
 	def run(self):
 		client.hatmanMain();
 
+
 if __name__ == "__main__":
 
 	thread = networkThread();
