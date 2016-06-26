@@ -120,6 +120,7 @@ def hatmanMain():
 
 	d = factory.deferred;
 
+
 	def tryToSend(command):
 		print("INFO Sending data to server", command);
 
@@ -137,10 +138,8 @@ def hatmanMain():
 
 
 
-
-
+	#reactor.run(installSignalHandlers=0);
 	reactor.run();
-	# reactor.run(installSignalHandlers=0);
 
 
 if __name__ == '__main__':
