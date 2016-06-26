@@ -160,7 +160,8 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	def update(self, director):
-		self.eatDots()
+		if (self.myLayer == self.pacmanLayer):
+			self.eatDots()
 		self.setDirection()
 		self.checkBorders()
 		self.myLayer.update(director)

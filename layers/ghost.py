@@ -24,6 +24,8 @@ class GhostLayer(Layer):
         self.ghosts.append(self.eyes)
 
         self.ghostRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
+        self.ghostRect.center = (40, 40);
+
 
         for ghost in self.ghosts:
             self.add(ghost)

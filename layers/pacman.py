@@ -22,6 +22,7 @@ class PacmanLayer(Layer):
         self.pacmans.append(self.pacman2)
 
         self.pacmanRect = Rect(40, 40, self.pacman1.width * 0.05, self.pacman1.height * 0.05)
+        self.pacmanRect.center = (40, 40);
 
         for pacman in self.pacmans:
             self.add(pacman)
