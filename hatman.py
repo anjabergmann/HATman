@@ -54,8 +54,25 @@ class GameScene(Scene):
 		self.add(self.labLayer)
 		self.add(self.pacmanLayer)
 		for ghostLayer in self.ghostLayers:
-			ghostLayer.ghostRect.center = (self.labLayer.crossNodes[2].x, self.labLayer.crossNodes[2].y)
+			ghostLayer.ghostRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
 			self.add(ghostLayer)
+
+		self.myLayer = self.pacmanLayer;
+		self.myRect = self.pacmanLayer.pacmanRect;
+
+		if(args.character == "p"):
+			self.myLayer = self.ghostLayerPink;
+			self.myRect = self.ghostLayerPink.ghostRect;
+		elif(args.character == "b"):
+			self.myLayer = self.ghostLayerBlue;
+			self.myRect = self.ghostLayerBlue.ghostRect;
+		elif(args.character == "o"):
+			self.myLayer = self.ghostLayerOrange;
+			self.myRect = self.ghostLayerOrange.ghostRect;
+		elif(args.character == "r"):
+			self.myLayer = self.ghostLayerRed;
+			self.myRect = self.ghostLayerRed.ghostRect;
+
 
 		# add schedule method
 		self.schedule(self.update)
@@ -65,14 +82,17 @@ class GameScene(Scene):
 
 		self.crossNodes = self.labLayer.crossNodes
 
+
 	# _________________________________________________________________________________________
 	#
 	# Change direction
 	# _________________________________________________________________________________________
+
 	# Change the direction to pressedKey if it is possible
-	# (= if Pacman reaches a node with a neighbor-node in the pressedKey-direction)
+	# (= if Character reaches a node with a neighbor-node in the pressedKey-direction)
+
 	def setDirection(self):
-		self.pressedKey = self.pacmanLayer.pressedKey
+		self.pressedKey = self.myLayer.pressedKey
 		if self.pressedKey != self.direction:
 			# invert direction --> always possible
 			if (self.pressedKey == key.RIGHT and self.direction == key.LEFT) or (
@@ -80,22 +100,22 @@ class GameScene(Scene):
 							self.pressedKey == key.DOWN and self.direction == key.UP) or (
 							self.pressedKey == key.UP and self.direction == key.DOWN):
 				self.direction = self.pressedKey
-				self.pacmanLayer.direction = self.direction
+				self.myLayer.direction = self.direction
 			else:
 				for cn in self.crossNodes:
-					if self.pacmanLayer.pacmanRect.center == (cn.x, cn.y):
+					if self.myRect.center == (cn.x, cn.y):
 						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
 							self.direction = self.pressedKey
-							self.pacmanLayer.direction = self.direction
+							self.myLayer.direction = self.direction
 						elif self.pressedKey == key.LEFT and cn.nodeLeft != None:
 							self.direction = self.pressedKey
-							self.pacmanLayer.direction = self.direction
+							self.myLayer.direction = self.direction
 						elif self.pressedKey == key.UP and cn.nodeUp != None:
 							self.direction = self.pressedKey
-							self.pacmanLayer.direction = self.direction
+							self.myLayer.direction = self.direction
 						elif self.pressedKey == key.DOWN and cn.nodeDown != None:
 							self.direction = self.pressedKey
-							self.pacmanLayer.direction = self.direction
+							self.myLayer.direction = self.direction
 
 	# _________________________________________________________________________________________
 	#
@@ -107,19 +127,19 @@ class GameScene(Scene):
 	def checkBorders(self):
 		for cNode in self.labLayer.crossNodes:
 			# only check if pacman reaches a crossNode (blind ends HAVE to be crossNodes)
-			if self.pacmanLayer.pacmanRect.center == (cNode.x, cNode.y):
-				if self.pacmanLayer.direction == key.RIGHT:
+			if self.myRect.center == (cNode.x, cNode.y):
+				if self.myLayer.direction == key.RIGHT:
 					if cNode.nodeRight == None:
-						self.pacmanLayer.direction = None
-				elif self.pacmanLayer.direction == key.LEFT:
+						self.myLayer.direction = None
+				elif self.myLayer.direction == key.LEFT:
 					if cNode.nodeLeft == None:
-						self.pacmanLayer.direction = None
-				elif self.pacmanLayer.direction == key.UP:
+						self.myLayer.direction = None
+				elif self.myLayer.direction == key.UP:
 					if cNode.nodeUp == None:
-						self.pacmanLayer.direction = None
-				elif self.pacmanLayer.direction == key.DOWN:
+						self.myLayer.direction = None
+				elif self.myLayer.direction == key.DOWN:
 					if cNode.nodeDown == None:
-						self.pacmanLayer.direction = None
+						self.myLayer.direction = None
 
 	# _________________________________________________________________________________________
 	#
@@ -129,10 +149,10 @@ class GameScene(Scene):
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
-			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
+			if self.myRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
-				self.pacmanLayer.updateScore(1)
+				self.myLayer.updateScore(1)
 
 	# _________________________________________________________________________________________
 	#
@@ -143,9 +163,16 @@ class GameScene(Scene):
 		self.eatDots()
 		self.setDirection()
 		self.checkBorders()
-		self.pacmanLayer.update(director)
+		self.myLayer.update(director)
 
-		factory.connectedProtocol.sendRequest("xmove,sheldor,1,1,1x")
+		requestString ="\x02move,";
+		requestString += args.user + ",";
+		requestString += args.character + ",";
+		requestString += "1,1,1\x03";
+
+		#print(requestString);
+
+		factory.connectedProtocol.sendRequest(requestString);
 
 
 

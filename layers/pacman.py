@@ -38,6 +38,7 @@ class PacmanLayer(Layer):
         print("INFO pacmanRect.x ", self.pacmanRect.x)
         print("INFO pacmanRect.y ", self.pacmanRect.y)
 
+
         # Save pressed key
         self.pressedKey = None
 
@@ -62,7 +63,7 @@ class PacmanLayer(Layer):
     # _______________________________________________
 
     def on_key_press(self, keys, mod):
-        print("INFO Key pressed ", keys)
+        #print("INFO Key pressed ", keys)
         if keys == key.RIGHT:
             self.pressedKey = key.RIGHT
         if keys == key.LEFT:

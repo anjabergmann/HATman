@@ -40,6 +40,7 @@ class GhostLayer(Layer):
         print("INFO ghostRect.x ", self.ghostRect.x)
         print("INFO ghostRect.y ", self.ghostRect.y)
 
+
         # Save pressed key
         self.pressedKey = None
 
@@ -64,7 +65,7 @@ class GhostLayer(Layer):
     # _______________________________________________
 
     def on_key_press(self, keys, mod):
-        print("INFO Key pressed ", keys)
+        #print("INFO Key pressed ", keys)
         if keys == key.RIGHT:
             self.pressedKey = key.RIGHT
         if keys == key.LEFT:
