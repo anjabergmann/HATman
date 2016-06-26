@@ -154,22 +154,31 @@ class GameScene(Scene):
 				self.labLayer.nodeSprites.remove(nodeSprite)
 				self.myLayer.updateScore(1)
 
+
+
+
+	def updateChars(self, info):
+		print("update", info);
+
+
 	# _________________________________________________________________________________________
 	#
 	# Update method (called on every new frame)
 	# _________________________________________________________________________________________
 
 	def update(self, director):
-		if (self.myLayer == self.pacmanLayer):
+		if (self.myLayer == self.pacmanLayer): # not the best way ... refactor if time
 			self.eatDots()
 		self.setDirection()
 		self.checkBorders()
 		self.myLayer.update(director)
 
+
+		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
 		requestString ="\x02move,";
-		requestString += args.user + ",";
+		requestString += args.user + ",1,";
 		requestString += args.character + ",";
-		requestString += "1,1,1\x03";
+		requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
 
 		#print(requestString);
 
@@ -202,9 +211,7 @@ if __name__ == "__main__":
 	print("INFO HatmanClient started.");
 
 
-	#command = "\x02move,user,gameid,character,positionx,positiony\x03"
 	init = "\x02hi,Hello Server!\x03"
-	command = "\x02move,sheld0r,1,pacman,123,321\x03"
 	host = args.host;
 	port = args.port;
 
@@ -230,8 +237,18 @@ if __name__ == "__main__":
 			return init;
 		return d.addCallbacks(notfail, fail);
 
+	def doSomething():
+
+		def doCallback(data):
+			#print("CALLBACKCALLBACK");
+			d = factory.deferred;
+			d.addCallback(doCallback);
+			d.addCallback(GameScene().updateChars);
+		return d.addCallback(doCallback);
+
 
 	tryToSend(init);
+	doSomething();
 
 
 
