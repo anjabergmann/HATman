@@ -15,11 +15,11 @@ tell the server that game is over
 
 user			String		username
 gameid			int			id of the game --> to coordinate the players
-character		String		character the user is playing
+character		String		character the user is playing - e.g. 'pacman' or 'ghost' (only one pacman)
 positionx		int			change of x-position
 positiony		int			change of y-position
 scorepacman		int			score of the pacman
-scoreghosts		int			score of the ghosts
+scoreghosts		int			score of the ghosts (added together?)
 
 
 
