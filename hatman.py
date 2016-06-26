@@ -236,8 +236,8 @@ if __name__ == "__main__":
 
 
 	thread = networkThread();
+	thread.daemon = True
 	thread.start();
-
 
 
 
