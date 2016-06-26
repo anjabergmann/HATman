@@ -33,6 +33,9 @@ class GameScene(Scene):
 	def __init__(self):
 		super().__init__() 
 
+
+		self.i = 0;
+
 		self.user = args.user;
 		self.character = args.character;
 
@@ -181,9 +184,11 @@ class GameScene(Scene):
 		requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
 
 		#print(requestString);
-
-		factory.connectedProtocol.sendRequest(requestString);
-
+		if (self.i == 100):
+			factory.connectedProtocol.sendRequest(requestString);
+			self.i = 0;
+		else:
+			self.i += 1;
 
 
 class networkThread(threading.Thread):
@@ -205,7 +210,6 @@ class networkThread(threading.Thread):
 if __name__ == "__main__":
 
 	args = parse.parseArgs();
-
 
 	print("\n------------------------------------------------------------------\n");
 	print("INFO HatmanClient started.");
@@ -230,7 +234,7 @@ if __name__ == "__main__":
 
 		def notfail(data):
 			print("CALLBACK Initial sending succeded.");
-			factory.connectedProtocol.sendRequest("xMiau,Miox");
+			#factory.connectedProtocol.sendRequest("xMiau,Miox");
 		def fail(err):
 			print("ERRBACK Initial sending failed", file=sys.stderr);
 			print(err);
@@ -239,11 +243,17 @@ if __name__ == "__main__":
 
 	def doSomething():
 
+		# def doCallback(data):
+		# 	#print("CALLBACKCALLBACK");
+		# 	d = factory.deferred;
+		# 	d.addCallback(doCallback);
+		# 	d.addCallback(game.updateChars(data));
+
 		def doCallback(data):
 			#print("CALLBACKCALLBACK");
 			d = factory.deferred;
 			d.addCallback(doCallback);
-			d.addCallback(GameScene().updateChars);
+			d.addCallback(game.updateChars(data));
 		return d.addCallback(doCallback);
 
 
@@ -260,4 +270,5 @@ if __name__ == "__main__":
 
 	director.init(resizable=False, caption="HATman")
 	# director.window.set_fullscreen(True)
-	director.run(GameScene())
+	game = GameScene();
+	director.run(game)
