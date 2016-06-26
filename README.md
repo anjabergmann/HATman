@@ -38,8 +38,7 @@ TBA
 	- [https://twistedmatrix.com/trac/](https://twistedmatrix.com/trac/)
 	- [https://github.com/twisted/twisted](https://github.com/twisted/twisted)
 	- [https://en.wikipedia.org/wiki/Twisted_(software)](https://en.wikipedia.org/wiki/Twisted_(software))
-	- [https://twistedmatrix.com/documents/current/api/twisted.web.html](https://twistedmatrix.com/documents/current/api/twisted.web.html)
-	- [https://twistedmatrix.com/documents/current/api/twisted.internet.html](https://twistedmatrix.com/documents/current/api/twisted.internet.html)
+	- [https://twistedmatrix.com/documents/current/api](https://twistedmatrix.com/documents/current/api)
 	- [http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/](http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/)
 
 #To-Do

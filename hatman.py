@@ -2,6 +2,7 @@ from __future__ import division, print_function, unicode_literals
 
 import os
 import sys
+import time
 import threading
 
 from pyglet.gl import *
@@ -15,6 +16,7 @@ from layers.pacman import PacmanLayer
 from layers.ghost import GhostLayer
 
 import client
+from client import HatmanClientProtocol, HatmanClientFactory
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -25,8 +27,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 class GameScene(Scene):
 	def __init__(self):
 		super(GameScene, self).__init__()  # MaKno says: In Python 3, "super.__init__()" us sufficient.
-
-		self.reactor = False;
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
@@ -136,7 +136,7 @@ class GameScene(Scene):
 		self.checkBorders()
 		self.pacmanLayer.update(director)
 
-		test.xform("LALALALALAAAA");
+		factory.connectedProtocol.sendRequest("xmove,sheldor,1,1,1x")
 
 
 
@@ -146,18 +146,58 @@ class networkThread(threading.Thread):
 		print("networkThread");
 
 	def run(self):
-		client.hatmanMain();
+
+		#reactor.run(installSignalHandlers=0);
+		client.reactor.run();
+
 
 
 if __name__ == "__main__":
+
+	print("\n------------------------------------------------------------------\n");
+	print("INFO HatmanClient started.");
+
+
+	#command = "\x02move,user,gameid,character,positionx,positiony\x03"
+	command = "\x02move,sheld0r,1,pacman,123,321\x03"
+	addresses = client.parse_args();
+	address = addresses.pop(0);
+	host, port = address;
+
+
+	factory = HatmanClientFactory(command)
+	client.reactor.connectTCP(host, port, factory)
+	print("INFO Connected to server {}:{}".format(host, port));
+	print("\n------------------------------------------------------------------\n");
+
+
+	d = factory.deferred;
+
+
+	def tryToSend(command):
+		print("INFO Sending data to server", command);
+
+		def notfail(data):
+			print("INFO nofail");
+			factory.connectedProtocol.sendRequest("xMiau,Miox");
+		def fail(err):
+			print("ERROR Sending failed", file=sys.stderr);
+			print(err);
+			return command;
+		return d.addCallbacks(notfail, fail);
+
+
+	tryToSend(command);
+
+
 
 	thread = networkThread();
 	thread.start();
 
 
-	addresses = client.parse_args();
-	address = addresses.pop(0);
-	test = client.HatmanProxy(*address);
+	# addresses = client.parse_args();
+	# address = addresses.pop(0);
+	# test = client.HatmanProxy(*address);
 
 
 	director.init(resizable=False, caption="HATman")
