@@ -28,10 +28,10 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
 
-# Game Scene --> Contains all needed Layers [not yet, but ...]
+# Contains all needed Layers
 class GameScene(Scene):
 	def __init__(self):
-		super(GameScene, self).__init__()  # MaKno says: In Python 3, "super.__init__()" us sufficient.
+		super().__init__() 
 
 		self.user = args.user;
 		self.character = args.character;
@@ -145,7 +145,7 @@ class GameScene(Scene):
 		self.checkBorders()
 		self.pacmanLayer.update(director)
 
-		#factory.connectedProtocol.sendRequest("xmove,sheldor,1,1,1x")
+		factory.connectedProtocol.sendRequest("xmove,sheldor,1,1,1x")
 
 
 
@@ -155,9 +155,13 @@ class networkThread(threading.Thread):
 		print("networkThread");
 
 	def run(self):
+		try:
+			client.reactor.run(installSignalHandlers=0);
+		except:
+			client.reactor.run();
 
-		#reactor.run(installSignalHandlers=0);
-		client.reactor.run();
+
+
 
 
 
@@ -171,12 +175,13 @@ if __name__ == "__main__":
 
 
 	#command = "\x02move,user,gameid,character,positionx,positiony\x03"
+	init = "\x02hi,Hello Server!\x03"
 	command = "\x02move,sheld0r,1,pacman,123,321\x03"
 	host = args.host;
 	port = args.port;
 
 
-	factory = HatmanClientFactory(command)
+	factory = HatmanClientFactory(init)
 	client.reactor.connectTCP(host, port, factory)
 	print("INFO Connected to server {}:{}".format(host, port));
 	print("\n------------------------------------------------------------------\n");
@@ -185,20 +190,20 @@ if __name__ == "__main__":
 	d = factory.deferred;
 
 
-	def tryToSend(command):
-		print("INFO Sending data to server", command);
+	def tryToSend(init):
+		print("INFO Sending initial data to server", init);
 
 		def notfail(data):
-			print("INFO nofail");
+			print("CALLBACK Initial sending succeded.");
 			factory.connectedProtocol.sendRequest("xMiau,Miox");
 		def fail(err):
-			print("ERROR Sending failed", file=sys.stderr);
+			print("ERRBACK Initial sending failed", file=sys.stderr);
 			print(err);
-			return command;
+			return init;
 		return d.addCallbacks(notfail, fail);
 
 
-	tryToSend(command);
+	tryToSend(init);
 
 
 

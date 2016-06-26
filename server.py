@@ -40,7 +40,7 @@ to provide poetry transformation on port 11000.
 class HatmanService(object):
 
 	def someFancyMethod(self, command):
-		print("INFO Doing someFancyMethod with command", command);
+		#print("INFO Doing someFancyMethod with command", command);
 		returnString = "";
 		if(command[0] == "move"):
 			#character is moving
@@ -58,6 +58,7 @@ class HatmanService(object):
 			return returnString.encode("utf-8");
 		except:
 			return returnString;
+
 
 # An instance is created whenever a new client connects
 # The protocol is created by the factory when the reactor receives a request
@@ -88,13 +89,17 @@ class HatmanProtocol(NetstringReceiver):
 			return;
 
 		command = request.decode("utf-8")[1:-1].split(",");
+		#print("INFO Received command", command);
 
-		print("INFO Received command", command);
+		if (command[0] == "bye"):
+			self.sendString("Bye!".encode("utf-8"));
+			self.transport.loseConnection();
+		elif(command[0] == "hi"):
+			self.sendString("Hello, Client!".encode("utf-8"));
 
 		#self.sendString(self.factory.doSomeFancyMethod(command));
 		self.factory.doSomeFancyMethod(command);
 
-		# self.transport.loseConnection();
 
 
 
@@ -114,10 +119,12 @@ class HatmanFactory(ServerFactory):
 		index = 1;
 		stringToSend = self.service.someFancyMethod(command);
 		for client in self.clients:
-			print("INFO Writing to client #" + str(index));
+			#print("INFO Writing to client #" + str(index));
 			client.sendString(stringToSend);
 			index += 1;
 		return stringToSend;
+
+
 
 
 def main():

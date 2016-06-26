@@ -9,24 +9,7 @@ from twisted.protocols.basic import NetstringReceiver;
 
 
 def parse_args():
-	usage = """usage: %prog [options] [hostname]:port ...
-
-This is the Get Poetry Now! client, Twisted version 6.0
-Run it like this:
-
-  python get-poetry.py xform-port port1 port2 ...
-
-If you are in the base directory of the twisted-intro package,
-you could run it like this:
-
-  python twisted-client-6/get-poetry.py 10001 10002 10003
-
-to grab poetry from servers on ports 10002, and 10003 and transform
-it using the server on port 10001.
-
-Of course, there need to be appropriate servers listening on those
-ports for that to work.
-"""
+	usage = """usage: %prog [options] [hostname]:port ..."""
 
 	parser = optparse.OptionParser(usage)
 
@@ -59,13 +42,13 @@ class HatmanClientProtocol(NetstringReceiver):
 
 
 	def sendRequest(self, command):
-		print("INFO Sending data to server:", command);
+		#print("INFO Sending data to server:", command);
 		self.sendString(command.encode("utf-8"));
 
 
 	def stringReceived(self, command):
 		# self.transport.loseConnection();
-		print("INFO Received data from server:", command.decode("utf-8"));
+		#print("INFO Received data from server:", command.decode("utf-8"));
 		self.factory.handleString(command);
 
 
@@ -111,10 +94,6 @@ def hatmanMain():
 	address = addresses.pop(0);
 	host, port = address;
 
-	print("DEBUG   DEBUG   DEBUG   DEBUG")
-	print(address);
-	print(host);
-	print(port);
 
 	factory = HatmanClientFactory(command)
 	reactor.connectTCP(host, port, factory)
