@@ -35,12 +35,12 @@ class GhostLayer(Layer):
         # Animate ghost
         self.ghost1.do(Repeat(Blink(1, 0.3)))
 
-        print("INFO ghost.top ", self.ghostRect.top)
-        print("INFO ghost.bottom ", self.ghostRect.bottom)
-        print("INFO ghost.left ", self.ghostRect.left)
-        print("INFO ghost.right ", self.ghostRect.right)
-        print("INFO ghostRect.x ", self.ghostRect.x)
-        print("INFO ghostRect.y ", self.ghostRect.y)
+        # print("INFO ghost.top ", self.ghostRect.top)
+        # print("INFO ghost.bottom ", self.ghostRect.bottom)
+        # print("INFO ghost.left ", self.ghostRect.left)
+        # print("INFO ghost.right ", self.ghostRect.right)
+        # print("INFO ghostRect.x ", self.ghostRect.x)
+        # print("INFO ghostRect.y ", self.ghostRect.y)
 
 
         # Save pressed key

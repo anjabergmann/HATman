@@ -26,10 +26,10 @@ class LabLayer(Layer):
         # Size of the labyrinth
         self.labRect = Rect(40, 40, 560, 380)
 
-        print("INFO labRect.top", self.labRect.top)
-        print("INFO labRect.bottom", self.labRect.bottom)
-        print("INFO labRect.left", self.labRect.left)
-        print("INFO labRect.right", self.labRect.right)
+        # print("INFO labRect.top", self.labRect.top)
+        # print("INFO labRect.bottom", self.labRect.bottom)
+        # print("INFO labRect.left", self.labRect.left)
+        # print("INFO labRect.right", self.labRect.right)
 
         # _________________________________________________________________________________________
         #

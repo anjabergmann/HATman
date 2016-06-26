@@ -32,12 +32,12 @@ class PacmanLayer(Layer):
         # Animate pacman
         self.pacman2.do(Repeat(Blink(1, 0.3)))
 
-        print("INFO pacman.top ", self.pacmanRect.top)
-        print("INFO pacman.bottom ", self.pacmanRect.bottom)
-        print("INFO pacman.left ", self.pacmanRect.left)
-        print("INFO pacman.right ", self.pacmanRect.right)
-        print("INFO pacmanRect.x ", self.pacmanRect.x)
-        print("INFO pacmanRect.y ", self.pacmanRect.y)
+        # print("INFO pacman.top ", self.pacmanRect.top)
+        # print("INFO pacman.bottom ", self.pacmanRect.bottom)
+        # print("INFO pacman.left ", self.pacmanRect.left)
+        # print("INFO pacman.right ", self.pacmanRect.right)
+        # print("INFO pacmanRect.x ", self.pacmanRect.x)
+        # print("INFO pacmanRect.y ", self.pacmanRect.y)
 
 
         # Save pressed key
