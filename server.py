@@ -54,9 +54,10 @@ class HatmanService(object):
 			#another command
 			#todo
 			returnString = "Hello World!".encode("utf-8");
-		return returnString.encode("utf-8");
-
-
+		try:
+			return returnString.encode("utf-8");
+		except:
+			return returnString;
 
 # An instance is created whenever a new client connects
 # The protocol is created by the factory when the reactor receives a request

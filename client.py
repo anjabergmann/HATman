@@ -55,12 +55,12 @@ ports for that to work.
 class HatmanClientProtocol(NetstringReceiver):
 
 	def connectionMade(self):
-		self.sendRequest(self.factory.command.encode("utf-8"))
+		self.sendRequest(self.factory.command)
 
 
 	def sendRequest(self, command):
 		print("INFO Sending data to server:", command);
-		self.sendString(command);
+		self.sendString(command.encode("utf-8"));
 
 
 	def stringReceived(self, command):
@@ -73,15 +73,16 @@ class HatmanClientProtocol(NetstringReceiver):
 
 class HatmanClientFactory(ClientFactory):
 
+	protocol = HatmanClientProtocol;
 
 	def __init__(self, command):
-		self.protocol = HatmanClientProtocol;
 		self.command = command;
 		self.deferred = defer.Deferred();
 
-
-	def sendCommand(self, command):
-		self.protocol.sendRequest(self.protocol, command);
+	def buildProtocol(self, address):
+		proto = ClientFactory.buildProtocol(self, address);
+		self.connectedProtocol = proto;
+		return proto;
 
 
 	def handleString(self, command):
@@ -122,16 +123,18 @@ def hatmanMain():
 	def tryToSend(command):
 		print("INFO Sending data to server", command);
 
+		def notfail(data):
+			print("INFO nofail");
+			factory.connectedProtocol.sendRequest("xMiau,Miox");
 		def fail(err):
 			print("ERROR Sending failed", file=sys.stderr);
 			print(err);
 			return command;
-		return d.addErrback(fail);
+		return d.addCallbacks(notfail, fail);
 
 
 	tryToSend(command);
 
-	#factory.sendCommand("Hallo, ich bin ein Kommando.");
 
 
 
