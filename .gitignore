@@ -63,3 +63,5 @@
 -
 -#Backup files
 -~* 
+-
+-*/__pycache__/
