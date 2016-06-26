@@ -34,8 +34,6 @@ class GameScene(Scene):
 		super().__init__() 
 
 
-		self.i = 0;
-
 		self.user = args.user;
 		self.character = args.character;
 
@@ -161,8 +159,32 @@ class GameScene(Scene):
 
 
 	def updateChars(self, info):
-		print("update", info);
-
+		infolist = info.decode("utf-8").split(",");
+		if (infolist[0] == "move"):
+			char = infolist[3];
+			posx = float(infolist[4]);
+			posy = float(infolist[5]);
+			#print("update", char);
+			if(char == "pac" and self.myLayer != self.pacmanLayer):
+				self.pacmanLayer.pacmanRect.position = posx, posy;
+				self.pacmanLayer.pacman1.position = self.pacmanLayer.pacmanRect.center;
+				self.pacmanLayer.pacman2.position = self.pacmanLayer.pacmanRect.center;
+			elif (char == "o" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerOrange.ghostRect.position = posx, posy;
+				self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.ghostRect.center;
+				self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.ghostRect.center;
+			elif (char == "p" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerPink.ghostRect.position = posx, posy;
+				self.ghostLayerPink.ghost1.position = self.ghostLayerPink.ghostRect.center;
+				self.ghostLayerPink.ghost2.position = self.ghostLayerPink.ghostRect.center;
+			elif (char == "r" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerRed.ghostRect.position = posx, posy;
+				self.ghostLayerRed.ghost1.position = self.ghostLayerRed.ghostRect.center;
+				self.ghostLayerRed.ghost2.position = self.ghostLayerRed.ghostRect.center;
+			elif (char == "b" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerBlue.ghostRect.position = posx, posy;
+				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.ghostRect.center;
+				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.ghostRect.center;
 
 	# _________________________________________________________________________________________
 	#
@@ -183,12 +205,9 @@ class GameScene(Scene):
 		requestString += args.character + ",";
 		requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
 
-		if (self.i == 100):
-			print(requestString);
-			factory.connectedProtocol.sendRequest(requestString);
-			self.i = 0;
-		else:
-			self.i += 1;
+		#print(requestString);
+		factory.connectedProtocol.sendRequest(requestString);
+
 
 
 class networkThread(threading.Thread):
@@ -248,7 +267,7 @@ if __name__ == "__main__":
 	def doSomething():
 
 		def doCallback(data):
-			print("CALLBACKCALLBACK");
+			#print("CALLBACKCALLBACK");
 			d = factory.deferred;
 			d.addCallback(game.updateChars);
 			d.addCallback(doCallback);

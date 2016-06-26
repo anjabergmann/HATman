@@ -45,7 +45,8 @@ class HatmanService(object):
 		if(command[0] == "move"):
 			#character is moving
 			#todo
-			returnString = str(command);
+			#returnString = str(command);
+			returnString = ",".join(command);
 		elif(command[0] == "die"):
 			#character is dying
 			#todo
