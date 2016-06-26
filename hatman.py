@@ -183,8 +183,8 @@ class GameScene(Scene):
 		requestString += args.character + ",";
 		requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
 
-		#print(requestString);
 		if (self.i == 100):
+			print(requestString);
 			factory.connectedProtocol.sendRequest(requestString);
 			self.i = 0;
 		else:
@@ -210,6 +210,10 @@ class networkThread(threading.Thread):
 if __name__ == "__main__":
 
 	args = parse.parseArgs();
+	director.init(resizable=False, caption="HATman")
+	# director.window.set_fullscreen(True)
+	game = GameScene();
+
 
 	print("\n------------------------------------------------------------------\n");
 	print("INFO HatmanClient started.");
@@ -243,17 +247,12 @@ if __name__ == "__main__":
 
 	def doSomething():
 
-		# def doCallback(data):
-		# 	#print("CALLBACKCALLBACK");
-		# 	d = factory.deferred;
-		# 	d.addCallback(doCallback);
-		# 	d.addCallback(game.updateChars(data));
-
 		def doCallback(data):
-			#print("CALLBACKCALLBACK");
+			print("CALLBACKCALLBACK");
 			d = factory.deferred;
+			d.addCallback(game.updateChars);
 			d.addCallback(doCallback);
-			d.addCallback(game.updateChars(data));
+
 		return d.addCallback(doCallback);
 
 
@@ -268,7 +267,5 @@ if __name__ == "__main__":
 
 
 
-	director.init(resizable=False, caption="HATman")
-	# director.window.set_fullscreen(True)
-	game = GameScene();
+
 	director.run(game)
