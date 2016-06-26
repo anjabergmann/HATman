@@ -111,6 +111,10 @@ def hatmanMain():
 	address = addresses.pop(0);
 	host, port = address;
 
+	print("DEBUG   DEBUG   DEBUG   DEBUG")
+	print(address);
+	print(host);
+	print(port);
 
 	factory = HatmanClientFactory(command)
 	reactor.connectTCP(host, port, factory)

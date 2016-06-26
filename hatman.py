@@ -2,9 +2,7 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
-import argparse
 import os
-import random
 import sys
 import threading
 import time
@@ -20,42 +18,24 @@ from layers.pacman import PacmanLayer
 from layers.ghost import GhostLayer
 
 import client
-from client import HatmanClientProtocol, HatmanClientFactory
+from client import HatmanClientProtocol
+from client import HatmanClientFactory
 
+import parse
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
-def parseArgs():
-	random.seed;
-	user = ""
-	for i in range (0, 10):
-		user += random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
-
-	print(user)
 
 
-	parser = argparse.ArgumentParser(description='Parse_args_testing')
-
-
-	parser.add_argument('-u', '--user', type=str, required=False, default=user, help='Your username.')
-	parser.add_argument('-c', '--character', type=str, required=False, default="pacman", choices=["pac", "r", "o", "b", "p"], help='The character you want to play: pac(man), r(ed ghost), o(range ghost), b(lue ghost), p(ink ghost)')
-
-
-	args = parser.parse_args()
-
-
-	print("Your user name is: " + args.user)
-	print("You are playing: " + args.character)
-
-
-
-#
 # Game Scene --> Contains all needed Layers [not yet, but ...]
-#
 class GameScene(Scene):
 	def __init__(self):
 		super(GameScene, self).__init__()  # MaKno says: In Python 3, "super.__init__()" us sufficient.
+
+		self.user = args.user;
+		self.character = args.character;
+
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
@@ -165,7 +145,7 @@ class GameScene(Scene):
 		self.checkBorders()
 		self.pacmanLayer.update(director)
 
-		factory.connectedProtocol.sendRequest("xmove,sheldor,1,1,1x")
+		#factory.connectedProtocol.sendRequest("xmove,sheldor,1,1,1x")
 
 
 
@@ -183,15 +163,17 @@ class networkThread(threading.Thread):
 
 if __name__ == "__main__":
 
+	args = parse.parseArgs();
+
+
 	print("\n------------------------------------------------------------------\n");
 	print("INFO HatmanClient started.");
 
 
 	#command = "\x02move,user,gameid,character,positionx,positiony\x03"
 	command = "\x02move,sheld0r,1,pacman,123,321\x03"
-	addresses = client.parse_args();
-	address = addresses.pop(0);
-	host, port = address;
+	host = args.host;
+	port = args.port;
 
 
 	factory = HatmanClientFactory(command)

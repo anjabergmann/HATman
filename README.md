@@ -19,7 +19,11 @@ _Project Work 1 - Gamedevelopment with Python_
 
 
 # Setup:
-TBA
+* **not finished yet**
+* Start Hatman Server
+	- `python3 server.py [--port <free Port>]`
+* Start Hatman Client respectively GUI
+	- `python3 hatman.py --port <port on which the server is listening> [--user <username> --character <character>]`
 
 
 #Probably useful links:
@@ -28,34 +32,31 @@ TBA
 * Cocos2d
 	- [http://cocos2d.org/](http://cocos2d.org/)
 	- [http://python.cocos2d.org/](http://python.cocos2d.org/)
-* Sockets and multiplayer in python
-	- [http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python](http://stackoverflow.com/questions/25261552/multi-multiplayer-server-sockets-in-python)
-	- [http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python](http://stackoverflow.com/questions/30227722/creating-a-multiplayer-game-in-python)
-	- [https://docs.python.org/2/howto/sockets.html](https://docs.python.org/2/howto/sockets.html)
-	- [https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/](https://forum.ubuntuusers.de/topic/python3-tcp-und-udp-fuer-multiplayerspiel/)
-	- [http://www.binarytides.com/python-socket-programming-tutorial/](http://www.binarytides.com/python-socket-programming-tutorial/)
+* How to args parsen
+	- [https://mkaz.tech/python-argparse-cookbook.html](https://mkaz.tech/python-argparse-cookbook.html)
 * **Twisted**
 	- [https://twistedmatrix.com/trac/](https://twistedmatrix.com/trac/)
 	- [https://github.com/twisted/twisted](https://github.com/twisted/twisted)
-	- [https://en.wikipedia.org/wiki/Twisted_(software)](https://en.wikipedia.org/wiki/Twisted_(software))
 	- [https://twistedmatrix.com/documents/current/api](https://twistedmatrix.com/documents/current/api)
 	- [http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/](http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/)
+	- [https://www.youtube.com/watch?v=GuNwewBU_Hw](https://www.youtube.com/watch?v=GuNwewBU_Hw)
 
 #To-Do
-* list might not be complete
-* Pacman
-* Ghosts (similar to Pacman)
-* Labyrinth
-* Pacman-can-hunt-ghosts-mode (after pacman ate one of these bigger dots)
+* _(list might not be complete)_
+* Make only the played character playable by key presses
+* Multiplayer: Make other characters playable by other player
+* Send command from gui to server automatically
+* Do something with received commands from server (GUI)
+* Lifes
 * Collision detection between Pacman and Ghosts
 * Collision detection between Pacman/Ghosts and Labyrinth walls 
-* Create labyrinth randomly
-* Multiplayer
-* Start-Screen
 * Score
+* Pacman-can-hunt-ghosts-mode (after pacman ate one of these bigger dots)
+* Create labyrinth randomly
+* Start-Screen
 * Highscore-Screen
 * Database
-* Pacman-lifes
+* Login
 * Hatman
 	* --> Special version that overall works similar to the normal version but with fancier design: 
 		* Pacman wears hat
@@ -69,8 +70,9 @@ TBA
 * All the graphical stuff (draw sprites and a fancy designed labyrinth [only peaces so that they can be used 
 		to make a random created labyrinth] and so on)
 * Music (for Hatman-Version perhaps: Moonlight Sonata)
-* Mobile ...?
-* Login
+* Make labyrinth random
+
+
 
 #Q>A
 * Do ghosts work togehter and have a common score? --> Yes.
