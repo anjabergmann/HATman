@@ -1,9 +1,13 @@
-from __future__ import division, print_function, unicode_literals
+from __future__ import division
+from __future__ import print_function
+from __future__ import unicode_literals
 
+import argparse
 import os
+import random
 import sys
-import time
 import threading
+import time
 
 from pyglet.gl import *
 from pyglet.window import key
@@ -20,6 +24,31 @@ from client import HatmanClientProtocol, HatmanClientFactory
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+
+def parseArgs():
+	random.seed;
+	user = ""
+	for i in range (0, 10):
+		user += random.choice("abcdefghijklmnopqrstuvwxyz0123456789")
+
+	print(user)
+
+
+	parser = argparse.ArgumentParser(description='Parse_args_testing')
+
+
+	parser.add_argument('-u', '--user', type=str, required=False, default=user, help='Your username.')
+	parser.add_argument('-c', '--character', type=str, required=False, default="pacman", choices=["pac", "r", "o", "b", "p"], help='The character you want to play: pac(man), r(ed ghost), o(range ghost), b(lue ghost), p(ink ghost)')
+
+
+	args = parser.parse_args()
+
+
+	print("Your user name is: " + args.user)
+	print("You are playing: " + args.character)
+
+
 
 #
 # Game Scene --> Contains all needed Layers [not yet, but ...]
@@ -195,9 +224,6 @@ if __name__ == "__main__":
 	thread.start();
 
 
-	# addresses = client.parse_args();
-	# address = addresses.pop(0);
-	# test = client.HatmanProxy(*address);
 
 
 	director.init(resizable=False, caption="HATman")
