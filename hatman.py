@@ -36,6 +36,8 @@ class GameScene(Scene):
 		self.user = args.user;
 		self.character = args.character;
 
+		self.touchcount = 0
+
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
@@ -157,7 +159,8 @@ class GameScene(Scene):
 
 		if (len(self.labLayer.nodeSprites)<1):
 			print("pacman wins")
-			#exit game
+			#TODO: display some message
+			exit() # or start new level
 
 	# _________________________________________________________________________________________
 	#
@@ -168,12 +171,21 @@ class GameScene(Scene):
 		if (self.myLayer == self.pacmanLayer):
 			self.eatDots()
 
-		#if you play as a ghost and touch pacman
-		elif(self.myLayer.ghostRect.center == self.pacmanLayer.pacmanRect.center):
-			print("ghost wins")
-			#pacman.lives-1 ?
-			#if pacman.lives = 0
-				#exit game
+		#if any ghost touches pacman
+		for ghost in self.ghostLayers:
+			if(ghost.ghostRect.center == self.pacmanLayer.pacmanRect.center):
+			#every touch loses pacman one life
+				self.touchcount += 1
+				if (self.touchcount > 20):
+					#don't take a life for every frame they touch (entprellen)
+					self.pacmanLayer.lives = self.pacmanLayer.lives-1
+					#reset touchcount
+					self.touchcount = 0
+					#if no lives are dead --> pacman dies
+					if self.pacmanLayer.lives == 0:
+						#TODO: display some message here
+						print("ghosts win")
+						exit()
 
 		self.setDirection()
 		self.checkBorders()

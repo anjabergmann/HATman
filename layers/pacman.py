@@ -12,6 +12,9 @@ class PacmanLayer(Layer):
     def __init__(self):
         super(PacmanLayer, self).__init__()
 
+        #set three lives
+        self.lives = 3
+
         # create and add Sprites for pacman
         self.pacman1 = Sprite(pyglet.resource.image("images/pacman1.png"))
         self.pacman2 = Sprite(pyglet.resource.image("images/pacman2.png"))
