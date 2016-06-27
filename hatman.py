@@ -147,12 +147,17 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
+	# If all dots are eaten Pacman wins
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
 			if self.myRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
 				self.myLayer.updateScore(1)
+
+		if (len(self.labLayer.nodeSprites)<1):
+			print("pacman wins")
+			#exit game
 
 	# _________________________________________________________________________________________
 	#
@@ -162,6 +167,14 @@ class GameScene(Scene):
 	def update(self, director):
 		if (self.myLayer == self.pacmanLayer):
 			self.eatDots()
+
+		#if you play as a ghost and touch pacman
+		elif(self.myLayer.ghostRect.center == self.pacmanLayer.pacmanRect.center):
+			print("ghost wins")
+			#pacman.lives-1 ?
+			#if pacman.lives = 0
+				#exit game
+
 		self.setDirection()
 		self.checkBorders()
 		self.myLayer.update(director)
