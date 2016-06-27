@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import time
+import datetime
 
 from pyglet.gl import *
 from pyglet.window import key
@@ -33,6 +34,9 @@ class GameScene(Scene):
 	def __init__(self):
 		super().__init__() 
 
+		self.starttime = datetime.datetime.now();
+		self.now = datetime.datetime.now();
+		self.duration = self.now - self.starttime;
 
 		self.user = args.user;
 		self.character = args.character;
@@ -60,6 +64,7 @@ class GameScene(Scene):
 
 		self.myLayer = self.pacmanLayer;
 		self.myRect = self.pacmanLayer.pacmanRect;
+
 
 		if(args.character == "p"):
 			self.myLayer = self.ghostLayerPink;
@@ -91,7 +96,7 @@ class GameScene(Scene):
 
 	# Change the direction to pressedKey if it is possible
 	# (= if Character reaches a node with a neighbor-node in the pressedKey-direction)
-
+	# return true = direction changed; false = direction didn't change
 	def setDirection(self):
 		self.pressedKey = self.myLayer.pressedKey
 		if self.pressedKey != self.direction:
@@ -102,21 +107,29 @@ class GameScene(Scene):
 							self.pressedKey == key.UP and self.direction == key.DOWN):
 				self.direction = self.pressedKey
 				self.myLayer.direction = self.direction
+				return True;
 			else:
 				for cn in self.crossNodes:
 					if self.myRect.center == (cn.x, cn.y):
 						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
 						elif self.pressedKey == key.LEFT and cn.nodeLeft != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
 						elif self.pressedKey == key.UP and cn.nodeUp != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
 						elif self.pressedKey == key.DOWN and cn.nodeDown != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
+		return False;
+
+
 
 	# _________________________________________________________________________________________
 	#
@@ -159,6 +172,9 @@ class GameScene(Scene):
 
 
 	def updateChars(self, info):
+		self.now = datetime.datetime.now();
+		self.duration = self.now - self.starttime;
+		print(self.duration);
 		infolist = info.decode("utf-8").split(",");
 		if (infolist[0] == "move"):
 			char = infolist[3];
@@ -185,6 +201,8 @@ class GameScene(Scene):
 				self.ghostLayerBlue.ghostRect.position = posx, posy;
 				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.ghostRect.center;
 				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.ghostRect.center;
+		elif(infolist[0] == "changeDirection"):
+			print("{} changed direction".format(char));
 
 	# _________________________________________________________________________________________
 	#
@@ -193,19 +211,25 @@ class GameScene(Scene):
 
 	def update(self, director):
 		self.eatDots()
-		self.setDirection()
-		self.checkBorders()
-		self.myLayer.update(director)
+		if(self.setDirection()):
+			self.starttime = datetime.datetime.now();
+			requestString="\x02changeDirection," + args.user + ",1," + args.character + "," + str(self.myLayer.direction) + "\x03";
+			factory.connectedProtocol.sendRequest(requestString);
+		self.checkBorders() #TODO: Check borders for every char
+		self.pacmanLayer.update(director)
+		for gL in self.ghostLayers:
+			gL.update(director);
 
 
-		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
-		requestString ="\x02move,";
-		requestString += args.user + ",1,";
-		requestString += args.character + ",";
-		requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
+		# #command = "\x02move,user,gameid,character,positionx,positiony\x03"
+		# requestString ="\x02move,";
+		# requestString += args.user + ",1,";
+		# requestString += args.character + ",";
+		# requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
 
-		#print(requestString);
-		factory.connectedProtocol.sendRequest(requestString);
+		# #print(requestString);
+
+		# factory.connectedProtocol.sendRequest(requestString);
 
 
 
@@ -270,7 +294,6 @@ if __name__ == "__main__":
 			d = factory.deferred;
 			d.addCallback(game.updateChars);
 			d.addCallback(doCallback);
-
 		return d.addCallback(doCallback);
 
 
