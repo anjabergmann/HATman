@@ -150,7 +150,7 @@ class GameScene(Scene):
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
-			if self.myRect.center == (nodeSprite.x, nodeSprite.y):
+			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
 				self.myLayer.updateScore(1)
@@ -173,15 +173,15 @@ class GameScene(Scene):
 				self.ghostLayerOrange.ghostRect.position = posx, posy;
 				self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.ghostRect.center;
 				self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.ghostRect.center;
-			elif (char == "p" and self.myLayer != self.ghostLayerOrange):
+			elif (char == "p" and self.myLayer != self.ghostLayerPink):
 				self.ghostLayerPink.ghostRect.position = posx, posy;
 				self.ghostLayerPink.ghost1.position = self.ghostLayerPink.ghostRect.center;
 				self.ghostLayerPink.ghost2.position = self.ghostLayerPink.ghostRect.center;
-			elif (char == "r" and self.myLayer != self.ghostLayerOrange):
+			elif (char == "r" and self.myLayer != self.ghostLayerRed):
 				self.ghostLayerRed.ghostRect.position = posx, posy;
 				self.ghostLayerRed.ghost1.position = self.ghostLayerRed.ghostRect.center;
 				self.ghostLayerRed.ghost2.position = self.ghostLayerRed.ghostRect.center;
-			elif (char == "b" and self.myLayer != self.ghostLayerOrange):
+			elif (char == "b" and self.myLayer != self.ghostLayerBlue):
 				self.ghostLayerBlue.ghostRect.position = posx, posy;
 				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.ghostRect.center;
 				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.ghostRect.center;
