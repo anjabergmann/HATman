@@ -164,7 +164,7 @@ class GameScene(Scene):
 			char = infolist[3];
 			posx = float(infolist[4]);
 			posy = float(infolist[5]);
-			#print("update", char);
+			print("update", char);
 			if(char == "pac" and self.myLayer != self.pacmanLayer):
 				self.pacmanLayer.pacmanRect.position = posx, posy;
 				self.pacmanLayer.pacman1.position = self.pacmanLayer.pacmanRect.center;
