@@ -1,3 +1,4 @@
+from random import randint
 from cocos.layer import Layer
 from cocos.rect import Rect
 from cocos.sprite import Sprite
@@ -54,15 +55,29 @@ class LabLayer(Layer):
         # Needed for navigation
         self.crossNodes = []
 
+        for i in range (0, 20):
+        	suitable = False
+        	while (suitable == False):
+        		x = randint(0,579)
+        		tmpNode = self.potentialNodes[x]
+        		if (i==0):
+        			suitable = True
+        		else:
+        			for node in self.crossNodes:
+        				if (tmpNode.x == node.x or tmpNode.y == node.y):
+        					suitable = True
+
+        	self.crossNodes.append(self.potentialNodes[x])
+
         # TODO Choose some Nodes that are crossNodes (random?)
         # For testing purposes only four nodes in the corners are crossNodes
-        self.crossNodes.append(self.potentialNodes[0])  # links unten
-        self.crossNodes.append(self.potentialNodes[28])  # rechts unten
-        self.crossNodes.append(self.potentialNodes[551])  # links oben
-        self.crossNodes.append(self.potentialNodes[579])  # rechts oben
+        # self.crossNodes.append(self.potentialNodes[0])  # links unten
+        # self.crossNodes.append(self.potentialNodes[28])  # rechts unten
+        # self.crossNodes.append(self.potentialNodes[551])  # links oben
+        # self.crossNodes.append(self.potentialNodes[579])  # rechts oben
 
 
-        #connecting adjacent nodes by reference
+        #connecting adjacent crossNodes by reference
         for currNode in self.crossNodes:
         	for otherNode in self.crossNodes:
         		#same x coordinates -> either above or under
@@ -88,18 +103,9 @@ class LabLayer(Layer):
         				otherNode.nodeRight = currNode
 
         		else:
-        			#no connection
-        			pass
+        			pass #no connection
 
 
-        # self.crossNodes[0].nodeUp = self.crossNodes[2]
-        # self.crossNodes[0].nodeRight = self.crossNodes[1]
-        # self.crossNodes[1].nodeUp = self.crossNodes[3]
-        # self.crossNodes[1].nodeLeft = self.crossNodes[0]
-        # self.crossNodes[2].nodeRight = self.crossNodes[3]
-        # self.crossNodes[2].nodeDown = self.crossNodes[0]
-        # self.crossNodes[3].nodeLeft = self.crossNodes[2]
-        # self.crossNodes[3].nodeDown = self.crossNodes[1]
 
         # __________________________________________________________________________________________
         #

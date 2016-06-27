@@ -185,7 +185,7 @@ class GameScene(Scene):
 					if self.pacmanLayer.lives == 0:
 						#TODO: display some message here
 						print("ghosts win")
-						exit()
+						#exit()
 
 		self.setDirection()
 		self.checkBorders()
