@@ -62,8 +62,6 @@ class LabLayer(Layer):
         self.crossNodes.append(self.potentialNodes[579])  # rechts oben
 
 
-
-        #FALSCH
         #connecting adjacent nodes by reference
         for currNode in self.crossNodes:
         	for otherNode in self.crossNodes:
@@ -73,7 +71,8 @@ class LabLayer(Layer):
         			if (currNode.y < otherNode.y):
         				currNode.nodeUp = otherNode
         				otherNode.nodeDown = currNode
-        			else: #curr above other
+        			#curr above other
+        			elif (currNode.y > otherNode.y):
         				currNode.nodeDown = otherNode
         				otherNode.nodeUp = currNode
 
@@ -83,7 +82,8 @@ class LabLayer(Layer):
         			if (currNode.x < otherNode.x):
         				currNode.nodeRight = otherNode
         				otherNode.nodeLeft = currNode
-        			else: #current right of other
+					#current right of other
+        			elif (currNode.x > otherNode.x):
         				currNode.nodeLeft = otherNode
         				otherNode.nodeRight = currNode
 
