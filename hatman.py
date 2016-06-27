@@ -153,7 +153,7 @@ class GameScene(Scene):
 			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
-				self.myLayer.updateScore(1)
+				self.pacmanLayer.updateScore(1)
 
 
 
@@ -192,8 +192,7 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	def update(self, director):
-		if (self.myLayer == self.pacmanLayer): # not the best way ... refactor if time
-			self.eatDots()
+		self.eatDots()
 		self.setDirection()
 		self.checkBorders()
 		self.myLayer.update(director)
