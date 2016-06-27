@@ -61,14 +61,45 @@ class LabLayer(Layer):
         self.crossNodes.append(self.potentialNodes[551])  # links oben
         self.crossNodes.append(self.potentialNodes[579])  # rechts oben
 
-        self.crossNodes[0].nodeUp = self.crossNodes[2]
-        self.crossNodes[0].nodeRight = self.crossNodes[1]
-        self.crossNodes[1].nodeUp = self.crossNodes[3]
-        self.crossNodes[1].nodeLeft = self.crossNodes[0]
-        self.crossNodes[2].nodeRight = self.crossNodes[3]
-        self.crossNodes[2].nodeDown = self.crossNodes[0]
-        self.crossNodes[3].nodeLeft = self.crossNodes[2]
-        self.crossNodes[3].nodeDown = self.crossNodes[1]
+
+
+        #FALSCH
+        #connecting adjacent nodes by reference
+        for currNode in self.crossNodes:
+        	for otherNode in self.crossNodes:
+        		#same x coordinates -> either above or under
+        		if (currNode.x == otherNode.x):
+        			#current under other
+        			if (currNode.y < otherNode.y):
+        				currNode.nodeUp = otherNode
+        				otherNode.nodeDown = currNode
+        			else: #curr above other
+        				currNode.nodeDown = otherNode
+        				otherNode.nodeUp = currNode
+
+        		#same y coordinates -> left or right
+        		elif (currNode.y == otherNode.y):
+        			#current left of other
+        			if (currNode.x < otherNode.x):
+        				currNode.nodeRight = otherNode
+        				otherNode.nodeLeft = currNode
+        			else: #current right of other
+        				currNode.nodeLeft = otherNode
+        				otherNode.nodeRight = currNode
+
+        		else:
+        			#no connection
+        			pass
+
+
+        # self.crossNodes[0].nodeUp = self.crossNodes[2]
+        # self.crossNodes[0].nodeRight = self.crossNodes[1]
+        # self.crossNodes[1].nodeUp = self.crossNodes[3]
+        # self.crossNodes[1].nodeLeft = self.crossNodes[0]
+        # self.crossNodes[2].nodeRight = self.crossNodes[3]
+        # self.crossNodes[2].nodeDown = self.crossNodes[0]
+        # self.crossNodes[3].nodeLeft = self.crossNodes[2]
+        # self.crossNodes[3].nodeDown = self.crossNodes[1]
 
         # __________________________________________________________________________________________
         #
@@ -83,12 +114,18 @@ class LabLayer(Layer):
         # Add crossNodes and connections between two neighboured crossNodes to wayNodes[]
         for cNode in self.crossNodes:
             self.wayNodes.append(cNode)
+
+            #connect nodes horizontally
             if cNode.nodeRight != None:
                 for pNode in self.potentialNodes:
+                	#all possible nodes on the same height, to the right of cNode, before its next neighbour
                     if pNode.y == cNode.y and pNode.x > cNode.x and pNode.x < cNode.nodeRight.x:
                         self.wayNodes.append(pNode)
+
+            #connect nodes vertically
             if cNode.nodeDown != None:
                 for pNode in self.potentialNodes:
+                	#all possible nodes on the same vertical line, from top to bottom
                     if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
                         self.wayNodes.append(pNode)
 
