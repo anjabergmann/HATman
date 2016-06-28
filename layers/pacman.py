@@ -45,5 +45,6 @@ class PacmanLayer(CharLayer):
 		# Update position of pacman in the same way as for the ghosts
 		super().update(director);
 
-		# Rotate sprite appropriate to the direction
-		self.pacman1.rotation = self.rotations[(self.direction % 4)];
+		if (self.direction != None):
+			# Rotate sprite appropriate to the direction
+			self.pacman1.rotation = self.rotations[(self.direction % 4)];
