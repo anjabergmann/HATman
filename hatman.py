@@ -6,6 +6,7 @@ import os
 import sys
 import threading
 import time
+import datetime
 
 from pyglet.gl import *
 from pyglet.window import key
@@ -26,61 +27,69 @@ import parse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
-
-
 # Contains all needed Layers
 class GameScene(Scene):
 	def __init__(self):
 		super().__init__() 
 
-		self.user = args.user;
-		self.character = args.character;
+		# variables for measuring time (for debbuging purposes)
+		self.starttime = datetime.datetime.now();
+		self.now = datetime.datetime.now();
+		self.duration = self.now - self.starttime;
+
+
+		self.user = args.user;				# username
+		self.character = args.character;	# character the user is playing
+
+
+		self.pressedKey = None
+		self.direction = key.RIGHT
 
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
 		self.pacmanLayer = PacmanLayer()
-		self.pacmanLayer.pacmanRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
 		self.ghostLayerBlue = GhostLayer("blue")
 		self.ghostLayerRed = GhostLayer("red")
 		self.ghostLayerOrange = GhostLayer("orange")
 		self.ghostLayerPink = GhostLayer("pink")
-		self.ghostLayers = []
-		self.ghostLayers.append(self.ghostLayerBlue)
-		self.ghostLayers.append(self.ghostLayerRed)
-		self.ghostLayers.append(self.ghostLayerOrange)
-		self.ghostLayers.append(self.ghostLayerPink)
 
+
+		self.charLayers = []	# list with all five character layers
+		self.others = []		# list with char layers that are not played by this user
+
+		self.charLayers.append(self.pacmanLayer)
+		self.charLayers.append(self.ghostLayerBlue)
+		self.charLayers.append(self.ghostLayerOrange)
+		self.charLayers.append(self.ghostLayerPink)
+		self.charLayers.append(self.ghostLayerRed)
+
+
+		# add layers to the scene
 		self.add(self.labLayer)
-		self.add(self.pacmanLayer)
-		for ghostLayer in self.ghostLayers:
-			ghostLayer.ghostRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
-			self.add(ghostLayer)
+		for char in self.charLayers:
+			char.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
+			self.add(char);
 
+
+		# set myLayer to the layer of the users character
 		self.myLayer = self.pacmanLayer;
-		self.myRect = self.pacmanLayer.pacmanRect;
 
 		if(args.character == "p"):
 			self.myLayer = self.ghostLayerPink;
-			self.myRect = self.ghostLayerPink.ghostRect;
 		elif(args.character == "b"):
 			self.myLayer = self.ghostLayerBlue;
-			self.myRect = self.ghostLayerBlue.ghostRect;
 		elif(args.character == "o"):
 			self.myLayer = self.ghostLayerOrange;
-			self.myRect = self.ghostLayerOrange.ghostRect;
 		elif(args.character == "r"):
 			self.myLayer = self.ghostLayerRed;
-			self.myRect = self.ghostLayerRed.ghostRect;
 
 
 		# add schedule method
 		self.schedule(self.update)
 
-		self.pressedKey = None
-		self.direction = key.RIGHT
 
-		self.crossNodes = self.labLayer.crossNodes
+	#---------------------- init end ---------------------------------
 
 
 	# _________________________________________________________________________________________
@@ -90,7 +99,7 @@ class GameScene(Scene):
 
 	# Change the direction to pressedKey if it is possible
 	# (= if Character reaches a node with a neighbor-node in the pressedKey-direction)
-
+	# return true = direction changed; false = direction didn't change
 	def setDirection(self):
 		self.pressedKey = self.myLayer.pressedKey
 		if self.pressedKey != self.direction:
@@ -101,45 +110,54 @@ class GameScene(Scene):
 							self.pressedKey == key.UP and self.direction == key.DOWN):
 				self.direction = self.pressedKey
 				self.myLayer.direction = self.direction
+				return True;
 			else:
-				for cn in self.crossNodes:
-					if self.myRect.center == (cn.x, cn.y):
+				for cn in self.labLayer.crossNodes:
+					if self.myLayer.charRect.center == (cn.x, cn.y):
 						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
 						elif self.pressedKey == key.LEFT and cn.nodeLeft != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
 						elif self.pressedKey == key.UP and cn.nodeUp != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
 						elif self.pressedKey == key.DOWN and cn.nodeDown != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
+							return True;
+		return False;
+
+
 
 	# _________________________________________________________________________________________
 	#
 	# Stand still
 	# _________________________________________________________________________________________
 
-	# Check if pacman reaches border or blind end
-	# = if pacman reaches a node where neither "direction" nor "pressedKey" is a possible option
+	# Check if char reaches border or blind end
+	# = if char reaches a node where neither "direction" nor "pressedKey" is a possible option
 	def checkBorders(self):
 		for cNode in self.labLayer.crossNodes:
-			# only check if pacman reaches a crossNode (blind ends HAVE to be crossNodes)
-			if self.myRect.center == (cNode.x, cNode.y):
-				if self.myLayer.direction == key.RIGHT:
-					if cNode.nodeRight == None:
-						self.myLayer.direction = None
-				elif self.myLayer.direction == key.LEFT:
-					if cNode.nodeLeft == None:
-						self.myLayer.direction = None
-				elif self.myLayer.direction == key.UP:
-					if cNode.nodeUp == None:
-						self.myLayer.direction = None
-				elif self.myLayer.direction == key.DOWN:
-					if cNode.nodeDown == None:
-						self.myLayer.direction = None
+			# only check if char reaches a crossNode (blind ends HAVE to be crossNodes)
+			for char in self.charLayers:
+				if (char.charRect.center == (cNode.x, cNode.y)):
+					if char.direction == key.RIGHT:
+						if cNode.nodeRight == None:
+							char.direction = None
+					elif char.direction == key.LEFT:
+						if cNode.nodeLeft == None:
+							char.direction = None
+					elif char.direction == key.UP:
+						if cNode.nodeUp == None:
+							char.direction = None
+					elif char.direction == key.DOWN:
+						if cNode.nodeDown == None:
+							char.direction = None
 
 	# _________________________________________________________________________________________
 	#
@@ -149,10 +167,57 @@ class GameScene(Scene):
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
-			if self.myRect.center == (nodeSprite.x, nodeSprite.y):
+			if self.pacmanLayer.charRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
-				self.myLayer.updateScore(1)
+				self.pacmanLayer.updateScore(1)
+
+
+
+
+	def updateChars(self, info):
+		self.now = datetime.datetime.now();
+		self.duration = self.now - self.starttime;
+		print(self.duration);
+		infolist = info.decode("utf-8").split(",");
+		if (infolist[0] == "move"):
+			char = infolist[3];
+			posx = float(infolist[4]);
+			posy = float(infolist[5]);
+			key = int(infolist[6]);
+			print("update", char);
+			if(char == "pac" and self.myLayer != self.pacmanLayer):
+				self.pacmanLayer.charRect.position = posx, posy;
+				self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
+				self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
+			elif (char == "o" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerOrange.charRect.position = posx, posy;
+				self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
+				self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
+			elif (char == "p" and self.myLayer != self.ghostLayerPink):
+				self.ghostLayerPink.charRect.position = posx, posy;
+				self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
+				self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
+			elif (char == "r" and self.myLayer != self.ghostLayerRed):
+				self.ghostLayerRed.charRect.position = posx, posy;
+				self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
+				self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
+			elif (char == "b" and self.myLayer != self.ghostLayerBlue):
+				self.ghostLayerBlue.charRect.position = posx, posy;
+				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
+				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
+		elif(infolist[0] == "changeDirection"):
+			print("{} changed direction".format(char));
+			if(char == "pac" and self.myLayer != self.pacmanLayer):
+				self.pacmanLayer.direction = key;
+			elif(char == "o" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerOrange.direction = key;
+			elif(char == "p" and self.myLayer != self.ghostLayerPink):
+				self.ghostLayerPink.direction = key;
+			elif(char == "r" and self.myLayer != self.ghostLayerRed):
+				self.ghostLayerRed.direction = key;
+			elif(char == "b" and self.myLayer != self.ghostLayerBlue):
+				self.ghostLayerBlue.direction = key;
 
 	# _________________________________________________________________________________________
 	#
@@ -160,20 +225,25 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	def update(self, director):
-		if (self.myLayer == self.pacmanLayer):
-			self.eatDots()
-		self.setDirection()
-		self.checkBorders()
-		self.myLayer.update(director)
+		self.eatDots()
+		if(self.setDirection()):
+			self.starttime = datetime.datetime.now();
+			requestString="\x02changeDirection," + args.user + ",1," + args.character + "," + str(self.myLayer.direction) + "\x03";
+			factory.connectedProtocol.sendRequest(requestString);
+		self.checkBorders() #TODO: Check borders for every char
+		for char in self.charLayers:
+			char.update(director);
 
-		requestString ="\x02move,";
-		requestString += args.user + ",";
-		requestString += args.character + ",";
-		requestString += "1,1,1\x03";
 
-		#print(requestString);
+		# #command = "\x02move,user,gameid,character,positionx,positiony\x03"
+		# requestString ="\x02move,";
+		# requestString += args.user + ",1,";
+		# requestString += args.character + ",";
+		# requestString += str(self.myLayer.charRect.x) + "," + str(self.myRect.y) + "\x03";
 
-		factory.connectedProtocol.sendRequest(requestString);
+		# #print(requestString);
+
+		# factory.connectedProtocol.sendRequest(requestString);
 
 
 
@@ -196,15 +266,16 @@ class networkThread(threading.Thread):
 if __name__ == "__main__":
 
 	args = parse.parseArgs();
+	director.init(resizable=False, caption="HATman")
+	# director.window.set_fullscreen(True)
+	game = GameScene();
 
 
 	print("\n------------------------------------------------------------------\n");
 	print("INFO HatmanClient started.");
 
 
-	#command = "\x02move,user,gameid,character,positionx,positiony\x03"
 	init = "\x02hi,Hello Server!\x03"
-	command = "\x02move,sheld0r,1,pacman,123,321\x03"
 	host = args.host;
 	port = args.port;
 
@@ -223,15 +294,25 @@ if __name__ == "__main__":
 
 		def notfail(data):
 			print("CALLBACK Initial sending succeded.");
-			factory.connectedProtocol.sendRequest("xMiau,Miox");
+			#factory.connectedProtocol.sendRequest("xMiau,Miox");
 		def fail(err):
 			print("ERRBACK Initial sending failed", file=sys.stderr);
 			print(err);
 			return init;
 		return d.addCallbacks(notfail, fail);
 
+	def doSomething():
+
+		def doCallback(data):
+			#print("CALLBACKCALLBACK");
+			d = factory.deferred;
+			d.addCallback(game.updateChars);
+			d.addCallback(doCallback);
+		return d.addCallback(doCallback);
+
 
 	tryToSend(init);
+	doSomething();
 
 
 
@@ -241,6 +322,5 @@ if __name__ == "__main__":
 
 
 
-	director.init(resizable=False, caption="HATman")
-	# director.window.set_fullscreen(True)
-	director.run(GameScene())
+
+	director.run(game)
