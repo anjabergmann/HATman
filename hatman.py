@@ -146,18 +146,18 @@ class GameScene(Scene):
 			# only check if char reaches a crossNode (blind ends HAVE to be crossNodes)
 			for char in self.charLayers:
 				if (char.charRect.center == (cNode.x, cNode.y)):
-					if self.myLayer.direction == key.RIGHT:
+					if char.direction == key.RIGHT:
 						if cNode.nodeRight == None:
-							self.char.direction = None
-					elif self.myLayer.direction == key.LEFT:
+							char.direction = None
+					elif char.direction == key.LEFT:
 						if cNode.nodeLeft == None:
-							self.myLayer.direction = None
-					elif self.myLayer.direction == key.UP:
+							char.direction = None
+					elif char.direction == key.UP:
 						if cNode.nodeUp == None:
-							self.myLayer.direction = None
-					elif self.myLayer.direction == key.DOWN:
+							char.direction = None
+					elif char.direction == key.DOWN:
 						if cNode.nodeDown == None:
-							self.myLayer.direction = None
+							char.direction = None
 
 	# _________________________________________________________________________________________
 	#
