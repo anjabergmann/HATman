@@ -28,7 +28,7 @@ class PacmanLayer(CharLayer):
 		# Animate pacman
 		self.pacman2.do(Repeat(Blink(1, 0.3)))
 
-		self.rotations = [90, 180, 270, None]
+		self.rotations = [90, 180, 270, 0]
 
 		# print("INFO pacman.top ", self.charRect.top)
 		# print("INFO pacman.bottom ", self.charRect.bottom)
