@@ -45,12 +45,14 @@ class GameScene(Scene):
 		# add Layers to scene
 		self.labLayer = LabLayer()
 		self.pacmanLayer = PacmanLayer()
-		self.pacmanLayer.pacmanRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
+		self.pacmanLayer.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
 		self.ghostLayerBlue = GhostLayer("blue")
 		self.ghostLayerRed = GhostLayer("red")
 		self.ghostLayerOrange = GhostLayer("orange")
 		self.ghostLayerPink = GhostLayer("pink")
-		self.ghostLayers = []
+		self.charLayers = [] # list with all five character layer
+		self.charLayers.append(self.pacmanLayer)
+		self.ghostLayers = [] # list with all four ghost layers
 		self.ghostLayers.append(self.ghostLayerBlue)
 		self.ghostLayers.append(self.ghostLayerRed)
 		self.ghostLayers.append(self.ghostLayerOrange)
@@ -59,25 +61,26 @@ class GameScene(Scene):
 		self.add(self.labLayer)
 		self.add(self.pacmanLayer)
 		for ghostLayer in self.ghostLayers:
-			ghostLayer.ghostRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
+			ghostLayer.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
 			self.add(ghostLayer)
+			self.charLayers.append(ghostLayer);
 
 		self.myLayer = self.pacmanLayer;
-		self.myRect = self.pacmanLayer.pacmanRect;
+		self.myRect = self.pacmanLayer.charRect;
 
 
 		if(args.character == "p"):
 			self.myLayer = self.ghostLayerPink;
-			self.myRect = self.ghostLayerPink.ghostRect;
+			self.myRect = self.ghostLayerPink.charRect;
 		elif(args.character == "b"):
 			self.myLayer = self.ghostLayerBlue;
-			self.myRect = self.ghostLayerBlue.ghostRect;
+			self.myRect = self.ghostLayerBlue.charRect;
 		elif(args.character == "o"):
 			self.myLayer = self.ghostLayerOrange;
-			self.myRect = self.ghostLayerOrange.ghostRect;
+			self.myRect = self.ghostLayerOrange.charRect;
 		elif(args.character == "r"):
 			self.myLayer = self.ghostLayerRed;
-			self.myRect = self.ghostLayerRed.ghostRect;
+			self.myRect = self.ghostLayerRed.charRect;
 
 
 		# add schedule method
@@ -136,24 +139,25 @@ class GameScene(Scene):
 	# Stand still
 	# _________________________________________________________________________________________
 
-	# Check if pacman reaches border or blind end
-	# = if pacman reaches a node where neither "direction" nor "pressedKey" is a possible option
+	# Check if char reaches border or blind end
+	# = if char reaches a node where neither "direction" nor "pressedKey" is a possible option
 	def checkBorders(self):
 		for cNode in self.labLayer.crossNodes:
-			# only check if pacman reaches a crossNode (blind ends HAVE to be crossNodes)
-			if self.myRect.center == (cNode.x, cNode.y):
-				if self.myLayer.direction == key.RIGHT:
-					if cNode.nodeRight == None:
-						self.myLayer.direction = None
-				elif self.myLayer.direction == key.LEFT:
-					if cNode.nodeLeft == None:
-						self.myLayer.direction = None
-				elif self.myLayer.direction == key.UP:
-					if cNode.nodeUp == None:
-						self.myLayer.direction = None
-				elif self.myLayer.direction == key.DOWN:
-					if cNode.nodeDown == None:
-						self.myLayer.direction = None
+			# only check if char reaches a crossNode (blind ends HAVE to be crossNodes)
+			for char in self.charLayers:
+				if (char.charRect.center == (cNode.x, cNode.y)):
+					if self.myLayer.direction == key.RIGHT:
+						if cNode.nodeRight == None:
+							self.char.direction = None
+					elif self.myLayer.direction == key.LEFT:
+						if cNode.nodeLeft == None:
+							self.myLayer.direction = None
+					elif self.myLayer.direction == key.UP:
+						if cNode.nodeUp == None:
+							self.myLayer.direction = None
+					elif self.myLayer.direction == key.DOWN:
+						if cNode.nodeDown == None:
+							self.myLayer.direction = None
 
 	# _________________________________________________________________________________________
 	#
@@ -163,7 +167,7 @@ class GameScene(Scene):
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
-			if self.pacmanLayer.pacmanRect.center == (nodeSprite.x, nodeSprite.y):
+			if self.pacmanLayer.charRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
 				self.pacmanLayer.updateScore(1)
@@ -182,25 +186,25 @@ class GameScene(Scene):
 			posy = float(infolist[5]);
 			print("update", char);
 			if(char == "pac" and self.myLayer != self.pacmanLayer):
-				self.pacmanLayer.pacmanRect.position = posx, posy;
-				self.pacmanLayer.pacman1.position = self.pacmanLayer.pacmanRect.center;
-				self.pacmanLayer.pacman2.position = self.pacmanLayer.pacmanRect.center;
+				self.pacmanLayer.charRect.position = posx, posy;
+				self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
+				self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
 			elif (char == "o" and self.myLayer != self.ghostLayerOrange):
-				self.ghostLayerOrange.ghostRect.position = posx, posy;
-				self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.ghostRect.center;
-				self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.ghostRect.center;
+				self.ghostLayerOrange.charRect.position = posx, posy;
+				self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
+				self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
 			elif (char == "p" and self.myLayer != self.ghostLayerPink):
-				self.ghostLayerPink.ghostRect.position = posx, posy;
-				self.ghostLayerPink.ghost1.position = self.ghostLayerPink.ghostRect.center;
-				self.ghostLayerPink.ghost2.position = self.ghostLayerPink.ghostRect.center;
+				self.ghostLayerPink.charRect.position = posx, posy;
+				self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
+				self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
 			elif (char == "r" and self.myLayer != self.ghostLayerRed):
-				self.ghostLayerRed.ghostRect.position = posx, posy;
-				self.ghostLayerRed.ghost1.position = self.ghostLayerRed.ghostRect.center;
-				self.ghostLayerRed.ghost2.position = self.ghostLayerRed.ghostRect.center;
+				self.ghostLayerRed.charRect.position = posx, posy;
+				self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
+				self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
 			elif (char == "b" and self.myLayer != self.ghostLayerBlue):
-				self.ghostLayerBlue.ghostRect.position = posx, posy;
-				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.ghostRect.center;
-				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.ghostRect.center;
+				self.ghostLayerBlue.charRect.position = posx, posy;
+				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
+				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
 		elif(infolist[0] == "changeDirection"):
 			print("{} changed direction".format(char));
 

@@ -21,23 +21,23 @@ class PacmanLayer(Layer):
         self.pacmans.append(self.pacman1)
         self.pacmans.append(self.pacman2)
 
-        self.pacmanRect = Rect(40, 40, self.pacman1.width * 0.05, self.pacman1.height * 0.05)
-        self.pacmanRect.center = (40, 40);
+        self.charRect = Rect(40, 40, self.pacman1.width * 0.05, self.pacman1.height * 0.05)
+        self.charRect.center = (40, 40);
 
         for pacman in self.pacmans:
             self.add(pacman)
-            pacman.position = self.pacmanRect.center
+            pacman.position = self.charRect.center
             pacman.scale = 0.05
 
         # Animate pacman
         self.pacman2.do(Repeat(Blink(1, 0.3)))
 
-        # print("INFO pacman.top ", self.pacmanRect.top)
-        # print("INFO pacman.bottom ", self.pacmanRect.bottom)
-        # print("INFO pacman.left ", self.pacmanRect.left)
-        # print("INFO pacman.right ", self.pacmanRect.right)
-        # print("INFO pacmanRect.x ", self.pacmanRect.x)
-        # print("INFO pacmanRect.y ", self.pacmanRect.y)
+        # print("INFO pacman.top ", self.charRect.top)
+        # print("INFO pacman.bottom ", self.charRect.bottom)
+        # print("INFO pacman.left ", self.charRect.left)
+        # print("INFO pacman.right ", self.charRect.right)
+        # print("INFO pacmanRect.x ", self.charRect.x)
+        # print("INFO pacmanRect.y ", self.charRect.y)
 
 
         # Save pressed key
@@ -84,19 +84,19 @@ class PacmanLayer(Layer):
 
         if self.direction == key.RIGHT:
             self.pacman1.rotation = None
-            self.pacmanRect.x += 2
+            self.charRect.x += 2
         elif self.direction == key.LEFT:
             self.pacman1.rotation = 180
-            self.pacmanRect.x -= 2
+            self.charRect.x -= 2
         elif self.direction == key.UP:
             self.pacman1.rotation = 270
-            self.pacmanRect.y += 2
+            self.charRect.y += 2
         elif self.direction == key.DOWN:
             self.pacman1.rotation = 90
-            self.pacmanRect.y -= 2
+            self.charRect.y -= 2
 
         for pacman in self.pacmans:
-            pacman.position = self.pacmanRect.center
+            pacman.position = self.charRect.center
 
 
 # ___________________________________________________________________________________________________________

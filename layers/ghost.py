@@ -23,24 +23,24 @@ class GhostLayer(Layer):
         self.ghosts.append(self.ghost2)
         self.ghosts.append(self.eyes)
 
-        self.ghostRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
-        self.ghostRect.center = (40, 40);
+        self.charRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
+        self.charRect.center = (40, 40);
 
 
         for ghost in self.ghosts:
             self.add(ghost)
-            ghost.position = self.ghostRect.center
+            ghost.position = self.charRect.center
             ghost.scale = 0.12
 
         # Animate ghost
         self.ghost1.do(Repeat(Blink(1, 0.3)))
 
-        # print("INFO ghost.top ", self.ghostRect.top)
-        # print("INFO ghost.bottom ", self.ghostRect.bottom)
-        # print("INFO ghost.left ", self.ghostRect.left)
-        # print("INFO ghost.right ", self.ghostRect.right)
-        # print("INFO ghostRect.x ", self.ghostRect.x)
-        # print("INFO ghostRect.y ", self.ghostRect.y)
+        # print("INFO ghost.top ", self.charRect.top)
+        # print("INFO ghost.bottom ", self.charRect.bottom)
+        # print("INFO ghost.left ", self.charRect.left)
+        # print("INFO ghost.right ", self.charRect.right)
+        # print("INFO charRect.x ", self.charRect.x)
+        # print("INFO charRect.y ", self.charRect.y)
 
 
         # Save pressed key
@@ -86,14 +86,14 @@ class GhostLayer(Layer):
     def update(self, director):
         # TODO: "Rotate" Eyes
         if self.direction == key.RIGHT:
-            self.ghostRect.x += 2
+            self.charRect.x += 2
         elif self.direction == key.LEFT:
-            self.ghostRect.x -= 2
+            self.charRect.x -= 2
         elif self.direction == key.UP:
-            self.ghostRect.y += 2
+            self.charRect.y += 2
         elif self.direction == key.DOWN:
-            self.ghostRect.y -= 2
+            self.charRect.y -= 2
 
         for ghost in self.ghosts:
-            ghost.position = self.ghostRect.center
+            ghost.position = self.charRect.center
 
