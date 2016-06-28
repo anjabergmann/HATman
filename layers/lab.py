@@ -55,26 +55,36 @@ class LabLayer(Layer):
         # Needed for navigation
         self.crossNodes = []
 
-        for i in range (0, 20):
+        #add corners to crossnodes
+        self.crossNodes.append(self.potentialNodes[0])  # links unten
+        self.crossNodes.append(self.potentialNodes[28])  # rechts unten
+        self.crossNodes.append(self.potentialNodes[551])  # links oben
+        self.crossNodes.append(self.potentialNodes[579])  # rechts oben
+
+        #choose random crossnodes
+        for i in range (0, 30):
         	suitable = False
+        	
         	while (suitable == False):
         		x = randint(0,579)
         		tmpNode = self.potentialNodes[x]
-        		if (i==0):
-        			suitable = True
-        		else:
-        			for node in self.crossNodes:
-        				if (tmpNode.x == node.x or tmpNode.y == node.y):
-        					suitable = True
+
+       			for node in self.crossNodes:
+       				#same x or y as some other node
+       				if (tmpNode.x == node.x or tmpNode.y == node.y):
+       					#two paths cannot be next to each other
+       					if (((40 > (tmpNode.x - node.x) > 0) or
+       						(-40 < (tmpNode.x - node.x) < 0)) and
+       						((40 > (tmpNode.y - node.y) > 0) or
+       						(-40 < (tmpNode.y - node.y) < 0))):
+       						suitable = False
+       					else:
+	       					suitable = True
+
 
         	self.crossNodes.append(self.potentialNodes[x])
 
-        # TODO Choose some Nodes that are crossNodes (random?)
-        # For testing purposes only four nodes in the corners are crossNodes
-        # self.crossNodes.append(self.potentialNodes[0])  # links unten
-        # self.crossNodes.append(self.potentialNodes[28])  # rechts unten
-        # self.crossNodes.append(self.potentialNodes[551])  # links oben
-        # self.crossNodes.append(self.potentialNodes[579])  # rechts oben
+
 
 
         #connecting adjacent crossNodes by reference
@@ -135,15 +145,50 @@ class LabLayer(Layer):
                     if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
                         self.wayNodes.append(pNode)
 
+
+        # __________________________________________________________________________________________
+        #
+        # WallNodes
+        # __________________________________________________________________________________________
+
+
+        self.wallNodes = []
+
+        for node in self.potentialNodes:
+        	if node not in self.wayNodes:
+        		self.wallNodes.append(node)
+
+
+        # __________________________________________________________________________________________
+        #
+        # Drawing
+        # __________________________________________________________________________________________
+
         # Sprites for the wayNodes = dots that are eaten by pacman
         self.nodeSprites = []
+        self.wallSprites = []
+
+        #TODO: non-way-nodes zb blau markieren
+        for wallNode in self.wallNodes:
+        	tempSprite = Sprite("images/lab.png")
+        	tempSprite.x = wallNode.x
+        	tempSprite.y = wallNode.y
+        	self.wallSprites.append(tempSprite)
+
 
         for wayNode in self.wayNodes:
-            tempSprite = Sprite("images/node.png")
-            tempSprite.x = wayNode.x
-            tempSprite.y = wayNode.y
-            self.nodeSprites.append(tempSprite)
+        	if wayNode in self.crossNodes:
+        		tempSprite = Sprite("images/cnode.png")
+        	else:
+        		tempSprite = Sprite("images/node.png")
+
+        	tempSprite.x = wayNode.x
+        	tempSprite.y = wayNode.y
+        	self.nodeSprites.append(tempSprite)
 
         # Add sprites to the layer
         for nodeSprite in self.nodeSprites:
             self.add(nodeSprite)
+
+        for wallSprite in self.wallSprites:
+        	self.add(wallSprite)
