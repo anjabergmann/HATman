@@ -27,69 +27,69 @@ import parse
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 
-
-
 # Contains all needed Layers
 class GameScene(Scene):
 	def __init__(self):
 		super().__init__() 
 
+		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
 		self.now = datetime.datetime.now();
 		self.duration = self.now - self.starttime;
 
-		self.user = args.user;
-		self.character = args.character;
+
+		self.user = args.user;				# username
+		self.character = args.character;	# character the user is playing
+
+
+		self.pressedKey = None
+		self.direction = key.RIGHT
 
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
 		self.pacmanLayer = PacmanLayer()
-		self.pacmanLayer.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
 		self.ghostLayerBlue = GhostLayer("blue")
 		self.ghostLayerRed = GhostLayer("red")
 		self.ghostLayerOrange = GhostLayer("orange")
 		self.ghostLayerPink = GhostLayer("pink")
-		self.charLayers = [] # list with all five character layer
+
+
+		self.charLayers = []	# list with all five character layers
+		self.others = []		# list with char layers that are not played by this user
+
 		self.charLayers.append(self.pacmanLayer)
-		self.ghostLayers = [] # list with all four ghost layers
-		self.ghostLayers.append(self.ghostLayerBlue)
-		self.ghostLayers.append(self.ghostLayerRed)
-		self.ghostLayers.append(self.ghostLayerOrange)
-		self.ghostLayers.append(self.ghostLayerPink)
+		self.charLayers.append(self.ghostLayerBlue)
+		self.charLayers.append(self.ghostLayerOrange)
+		self.charLayers.append(self.ghostLayerPink)
+		self.charLayers.append(self.ghostLayerRed)
 
+
+		# add layers to the scene
 		self.add(self.labLayer)
-		self.add(self.pacmanLayer)
-		for ghostLayer in self.ghostLayers:
-			ghostLayer.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
-			self.add(ghostLayer)
-			self.charLayers.append(ghostLayer);
+		for char in self.charLayers:
+			char.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
+			self.add(char);
 
+
+		# set myLayer to the layer of the users character
 		self.myLayer = self.pacmanLayer;
-		self.myRect = self.pacmanLayer.charRect;
-
 
 		if(args.character == "p"):
 			self.myLayer = self.ghostLayerPink;
-			self.myRect = self.ghostLayerPink.charRect;
 		elif(args.character == "b"):
 			self.myLayer = self.ghostLayerBlue;
-			self.myRect = self.ghostLayerBlue.charRect;
 		elif(args.character == "o"):
 			self.myLayer = self.ghostLayerOrange;
-			self.myRect = self.ghostLayerOrange.charRect;
 		elif(args.character == "r"):
 			self.myLayer = self.ghostLayerRed;
-			self.myRect = self.ghostLayerRed.charRect;
 
 
 		# add schedule method
 		self.schedule(self.update)
 
-		self.pressedKey = None
-		self.direction = key.RIGHT
 
-		self.crossNodes = self.labLayer.crossNodes
+	#---------------------- init end ---------------------------------
 
 
 	# _________________________________________________________________________________________
@@ -112,8 +112,8 @@ class GameScene(Scene):
 				self.myLayer.direction = self.direction
 				return True;
 			else:
-				for cn in self.crossNodes:
-					if self.myRect.center == (cn.x, cn.y):
+				for cn in self.labLayer.crossNodes:
+					if self.myLayer.charRect.center == (cn.x, cn.y):
 						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
@@ -239,7 +239,7 @@ class GameScene(Scene):
 		# requestString ="\x02move,";
 		# requestString += args.user + ",1,";
 		# requestString += args.character + ",";
-		# requestString += str(self.myRect.x) + "," + str(self.myRect.y) + "\x03";
+		# requestString += str(self.myLayer.charRect.x) + "," + str(self.myRect.y) + "\x03";
 
 		# #print(requestString);
 
