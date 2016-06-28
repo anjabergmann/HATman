@@ -5,8 +5,95 @@ from cocos.actions import *
 from pyglet.gl import *
 from pyglet.window import key
 
-class GhostLayer(Layer):
-	# enable pyglet events
-	is_event_handler = True
+class CharLayer(Layer):
+    # enable pyglet events
+    is_event_handler = True
 
-	#TODO
+    def __init__(self, color="blue"):
+        super(GhostLayer, self).__init__()
+
+        # create and add Sprites for ghost
+        self.ghost1 = Sprite(pyglet.resource.image("images/" + color + "1.png"))
+        self.ghost2 = Sprite(pyglet.resource.image("images/" + color + "2.png"))
+        self.eyes = Sprite(pyglet.resource.image("images/eyesDown.png"))
+
+        self.ghosts = []
+
+        self.ghosts.append(self.ghost1)
+        self.ghosts.append(self.ghost2)
+        self.ghosts.append(self.eyes)
+
+        self.charRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
+        self.charRect.center = (40, 40);
+
+
+        for ghost in self.ghosts:
+            self.add(ghost)
+            ghost.position = self.charRect.center
+            ghost.scale = 0.12
+
+        # Animate ghost
+        self.ghost1.do(Repeat(Blink(1, 0.3)))
+
+        # print("INFO ghost.top ", self.charRect.top)
+        # print("INFO ghost.bottom ", self.charRect.bottom)
+        # print("INFO ghost.left ", self.charRect.left)
+        # print("INFO ghost.right ", self.charRect.right)
+        # print("INFO charRect.x ", self.charRect.x)
+        # print("INFO charRect.y ", self.charRect.y)
+
+
+        # Save pressed key
+        self.pressedKey = None
+
+        # Save direciton
+        self.direction = key.RIGHT
+
+        self._score = 0
+
+    # Getter and setter for score
+    def getScore(self):
+        return self._score
+
+    def setScore(self, score):
+        self._sore = score
+
+    def updateScore(self, score):
+        self._score = self._score + score
+
+    # _______________________________________________
+    #
+    # Eventhandler for key presses
+    # _______________________________________________
+
+    def on_key_press(self, keys, mod):
+        #print("INFO Key pressed ", keys)
+        if keys == key.RIGHT:
+            self.pressedKey = key.RIGHT
+        if keys == key.LEFT:
+            self.pressedKey = key.LEFT
+        if keys == key.UP:
+            self.pressedKey = key.UP
+        if keys == key.DOWN:
+            self.pressedKey = key.DOWN
+
+    # _______________________________________________
+    #
+    # Move ghost
+    # _______________________________________________
+
+    # Method is called with schedule() on every new frame
+    def update(self, director):
+        # TODO: "Rotate" Eyes
+        if self.direction == key.RIGHT:
+            self.charRect.x += 2
+        elif self.direction == key.LEFT:
+            self.charRect.x -= 2
+        elif self.direction == key.UP:
+            self.charRect.y += 2
+        elif self.direction == key.DOWN:
+            self.charRect.y -= 2
+
+        for ghost in self.ghosts:
+            ghost.position = self.charRect.center
+

@@ -4,13 +4,14 @@ from cocos.rect import Rect
 from cocos.actions import *
 from pyglet.gl import *
 from pyglet.window import key
+from char import CharLayer
 
-class PacmanLayer(Layer):
+class PacmanLayer(CharLayer):
     # enable pyglet events
     is_event_handler = True
 
     def __init__(self):
-        super(PacmanLayer, self).__init__()
+        super().__init__()
 
         # create and add Sprites for pacman
         self.pacman1 = Sprite(pyglet.resource.image("images/pacman1.png"))
@@ -39,40 +40,6 @@ class PacmanLayer(Layer):
         # print("INFO pacmanRect.x ", self.charRect.x)
         # print("INFO pacmanRect.y ", self.charRect.y)
 
-
-        # Save pressed key
-        self.pressedKey = None
-
-        # Save direciton
-        self.direction = key.RIGHT
-
-        self._score = 0
-
-    # Getter and setter for score
-    def getScore(self):
-        return self._score
-
-    def setScore(self, score):
-        self._sore = score
-
-    def updateScore(self, score):
-        self._score = self._score + score
-
-    # _______________________________________________
-    #
-    # Eventhandler for key presses
-    # _______________________________________________
-
-    def on_key_press(self, keys, mod):
-        #print("INFO Key pressed ", keys)
-        if keys == key.RIGHT:
-            self.pressedKey = key.RIGHT
-        if keys == key.LEFT:
-            self.pressedKey = key.LEFT
-        if keys == key.UP:
-            self.pressedKey = key.UP
-        if keys == key.DOWN:
-            self.pressedKey = key.DOWN
 
     # _______________________________________________
     #
