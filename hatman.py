@@ -36,8 +36,6 @@ class GameScene(Scene):
 		self.user = args.user;
 		self.character = args.character;
 
-		self.touchcount = 0
-
 
 		# add Layers to scene
 		self.labLayer = LabLayer()
@@ -149,18 +147,12 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
-	# If all dots are eaten Pacman wins
 	def eatDots(self):
 		for nodeSprite in self.labLayer.nodeSprites:
 			if self.myRect.center == (nodeSprite.x, nodeSprite.y):
 				self.labLayer.remove(nodeSprite)
 				self.labLayer.nodeSprites.remove(nodeSprite)
 				self.myLayer.updateScore(1)
-
-		if (len(self.labLayer.nodeSprites)<1):
-			print("pacman wins")
-			#TODO: display some message
-			exit() # or start new level
 
 	# _________________________________________________________________________________________
 	#
@@ -170,23 +162,6 @@ class GameScene(Scene):
 	def update(self, director):
 		if (self.myLayer == self.pacmanLayer):
 			self.eatDots()
-
-		#if any ghost touches pacman
-		for ghost in self.ghostLayers:
-			if(ghost.ghostRect.center == self.pacmanLayer.pacmanRect.center):
-			#every touch loses pacman one life
-				self.touchcount += 1
-				if (self.touchcount > 20):
-					#don't take a life for every frame they touch (entprellen)
-					self.pacmanLayer.lives = self.pacmanLayer.lives-1
-					#reset touchcount
-					self.touchcount = 0
-					#if no lives are dead --> pacman dies
-					if self.pacmanLayer.lives == 0:
-						#TODO: display some message here
-						print("ghosts win")
-						exit()
-
 		self.setDirection()
 		self.checkBorders()
 		self.myLayer.update(director)
