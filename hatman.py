@@ -1,12 +1,5 @@
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
-import os
-import sys
-import threading
-import time
-import datetime
+from __future__ import division, print_function, unicode_literals
+import os, sys, threading, time, datetime
 
 from pyglet.gl import *
 from pyglet.window import key
@@ -18,13 +11,24 @@ from layers.lab import LabLayer
 from layers.pacman import PacmanLayer
 from layers.ghost import GhostLayer
 
-import client
-from client import HatmanClientProtocol
-from client import HatmanClientFactory
+from helper import parse, client
+from helper.client import HatmanClientProtocol, HatmanClientFactory
 
-import parse
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+
+
+args = parse.parseArgs()
+host = args.host
+port = args.port
+user = args.user
+character = args.character
+
+init = "\x02hi,Hello Server!\x03"
+
+factory = HatmanClientFactory(init)
+d = factory.deferred
+
 
 
 # Contains all needed Layers
@@ -36,10 +40,6 @@ class GameScene(Scene):
 		self.starttime = datetime.datetime.now();
 		self.now = datetime.datetime.now();
 		self.duration = self.now - self.starttime;
-
-
-		self.user = args.user;				# username
-		self.character = args.character;	# character the user is playing
 
 
 		self.pressedKey = None
@@ -90,6 +90,7 @@ class GameScene(Scene):
 
 
 	#---------------------- init end ---------------------------------
+
 
 
 	# _________________________________________________________________________________________
@@ -179,45 +180,53 @@ class GameScene(Scene):
 		self.now = datetime.datetime.now();
 		self.duration = self.now - self.starttime;
 		print(self.duration);
-		infolist = info.decode("utf-8").split(",");
+		infolist = info.decode("utf-8")[1:-1].split(",");
+		char = infolist[3];
+		print(infolist)
+
+
 		if (infolist[0] == "move"):
-			char = infolist[3];
 			posx = float(infolist[4]);
 			posy = float(infolist[5]);
-			key = int(infolist[6]);
 			print("update", char);
-			if(char == "pac" and self.myLayer != self.pacmanLayer):
-				self.pacmanLayer.charRect.position = posx, posy;
-				self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
-				self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
-			elif (char == "o" and self.myLayer != self.ghostLayerOrange):
-				self.ghostLayerOrange.charRect.position = posx, posy;
-				self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
-				self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
-			elif (char == "p" and self.myLayer != self.ghostLayerPink):
-				self.ghostLayerPink.charRect.position = posx, posy;
-				self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
-				self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
-			elif (char == "r" and self.myLayer != self.ghostLayerRed):
-				self.ghostLayerRed.charRect.position = posx, posy;
-				self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
-				self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
-			elif (char == "b" and self.myLayer != self.ghostLayerBlue):
-				self.ghostLayerBlue.charRect.position = posx, posy;
-				self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
-				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
+			if(char != character):
+				if(char == "pac"):
+					self.pacmanLayer.charRect.position = posx, posy;
+					self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
+					self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
+				elif (char == "o"):
+					self.ghostLayerOrange.charRect.position = posx, posy;
+					self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
+					self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
+				elif (char == "p"):
+					self.ghostLayerPink.charRect.position = posx, posy;
+					self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
+					self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
+				elif (char == "r"):
+					self.ghostLayerRed.charRect.position = posx, posy;
+					self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
+					self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
+				elif (char == "b"):
+					self.ghostLayerBlue.charRect.position = posx, posy;
+					self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
+					self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
+
+
 		elif(infolist[0] == "changeDirection"):
 			print("{} changed direction".format(char));
-			if(char == "pac" and self.myLayer != self.pacmanLayer):
-				self.pacmanLayer.direction = key;
-			elif(char == "o" and self.myLayer != self.ghostLayerOrange):
-				self.ghostLayerOrange.direction = key;
-			elif(char == "p" and self.myLayer != self.ghostLayerPink):
-				self.ghostLayerPink.direction = key;
-			elif(char == "r" and self.myLayer != self.ghostLayerRed):
-				self.ghostLayerRed.direction = key;
-			elif(char == "b" and self.myLayer != self.ghostLayerBlue):
-				self.ghostLayerBlue.direction = key;
+
+			if(char != character):
+				if(char == "pac"):
+					self.pacmanLayer.direction = key;
+				elif(char == "o"):
+					self.ghostLayerOrange.direction = key;
+				elif(char == "p"):
+					self.ghostLayerPink.direction = key;
+				elif(char == "r"):
+					self.ghostLayerRed.direction = key;
+				elif(char == "b"):
+					self.ghostLayerBlue.direction = key;
+
 
 	# _________________________________________________________________________________________
 	#
@@ -228,22 +237,23 @@ class GameScene(Scene):
 		self.eatDots()
 		if(self.setDirection()):
 			self.starttime = datetime.datetime.now();
-			requestString="\x02changeDirection," + args.user + ",1," + args.character + "," + str(self.myLayer.direction) + "\x03";
-			factory.connectedProtocol.sendRequest(requestString);
-		self.checkBorders() #TODO: Check borders for every char
+			# requestString="\x02changeDirection," + args.user + ",1," + character + "," + str(self.myLayer.direction) + "\x03";
+			# factory.connectedProtocol.sendRequest(requestString);
+		self.checkBorders()
 		for char in self.charLayers:
 			char.update(director);
 
 
-		# #command = "\x02move,user,gameid,character,positionx,positiony\x03"
-		# requestString ="\x02move,";
-		# requestString += args.user + ",1,";
-		# requestString += args.character + ",";
-		# requestString += str(self.myLayer.charRect.x) + "," + str(self.myRect.y) + "\x03";
+		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
+		requestString ="\x02move,";
+		requestString += args.user + ",1,";
+		requestString += args.character + ",";
+		requestString += str(self.myLayer.charRect.x) + "," + str(self.myLayer.charRect.y) + "\x03";
 
-		# #print(requestString);
+		#print(requestString);
 
-		# factory.connectedProtocol.sendRequest(requestString);
+		factory.connectedProtocol.sendRequest(requestString);
+
 
 
 
@@ -260,12 +270,8 @@ class networkThread(threading.Thread):
 
 
 
+def main():
 
-
-
-if __name__ == "__main__":
-
-	args = parse.parseArgs();
 	director.init(resizable=False, caption="HATman")
 	# director.window.set_fullscreen(True)
 	game = GameScene();
@@ -274,19 +280,10 @@ if __name__ == "__main__":
 	print("\n------------------------------------------------------------------\n");
 	print("INFO HatmanClient started.");
 
-
-	init = "\x02hi,Hello Server!\x03"
-	host = args.host;
-	port = args.port;
-
-
-	factory = HatmanClientFactory(init)
 	client.reactor.connectTCP(host, port, factory)
+
 	print("INFO Connected to server {}:{}".format(host, port));
 	print("\n------------------------------------------------------------------\n");
-
-
-	d = factory.deferred;
 
 
 	def tryToSend(init):
@@ -301,7 +298,7 @@ if __name__ == "__main__":
 			return init;
 		return d.addCallbacks(notfail, fail);
 
-	def doSomething():
+	def newDeferred():
 
 		def doCallback(data):
 			#print("CALLBACKCALLBACK");
@@ -312,15 +309,21 @@ if __name__ == "__main__":
 
 
 	tryToSend(init);
-	doSomething();
+	newDeferred();
 
 
 
+	# start the reactor for the networking stuff
 	thread = networkThread();
 	thread.daemon = True
 	thread.start();
 
-
-
-
+	# start the director for the gui stuff
 	director.run(game)
+
+# ------------------- end of main() -------------------------------
+
+
+
+if __name__ == "__main__":
+	main();
