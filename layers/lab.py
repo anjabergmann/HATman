@@ -61,61 +61,60 @@ class LabLayer(Layer):
         self.crossNodes.append(self.potentialNodes[551])  # links oben
         self.crossNodes.append(self.potentialNodes[579])  # rechts oben
 
-        #choose random crossnodes
-        for i in range (0, 30):
-        	suitable = False
-        	
-        	while (suitable == False):
-        		x = randint(0,579)
-        		tmpNode = self.potentialNodes[x]
+        def chooseNodes(num):
+	        #choose random crossnodes
+	        for i in range (0, num):
+	        	suitable = False
 
-       			for node in self.crossNodes:
-       				#same x or y as some other node
-       				if (tmpNode.x == node.x or tmpNode.y == node.y):
-       					#two paths cannot be next to each other
-       					if (((40 > (tmpNode.x - node.x) > 0) or
-       						(-40 < (tmpNode.x - node.x) < 0)) and
-       						((40 > (tmpNode.y - node.y) > 0) or
-       						(-40 < (tmpNode.y - node.y) < 0))):
-       						suitable = False
-       					else:
-	       					suitable = True
+	        	while (suitable == False):
+	        		x = randint(0,579)
+	        		tmpNode = self.potentialNodes[x]
 
+	        		for node in self.crossNodes:
+	        			#same x or y as some other node
+	        			if (0 < abs(tmpNode.x - node.x) < 40):
+	        				suitable = False
+	        			elif (0 < abs(tmpNode.y - node.y) < 40):
+	        				suitable = False
+	        			elif (tmpNode.x == node.x or tmpNode.y == node.y):
+	        				suitable = True
 
-        	self.crossNodes.append(self.potentialNodes[x])
+        		self.crossNodes.append(self.potentialNodes[x])
 
 
 
+        chooseNodes(30)
 
-        #connecting adjacent crossNodes by reference
-        for currNode in self.crossNodes:
-        	for otherNode in self.crossNodes:
-        		#same x coordinates -> either above or under
-        		if (currNode.x == otherNode.x):
-        			#current under other
-        			if (currNode.y < otherNode.y):
-        				currNode.nodeUp = otherNode
-        				otherNode.nodeDown = currNode
-        			#curr above other
-        			elif (currNode.y > otherNode.y):
-        				currNode.nodeDown = otherNode
-        				otherNode.nodeUp = currNode
+        def connectNodes():
+	        #connecting adjacent crossNodes by reference
+	        for currNode in self.crossNodes:
+	        	for otherNode in self.crossNodes:
+	        		#same x coordinates -> either above or under
+	        		if (currNode.x == otherNode.x):
+	        			#current under other
+	        			if (currNode.y < otherNode.y):
+	        				currNode.nodeUp = otherNode
+	        				otherNode.nodeDown = currNode
+	        			#curr above other
+	        			elif (currNode.y > otherNode.y):
+	        				currNode.nodeDown = otherNode
+	        				otherNode.nodeUp = currNode
 
-        		#same y coordinates -> left or right
-        		elif (currNode.y == otherNode.y):
-        			#current left of other
-        			if (currNode.x < otherNode.x):
-        				currNode.nodeRight = otherNode
-        				otherNode.nodeLeft = currNode
-					#current right of other
-        			elif (currNode.x > otherNode.x):
-        				currNode.nodeLeft = otherNode
-        				otherNode.nodeRight = currNode
+	        		#same y coordinates -> left or right
+	        		elif (currNode.y == otherNode.y):
+	        			#current left of other
+	        			if (currNode.x < otherNode.x):
+	        				currNode.nodeRight = otherNode
+	        				otherNode.nodeLeft = currNode
+						#current right of other
+	        			elif (currNode.x > otherNode.x):
+	        				currNode.nodeLeft = otherNode
+	        				otherNode.nodeRight = currNode
 
-        		else:
-        			pass #no connection
+	        		else:
+	        			pass #no connection
 
-
+        connectNodes()
 
         # __________________________________________________________________________________________
         #
