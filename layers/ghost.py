@@ -7,39 +7,39 @@ from pyglet.window import key
 from char import CharLayer
 
 class GhostLayer(CharLayer):
-    # enable pyglet events
-    is_event_handler = True
+	# enable pyglet events
+	is_event_handler = True
 
-    def __init__(self, color="blue"):
-        super().__init__()
+	def __init__(self, color="blue"):
+		super().__init__()
 
-        # create and add Sprites for ghost
-        self.ghost1 = Sprite(pyglet.resource.image("images/" + color + "1.png"))
-        self.ghost2 = Sprite(pyglet.resource.image("images/" + color + "2.png"))
-        self.eyes = Sprite(pyglet.resource.image("images/eyesDown.png"))
+		# create and add Sprites for ghost
+		self.ghost1 = Sprite(pyglet.resource.image("images/" + color + "1.png"))
+		self.ghost2 = Sprite(pyglet.resource.image("images/" + color + "2.png"))
+		self.eyes = Sprite(pyglet.resource.image("images/eyesDown.png"))
 
-        self.ghosts = []
+		self.ghosts = []
 
-        self.ghosts.append(self.ghost1)
-        self.ghosts.append(self.ghost2)
-        self.ghosts.append(self.eyes)
+		self.ghosts.append(self.ghost1)
+		self.ghosts.append(self.ghost2)
+		self.ghosts.append(self.eyes)
 
-        self.charRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
-        self.charRect.center = (40, 40);
+		self.charRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
+		self.charRect.center = (40, 40);
 
 
-        for ghost in self.ghosts:
-            self.add(ghost)
-            ghost.position = self.charRect.center
-            ghost.scale = 0.12
+		for ghost in self.ghosts:
+			self.add(ghost)
+			ghost.position = self.charRect.center
+			ghost.scale = 0.12
 
-        # Animate ghost
-        self.ghost1.do(Repeat(Blink(1, 0.3)))
+		# Animate ghost
+		self.ghost1.do(Repeat(Blink(1, 0.3)))
 
-        # print("INFO ghost.top ", self.charRect.top)
-        # print("INFO ghost.bottom ", self.charRect.bottom)
-        # print("INFO ghost.left ", self.charRect.left)
-        # print("INFO ghost.right ", self.charRect.right)
-        # print("INFO charRect.x ", self.charRect.x)
-        # print("INFO charRect.y ", self.charRect.y)
+		# print("INFO ghost.top ", self.charRect.top)
+		# print("INFO ghost.bottom ", self.charRect.bottom)
+		# print("INFO ghost.left ", self.charRect.left)
+		# print("INFO ghost.right ", self.charRect.right)
+		# print("INFO charRect.x ", self.charRect.x)
+		# print("INFO charRect.y ", self.charRect.y)
 
