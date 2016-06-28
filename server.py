@@ -125,9 +125,11 @@ class HatmanFactory(ServerFactory):
 	def doSomeFancyMethod(self, command):
 			
 		#index = 1;
-		self.stringToSend += self.service.someFancyMethod(command);
-		if (self.i == 2):
+		temp = self.service.someFancyMethod(command);
+		if (self.i == 1):
 			self.i = 0;
+			self.stringToSend += temp[1:];
+			print(self.stringToSend);
 			for client in self.clients:
 				#print("INFO Writing to client #" + str(index));
 				client.sendString(self.stringToSend);
@@ -135,6 +137,7 @@ class HatmanFactory(ServerFactory):
 			self.stringToSend = "".encode("utf-8");
 		else:
 			self.i += 1;
+			self.stringToSend = self.service.someFancyMethod(command)[0:-1] + ",".encode("utf-8");
 		return self.stringToSend;
 
 
