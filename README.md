@@ -43,6 +43,12 @@ _Project Work 1 - Gamedevelopment with Python_
 
 #To-Do
 * _(list might not be complete)_
+* Change Layers:
+	- Either just one layer class for pacman AND ghosts, not two separate classes
+	- Or put methods that are just for ghost or pacman into entsprechenden layer
+	- Maybe: Put change direction method into Layers ...??? 
+	- Being confused
+	- Discussion sinnvollste solution
 * Make only the played character playable by key presses
 * Multiplayer: Make other characters playable by other player
 * Send command from gui to server automatically

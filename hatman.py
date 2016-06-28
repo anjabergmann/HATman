@@ -184,6 +184,7 @@ class GameScene(Scene):
 			char = infolist[3];
 			posx = float(infolist[4]);
 			posy = float(infolist[5]);
+			key = int(infolist[6]);
 			print("update", char);
 			if(char == "pac" and self.myLayer != self.pacmanLayer):
 				self.pacmanLayer.charRect.position = posx, posy;
@@ -207,6 +208,16 @@ class GameScene(Scene):
 				self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
 		elif(infolist[0] == "changeDirection"):
 			print("{} changed direction".format(char));
+			if(char == "pac" and self.myLayer != self.pacmanLayer):
+				self.pacmanLayer.direction = key;
+			elif(char == "o" and self.myLayer != self.ghostLayerOrange):
+				self.ghostLayerOrange.direction = key;
+			elif(char == "p" and self.myLayer != self.ghostLayerPink):
+				self.ghostLayerPink.direction = key;
+			elif(char == "r" and self.myLayer != self.ghostLayerRed):
+				self.ghostLayerRed.direction = key;
+			elif(char == "b" and self.myLayer != self.ghostLayerBlue):
+				self.ghostLayerBlue.direction = key;
 
 	# _________________________________________________________________________________________
 	#
