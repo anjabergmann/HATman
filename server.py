@@ -118,15 +118,24 @@ class HatmanFactory(ServerFactory):
 
 	def __init__(self, service):
 		self.service = service
+		self.commandString = "";
+		self.i = 0;
+		self.stringToSend = "".encode("utf-8");
 
 	def doSomeFancyMethod(self, command):
-		index = 1;
-		stringToSend = self.service.someFancyMethod(command);
-		for client in self.clients:
-			#print("INFO Writing to client #" + str(index));
-			client.sendString(stringToSend);
-			index += 1;
-		return stringToSend;
+			
+		#index = 1;
+		self.stringToSend += self.service.someFancyMethod(command);
+		if (self.i == 2):
+			self.i = 0;
+			for client in self.clients:
+				#print("INFO Writing to client #" + str(index));
+				client.sendString(self.stringToSend);
+				#index += 1;
+			self.stringToSend = "".encode("utf-8");
+		else:
+			self.i += 1;
+		return self.stringToSend;
 
 
 

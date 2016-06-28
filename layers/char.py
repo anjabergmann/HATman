@@ -66,7 +66,10 @@ class CharLayer(Layer):
 			self.charRect.y += 2
 		elif self.direction == key.DOWN:
 			self.charRect.y -= 2
+		elif self.direction == None:
+			return False
 
 		for sprite in self.sprites:
 			sprite.position = self.charRect.center
 
+		return True

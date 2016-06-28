@@ -64,6 +64,8 @@ class GameScene(Scene):
 		self.charLayers.append(self.ghostLayerPink)
 		self.charLayers.append(self.ghostLayerRed)
 
+		self.others = self.charLayers;
+
 
 		# add layers to the scene
 		self.add(self.labLayer)
@@ -83,6 +85,8 @@ class GameScene(Scene):
 			self.myLayer = self.ghostLayerOrange;
 		elif(args.character == "r"):
 			self.myLayer = self.ghostLayerRed;
+
+		self.others.remove(self.myLayer)
 
 
 		# add schedule method
@@ -235,13 +239,19 @@ class GameScene(Scene):
 
 	def update(self, director):
 		self.eatDots()
+
 		if(self.setDirection()):
 			self.starttime = datetime.datetime.now();
 			# requestString="\x02changeDirection," + args.user + ",1," + character + "," + str(self.myLayer.direction) + "\x03";
 			# factory.connectedProtocol.sendRequest(requestString);
+
 		self.checkBorders()
-		for char in self.charLayers:
-			char.update(director);
+
+		if(self.myLayer.update(director)):
+			print(datetime.datetime.now())
+
+		for char in self.others:
+			char.update(director)
 
 
 		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
