@@ -120,8 +120,9 @@ class LabLayer(Layer):
 	        				break
 
 	        	# set sort to cross and add to crossNodes
-        		self.nodes[x][y].sort = "cross"
-        		self.crossNodes.append(self.nodes[x][y])
+	        	if self.nodes[x][y] not in self.crossNodes:
+	        		self.nodes[x][y].sort = "cross"
+	        		self.crossNodes.append(self.nodes[x][y])
 
 
         chooseNodes(25)
@@ -143,7 +144,7 @@ class LabLayer(Layer):
 	        				otherNode.nodeUp = currNode
 
 	        		#same y coordinates -> left or right
-	        		elif (currNode.y == otherNode.y):
+	        		if (currNode.y == otherNode.y):
 	        			#current left of other
 	        			if (currNode.x < otherNode.x):
 	        				currNode.nodeRight = otherNode
@@ -167,8 +168,6 @@ class LabLayer(Layer):
         # Only needed to draw the dots that are eaten by the pacman
         # Irrelevant for navigation
         self.wayNodes = []
-        for cnode in self.crossNodes:
-        	self.wayNodes.append(cnode)
 
         #Add crossNodes and connections between two neighboured crossNodes to wayNodes[]
         for cNode in self.crossNodes:
@@ -181,8 +180,7 @@ class LabLayer(Layer):
         				#all possible nodes on the same height, to the right of cNode, before its next neighbour
         				if pNode.y == cNode.y and pNode.x > cNode.x and pNode.x < cNode.nodeRight.x:
         					self.wayNodes.append(pNode)
-        					#very complicated way of getting the node object
-        					self.nodes[self.nodes.index(nodes)][self.nodes[self.nodes.index(nodes)].index(pNode)].sort = "way"
+        					pNode.sort = "way"
 
             #connect nodes vertically
         	if cNode.nodeDown != None:
@@ -190,10 +188,10 @@ class LabLayer(Layer):
         			for pNode in nodes:
         				#all possible nodes on the same vertical line, from top to bottom
         				if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
-        					self.wayNodes.append(pNode)
-        					#very complicated way of getting the node object
-        					self.nodes[self.nodes.index(nodes)][self.nodes[self.nodes.index(nodes)].index(pNode)].sort = "way"
-
+        					#only add if it isn't already a waynode
+        					if pNode not in self.wayNodes:
+        						self.wayNodes.append(pNode)
+        						pNode.sort = "way"
 
 
         # __________________________________________________________________________________________
@@ -208,6 +206,8 @@ class LabLayer(Layer):
         	for n in nodes:
         		if n not in self.wayNodes:
         			self.wallNodes.append(n)
+        			n.sort = "wall"
+
 
 
         # __________________________________________________________________________________________
@@ -216,30 +216,34 @@ class LabLayer(Layer):
         # __________________________________________________________________________________________
 
         # Sprites for the wayNodes = dots that are eaten by pacman
-        self.nodeSprites = []
         self.wallSprites = []
+        self.nodeSprites = []
 
-        #TODO: non-way-nodes zb blau markieren
-        for wallNode in self.wallNodes:
-        	tempSprite = Sprite("images/lab.png")
-        	tempSprite.x = wallNode.x
-        	tempSprite.y = wallNode.y
-        	self.wallSprites.append(tempSprite)
+        # add sprites to array
+        for nodes in self.nodes:
+        	for node in nodes:
+        		if node.sort == "cross":
+        			tempSprite = Sprite("images/cnode.png")
+        		if node.sort == "wall":
+        			tempSprite = Sprite("images/wall.png")
+        		if node.sort == "way":
+        			tempSprite = Sprite("images/node.png")
+
+        		tempSprite.x = node.x
+        		tempSprite.y = node.y
+
+        		if node.sort == "cross" or node.sort == "way":
+        			self.nodeSprites.append(tempSprite)
+        		else:
+        			self.wallSprites.append(tempSprite)
+
+        # add sprites to the layer
+        for wall in self.wallSprites:
+        	self.add(wall)
+
+        for node in self.nodeSprites:
+        	self.add(node)
 
 
-        for wayNode in self.wayNodes:
-        	if wayNode in self.crossNodes:
-        		tempSprite = Sprite("images/cnode.png")
-        	else:
-        		tempSprite = Sprite("images/node.png")
 
-        	tempSprite.x = wayNode.x
-        	tempSprite.y = wayNode.y
-        	self.nodeSprites.append(tempSprite)
 
-        # Add sprites to the layer
-        for nodeSprite in self.nodeSprites:
-            self.add(nodeSprite)
-
-        for wallSprite in self.wallSprites:
-        	self.add(wallSprite)
