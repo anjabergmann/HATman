@@ -231,9 +231,8 @@ class GameScene(Scene):
 			requestString="\x02changeDirection," + args.user + ",1," + args.character + "," + str(self.myLayer.direction) + "\x03";
 			factory.connectedProtocol.sendRequest(requestString);
 		self.checkBorders() #TODO: Check borders for every char
-		self.pacmanLayer.update(director)
-		for gL in self.ghostLayers:
-			gL.update(director);
+		for char in self.charLayers:
+			char.update(director);
 
 
 		# #command = "\x02move,user,gameid,character,positionx,positiony\x03"
