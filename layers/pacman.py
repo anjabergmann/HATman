@@ -1,14 +1,11 @@
-from cocos.layer import Layer
 from cocos.sprite import Sprite
 from cocos.rect import Rect
 from cocos.actions import *
 from pyglet.gl import *
 from pyglet.window import key
-from char import CharLayer
+from layers.char import CharLayer
 
 class PacmanLayer(CharLayer):
-	# enable pyglet events
-	is_event_handler = True
 
 	def __init__(self):
 		super().__init__()
@@ -17,21 +14,21 @@ class PacmanLayer(CharLayer):
 		self.pacman1 = Sprite(pyglet.resource.image("images/pacman1.png"))
 		self.pacman2 = Sprite(pyglet.resource.image("images/pacman2.png"))
 
-		self.pacmans = []
-
-		self.pacmans.append(self.pacman1)
-		self.pacmans.append(self.pacman2)
+		self.sprites.append(self.pacman1)
+		self.sprites.append(self.pacman2)
 
 		self.charRect = Rect(40, 40, self.pacman1.width * 0.05, self.pacman1.height * 0.05)
 		self.charRect.center = (40, 40);
 
-		for pacman in self.pacmans:
+		for pacman in self.sprites:
 			self.add(pacman)
 			pacman.position = self.charRect.center
 			pacman.scale = 0.05
 
 		# Animate pacman
 		self.pacman2.do(Repeat(Blink(1, 0.3)))
+
+		self.rotations = [90, 180, 270, None]
 
 		# print("INFO pacman.top ", self.charRect.top)
 		# print("INFO pacman.bottom ", self.charRect.bottom)
@@ -41,29 +38,12 @@ class PacmanLayer(CharLayer):
 		# print("INFO pacmanRect.y ", self.charRect.y)
 
 
-	# _______________________________________________
-	#
-	# Move and rotate pacman
-	# _______________________________________________
 
 	# Method is called with schedule() on every new frame
 	def update(self, director):
 
-		if self.direction == key.RIGHT:
-			self.pacman1.rotation = None
-			self.charRect.x += 2
-		elif self.direction == key.LEFT:
-			self.pacman1.rotation = 180
-			self.charRect.x -= 2
-		elif self.direction == key.UP:
-			self.pacman1.rotation = 270
-			self.charRect.y += 2
-		elif self.direction == key.DOWN:
-			self.pacman1.rotation = 90
-			self.charRect.y -= 2
+		# Update position of pacman in the same way as for the ghosts
+		super().update(director);
 
-		for pacman in self.pacmans:
-			pacman.position = self.charRect.center
-
-
-# ___________________________________________________________________________________________________________
+		# Rotate sprite appropriate to the direction
+		self.pacman1.rotation = self.rotations[(self.direction % 4)];

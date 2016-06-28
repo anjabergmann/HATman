@@ -1,14 +1,11 @@
-from cocos.layer import Layer
 from cocos.sprite import Sprite
 from cocos.rect import Rect
 from cocos.actions import *
 from pyglet.gl import *
 from pyglet.window import key
-from char import CharLayer
+from layers.char import CharLayer
 
 class GhostLayer(CharLayer):
-	# enable pyglet events
-	is_event_handler = True
 
 	def __init__(self, color="blue"):
 		super().__init__()
@@ -18,17 +15,15 @@ class GhostLayer(CharLayer):
 		self.ghost2 = Sprite(pyglet.resource.image("images/" + color + "2.png"))
 		self.eyes = Sprite(pyglet.resource.image("images/eyesDown.png"))
 
-		self.ghosts = []
-
-		self.ghosts.append(self.ghost1)
-		self.ghosts.append(self.ghost2)
-		self.ghosts.append(self.eyes)
+		self.sprites.append(self.ghost1)
+		self.sprites.append(self.ghost2)
+		self.sprites.append(self.eyes)
 
 		self.charRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
 		self.charRect.center = (40, 40);
 
 
-		for ghost in self.ghosts:
+		for ghost in self.sprites:
 			self.add(ghost)
 			ghost.position = self.charRect.center
 			ghost.scale = 0.12
