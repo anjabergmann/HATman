@@ -40,7 +40,8 @@ class GameScene(Scene):
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
 		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands)
 
-		self.turns = {"r":1000000, "p":1000000, "o":1000000, "b":1000000, "pac":1000000};
+		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
+		self.commandBuffer = [];
 
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
@@ -65,8 +66,8 @@ class GameScene(Scene):
 		self.ghostLayerPink = GhostLayer("pink")
 
 
-		self.charLayers = []    # list with all five character layers
-		self.others = []        # list with char layers that are not played by this user
+		self.charLayers = []	# list with all five character layers
+		self.others = []		# list with char layers that are not played by this user
 
 		self.charLayers.append(self.pacmanLayer)
 		self.charLayers.append(self.ghostLayerBlue)
@@ -76,16 +77,16 @@ class GameScene(Scene):
 
 		self.others = self.charLayers;
 
-#------------------------------------------------------------
-# label for score and lives
+	#------------------------------------------------------------
+	# label for score and lives
 		self.statslabel = Label('Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives), 
-		   font_name='Arial', 
-		   font_size=16, anchor_x='center', 
-		   anchor_y='center')
-		  # set the title-label at the top center of the screen
+			font_name='Arial', 
+			font_size=16, anchor_x='center', 
+			anchor_y='center')
+			# set the title-label at the top center of the screen
 		self.statslabel.position = 320,460
 		self.add(self.statslabel)
-#------------------------------------------------------------
+	#------------------------------------------------------------
 
 		# add layers to the scene
 		self.add(self.labLayer)
@@ -226,34 +227,7 @@ class GameScene(Scene):
 
 
 	def updateChars(self, info):
-
-		commandlist = info.decode("utf-8")[1:-1].split(",");
-		char = commandlist[3];
-		posx = float(commandlist[4]);
-		posy = float(commandlist[5]);
-
-		self.charMapping.get(char).setPosition(director, posx, posy);
-
-
-
-		#add command to commandBuffer of appropriate character
-		self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
-
-
-		for thing in self.others:
-			if (len(thing.commandBuffer) > 0 and self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) > 0):
-				self.turns.__setitem__(info.decode("utf-8")[1:-1].split(",")[3], (self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) - 1))
-				print("DEBUG max:", max(self.turns, key=lambda k: self.turns[k]));
-				print("DEBUG min:", min(self.turns, key=lambda k: self.turns[k]));
-				commandlist = thing.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
-				#print("DEBUG Commandlist:", commandlist);
-				char = commandlist[3];
-				posx = float(commandlist[4]);
-				posy = float(commandlist[5]);
-
-				self.charMapping.get(char).setPosition(director, posx, posy);
-
-
+		self.commandBuffer.append(info);
 
 
 	# _________________________________________________________________________________________
@@ -263,24 +237,29 @@ class GameScene(Scene):
 
 	def update(self, director):
 
-		if(self.turns.get(character) > 0):
-			self.turns.__setitem__(character, (self.turns.get(character) - 1))
-
-			self.eatDots()
-			self.setDirection()
-			self.checkBorders()
-			self.myLayer.update(director);
+		self.eatDots()
+		self.setDirection()
+		self.checkBorders()
+		self.myLayer.update(director);
 
 
-			#command = "\x02move,user,gameid,character,positionx,positiony\x03"
-			requestString ="\x02move,";
-			requestString += args.user + ",1,";
-			requestString += args.character + ",";
-			requestString += str(self.myLayer.charRect.x) + "," + str(self.myLayer.charRect.y) + "\x03";
-			#print("DEBUG RequestString:", requestString);
+		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
+		requestString ="\x02move,";
+		requestString += args.user + ",1,";
+		requestString += args.character + ",";
+		requestString += str(self.myLayer.charRect.x) + "," + str(self.myLayer.charRect.y) + "\x03";
+		#print("DEBUG RequestString:", requestString);
 
-			factory.connectedProtocol.sendRequest(requestString);
+		factory.connectedProtocol.sendRequest(requestString);
 
+		while(len(self.commandBuffer) > 0):
+			commandlist = self.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
+			#print("DEBUG Commandlist:", commandlist);
+			char = commandlist[3];
+			posx = float(commandlist[4]);
+			posy = float(commandlist[5]);
+			if (char != character):
+				self.charMapping.get(char).setPosition(director, posx, posy);
 
 
 
