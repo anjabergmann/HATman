@@ -181,12 +181,24 @@ class GameScene(Scene):
 
 	def updateChars(self, info):
 
+		commandlist = info.decode("utf-8")[1:-1].split(",");
+		char = commandlist[3];
+		posx = float(commandlist[4]);
+		posy = float(commandlist[5]);
+
+		self.charMapping.get(char).setPosition(director, posx, posy);
+
+
+
 		#add command to commandBuffer of appropriate character
 		self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
 
+
 		for thing in self.others:
 			if (len(thing.commandBuffer) > 0 and self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) > 0):
-
+				self.turns.__setitem__(info.decode("utf-8")[1:-1].split(",")[3], (self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) - 1))
+				print("DEBUG max:", max(self.turns, key=lambda k: self.turns[k]));
+				print("DEBUG min:", min(self.turns, key=lambda k: self.turns[k]));
 				commandlist = thing.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
 				#print("DEBUG Commandlist:", commandlist);
 				char = commandlist[3];
@@ -198,7 +210,6 @@ class GameScene(Scene):
 
 
 
-
 	# _________________________________________________________________________________________
 	#
 	# Update method (called on every new frame)
@@ -206,7 +217,7 @@ class GameScene(Scene):
 
 	def update(self, director):
 
-		if(self.turn):
+		if(self.turns.get(character) > 0):
 			self.turns.__setitem__(character, (self.turns.get(character) - 1))
 
 			self.eatDots()
