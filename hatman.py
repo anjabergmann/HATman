@@ -225,26 +225,6 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	def update(self, director):
-<<<<<<< HEAD
-		if (self.myLayer == self.pacmanLayer):
-			self.eatDots()
-
-		#if any ghost touches pacman
-		for ghost in self.ghostLayers:
-			if(ghost.ghostRect.center == self.pacmanLayer.pacmanRect.center):
-			#every touch loses pacman one life
-				self.touchcount += 1
-				if (self.touchcount > 20):
-					#don't take a life for every frame they touch (entprellen)
-					self.pacmanLayer.lives = self.pacmanLayer.lives-1
-					#reset touchcount
-					self.touchcount = 0
-					#if no lives are dead --> pacman dies
-					if self.pacmanLayer.lives == 0:
-						#TODO: display some message here
-						print("ghosts win")
-						#exit()
-=======
 		self.eatDots()
 		if(self.setDirection()):
 			self.starttime = datetime.datetime.now();
@@ -253,7 +233,6 @@ class GameScene(Scene):
 		self.checkBorders() #TODO: Check borders for every char
 		for char in self.charLayers:
 			char.update(director);
->>>>>>> ed5994e9c493fb88f734f6ccfdc28c22ec2751d1
 
 
 		# #command = "\x02move,user,gameid,character,positionx,positiony\x03"
@@ -345,3 +324,4 @@ if __name__ == "__main__":
 
 
 	director.run(game)
+
