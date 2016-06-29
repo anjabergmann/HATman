@@ -40,6 +40,14 @@ class GameScene(Scene):
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
 		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands)
 
+		self.bufferRed = [];
+		self.bufferPink = [];
+		self.bufferOrange = [];
+		self.bufferBlue = [];
+		self.bufferPac = [];
+		self.turns = {"r":10, "p":10, "o":10, "b":10, "pac":10};
+
+
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
 		self.now = datetime.datetime.now();
@@ -215,7 +223,7 @@ class GameScene(Scene):
 				# if (infolist[0] == "move"):
 				posx = float(commandlist[4]);
 				posy = float(commandlist[5]);
-				print("update", char);
+				#print("DEBUG update", char);
 
 				#TODO: Use method setPosition in charLayer
 				if(char == "pac"):
@@ -263,11 +271,12 @@ class GameScene(Scene):
 
 	def update(self, director):
 
-		print("DEBUG update()");
+		#print("DEBUG update()");
 
-		if (self.turn):
+		if (self.turns.get(character) > 0):
 
-			print("DEBUG update() if (self.turn)");
+			self.turns.__setitem__(character, (self.turns.get(character) - 1))
+			#print("DEBUG update() if (self.turn)");
 			self.turn = False
 
 			self.eatDots()
@@ -279,9 +288,10 @@ class GameScene(Scene):
 				# requestString="\x02changeDirection," + args.user + ",1," + character + "," + str(self.myLayer.direction) + "\x03";
 				# factory.connectedProtocol.sendRequest(requestString);
 
+			self.myLayer.update(director);
 
-			if(self.myLayer.update(director)):
-				print(datetime.datetime.now())
+			#if(self.myLayer.update(director)):
+			#	print(datetime.datetime.now())
 
 			# for char in self.others:
 			# 	char.update(director)
