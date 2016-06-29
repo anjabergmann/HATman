@@ -10,10 +10,10 @@ class CharLayer(Layer):
 	# enable pyglet events
 	is_event_handler = True
 
-
 	def __init__(self):
 		super().__init__()
 
+		self.commandBuffer = [];
 
 		self.sprites = [];	# sprites
 		self.charRect = None; 		# rectangle around sprites for collision detection
@@ -66,7 +66,16 @@ class CharLayer(Layer):
 			self.charRect.y += 2
 		elif self.direction == key.DOWN:
 			self.charRect.y -= 2
+		elif self.direction == None:
+			return False
 
 		for sprite in self.sprites:
 			sprite.position = self.charRect.center
 
+		return True
+
+	def setPosition(self, director, positionx, positiony):
+		self.charRect.x = positionx;
+		self.charRect.y = positiony;
+		for sprite in self.sprites:
+			sprite.position = self.charRect.center;
