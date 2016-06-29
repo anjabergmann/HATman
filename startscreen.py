@@ -14,9 +14,10 @@ class Startmenu(Menu):
 		
 		super(Startmenu, self).__init__()
 
-		# self.name = name
-		# self.host = host
-		# self.port = port
+		#default values
+		self.user = "Lucy"
+		self.host = "127.0.0.1"
+		self.port = "8080"
 
 		#sets the vertical and horizontal alignment
 		self.menu_valign = BOTTOM
@@ -24,9 +25,9 @@ class Startmenu(Menu):
 
 			# Each MenuItem has text to display, and a callback method
 			# The callback method we pass in, gets called when a user clicks on the MenuItem
-		nameitem = EntryMenuItem("Name: ", self.enter_name, "Lucy", max_length=10)
-		hostitem = EntryMenuItem("Host: ", self.enter_host, "127.0.0.1", max_length=15)
-		portitem = EntryMenuItem("Port: ", self.enter_port, "8080", max_length=7)
+		nameitem = EntryMenuItem("Name: ", self.enter_name, self.user, max_length=10)
+		hostitem = EntryMenuItem("Host: ", self.enter_host, self.host, max_length=15)
+		portitem = EntryMenuItem("Port: ", self.enter_port, self.port, max_length=7)
 		startitem = MenuItem("Start Game", self.start_game)
 		exititem = MenuItem("Exit", self.on_quit)
 
@@ -42,20 +43,26 @@ class Startmenu(Menu):
 	def enter_name(self, name):
 		print("enter a name: ", name)
 		#TODO pass name to game
+		self.user = name
+		print("user: ", self.user)
 
 	def enter_host(self, host):
+		self.host = host
 		print("enter a host: ", host)
 		#TODO pass host to game
 
 	def enter_port(self, port):
+		self.port = port
 		print("enter a port: ", port)
 		#TODO pass port to game
 
 
 	def start_game(self):
-		print("start game as ")
-		# print("start game with host ", host)
-		# print("start game with port ", port)
+		print("-----STARTING GAME ...")
+		print("as ", self.user)
+		print("with host ", self.host)
+		print("with port ", self.port)
+		#print("as character: ", )
 
 
 		#SOMETHING LIKE THIS AFTER INTEGRATING INTO HATMAN.PY:
@@ -86,7 +93,11 @@ class ImageMenu(Menu):
 		self.menu_halign = RIGHT
 
 
-		self.choose_char_item = ['Pacman', 'Pink Ghost', 'Blue Ghost', 'Orange Ghost', 'Red Ghost']
+		self.pac ="pac"
+		self.red = "r"
+		self.orange= "o"
+		self.blue = "b"
+		self.pink = "p"
 
 		pacman = pyglet.resource.image("images/pacman1.png")
 		ghostpink = pyglet.resource.image("images/pink1.png")
@@ -95,19 +106,38 @@ class ImageMenu(Menu):
 		ghostred = pyglet.resource.image("images/red1.png")
 
 		#create menu items with character images
-		charpac = ImageMenuItem(pacman, self.choose_char, self.choose_char_item)
-		chargpink = ImageMenuItem(ghostpink, self.choose_char, self.choose_char_item)
-		chargblue =	ImageMenuItem(ghostblue, self.choose_char, self.choose_char_item)
-		chargorange = ImageMenuItem(ghostorange, self.choose_char, self.choose_char_item)
-		chargred = ImageMenuItem(ghostred, self.choose_char, self.choose_char_item)
+		charpac = ImageMenuItem(pacman, self.choose_pac, self.pac)
+		chargred = ImageMenuItem(ghostred, self.choose_red, self.red)
+		chargorange = ImageMenuItem(ghostorange, self.choose_orange, self.orange)
+		chargblue =	ImageMenuItem(ghostblue, self.choose_blue, self.blue)
+		chargpink = ImageMenuItem(ghostpink, self.choose_pink, self.pink)
+		
 
 		img_items = [charpac, chargpink, chargblue, chargorange, chargred]
 		self.create_menu(img_items)
 
-
-	def choose_char(self, choose_char_item):
-		print("choose a character: ", choose_char_item)
+#CALLBACK-METHODS FOR CHOOSING CHARACTER-----------
+	def choose_pac(self, pac):
+		self.pac = pac
+		print("choose a character: ", pac)
 		#TODO set and pass chosen characters to hatman
+
+	def choose_red(self, red):
+		self.red = red
+		print("choose a character: ", red)
+
+	def choose_orange(self, orange):
+		self.orange = orange
+		print("choose a character: ", orange)
+
+	def choose_blue(self, blue):
+		self.blue = blue
+		print("choose a character: ", blue)
+
+	def choose_pink(self, pink):
+		self.pink = pink
+		print("choose a character: ", pink)
+
 
 
 
