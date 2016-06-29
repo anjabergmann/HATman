@@ -6,17 +6,12 @@ from twisted.protocols.basic import NetstringReceiver
 
 def parse_args():
 	usage = """usage: %prog [options]
-
 This is the Poetry Transform Server.
 Run it like this:
-
   python transformedpoetry.py
-
 If you are in the base directory of the twisted-intro package,
 you could run it like this:
-
   python twisted-server-1/transformedpoetry.py --port 11000
-
 to provide poetry transformation on port 11000.
 """
 
@@ -118,27 +113,15 @@ class HatmanFactory(ServerFactory):
 
 	def __init__(self, service):
 		self.service = service
-		self.commandString = "";
-		self.i = 0;
-		self.stringToSend = "".encode("utf-8");
 
 	def doSomeFancyMethod(self, command):
-			
-		#index = 1;
-		temp = self.service.someFancyMethod(command);
-		if (self.i == 1):
-			self.i = 0;
-			self.stringToSend += temp[1:];
-			print(self.stringToSend);
-			for client in self.clients:
-				#print("INFO Writing to client #" + str(index));
-				client.sendString(self.stringToSend);
-				#index += 1;
-			self.stringToSend = "".encode("utf-8");
-		else:
-			self.i += 1;
-			self.stringToSend = self.service.someFancyMethod(command)[0:-1] + ",".encode("utf-8");
-		return self.stringToSend;
+		index = 1;
+		stringToSend = self.service.someFancyMethod(command);
+		for client in self.clients:
+			#print("INFO Writing to client #" + str(index));
+			client.sendString(stringToSend);
+			index += 1;
+		return stringToSend;
 
 
 
