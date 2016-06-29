@@ -67,9 +67,14 @@ class GameScene(Scene):
 
 		# add layers to the scene
 		self.add(self.labLayer)
-		for char in self.charLayers:
-			char.charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
-			self.add(char);
+
+		# choose pacman position 'randomly'
+		self.pacmanLayer.charRect.center = (self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].x, self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].y)
+		self.add(self.pacmanLayer)
+
+		for i in range(1,len(self.charLayers)):
+			self.charLayers[i].charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
+			self.add(self.charLayers[i]);
 
 
 		# set myLayer to the layer of the users character
@@ -102,34 +107,46 @@ class GameScene(Scene):
 	# return true = direction changed; false = direction didn't change
 	def setDirection(self):
 		self.pressedKey = self.myLayer.pressedKey
+
+		# if direction and pressed key are the same -> don't do anything
 		if self.pressedKey != self.direction:
+
 			# invert direction --> always possible
 			if (self.pressedKey == key.RIGHT and self.direction == key.LEFT) or (
-							self.pressedKey == key.LEFT and self.direction == key.RIGHT) or (
-							self.pressedKey == key.DOWN and self.direction == key.UP) or (
+					self.pressedKey == key.LEFT and self.direction == key.RIGHT) or (
+						self.pressedKey == key.DOWN and self.direction == key.UP) or (
 							self.pressedKey == key.UP and self.direction == key.DOWN):
 				self.direction = self.pressedKey
 				self.myLayer.direction = self.direction
 				return True;
+
+			# pressed key is not moving direction and not opposite
 			else:
-				for cn in self.labLayer.crossNodes:
-					if self.myLayer.charRect.center == (cn.x, cn.y):
-						if self.pressedKey == key.RIGHT and cn.nodeRight != None:
+				# current position
+				x = self.myLayer.charRect.center[0]
+				y = self.myLayer.charRect.center[1]
+				
+				# change of direction is only possible when standing on a node
+				# 	-> check if position is a node
+				if x % 20 == 0.0 and y % 20 == 0.0:
+					
+					# get le node and save in var
+					node = self.labLayer.nodes[int(x/20)-2][int(y/20)-2]
+					
+					if node.sort == "cross":
+						way = False
+						# check if the there is a way in the direction of the pressed key
+						if ((self.pressedKey == key.RIGHT and node.nodeRight != None) or
+								(self.pressedKey == key.LEFT and node.nodeLeft != None) or
+									(self.pressedKey == key.UP and node.nodeUp != None) or
+										(self.pressedKey == key.DOWN and node.nodeDown != None)):
+							way = True
+						# if there is a way, change direction
+						if way:
 							self.direction = self.pressedKey
 							self.myLayer.direction = self.direction
-							return True;
-						elif self.pressedKey == key.LEFT and cn.nodeLeft != None:
-							self.direction = self.pressedKey
-							self.myLayer.direction = self.direction
-							return True;
-						elif self.pressedKey == key.UP and cn.nodeUp != None:
-							self.direction = self.pressedKey
-							self.myLayer.direction = self.direction
-							return True;
-						elif self.pressedKey == key.DOWN and cn.nodeDown != None:
-							self.direction = self.pressedKey
-							self.myLayer.direction = self.direction
-							return True;
+						return way
+
 		return False;
 
 
@@ -142,22 +159,28 @@ class GameScene(Scene):
 	# Check if char reaches border or blind end
 	# = if char reaches a node where neither "direction" nor "pressedKey" is a possible option
 	def checkBorders(self):
-		for cNode in self.labLayer.crossNodes:
-			# only check if char reaches a crossNode (blind ends HAVE to be crossNodes)
-			for char in self.charLayers:
-				if (char.charRect.center == (cNode.x, cNode.y)):
-					if char.direction == key.RIGHT:
-						if cNode.nodeRight == None:
+
+		for char in self.charLayers:
+			# current position
+			x = char.charRect.center[0]
+			y = char.charRect.center[1]
+		
+			# if position is a node
+			if (x % 20 == 0.0 and y % 20 == 0.0):
+
+				# get le node and save in var
+				node = self.labLayer.nodes[int(x/20)-2][int(y/20)-2]
+
+				# if le node is cossNode and has no neighbour in the desired direction -> STOP
+				if node.sort == "cross":
+					if (char.direction != None):
+						if ((char.direction == key.RIGHT and node.nodeRight == None) or
+								(char.direction == key.LEFT and node.nodeLeft == None) or
+									(char.direction == key.UP and node.nodeUp == None) or
+										(char.direction == key.DOWN and node.nodeDown == None)):
 							char.direction = None
-					elif char.direction == key.LEFT:
-						if cNode.nodeLeft == None:
-							char.direction = None
-					elif char.direction == key.UP:
-						if cNode.nodeUp == None:
-							char.direction = None
-					elif char.direction == key.DOWN:
-						if cNode.nodeDown == None:
-							char.direction = None
+
+
 
 	# _________________________________________________________________________________________
 	#
@@ -166,11 +189,19 @@ class GameScene(Scene):
 
 	# Remove wayNodes and wayNodeSprites if pacman reaches them
 	def eatDots(self):
-		for nodeSprite in self.labLayer.nodeSprites:
-			if self.pacmanLayer.charRect.center == (nodeSprite.x, nodeSprite.y):
-				self.labLayer.remove(nodeSprite)
-				self.labLayer.nodeSprites.remove(nodeSprite)
-				self.pacmanLayer.updateScore(1)
+		# current position
+			x = self.pacmanLayer.charRect.center[0]
+			y = self.pacmanLayer.charRect.center[1]
+		
+			# if position is a node
+			if (x % 20 == 0.0 and y % 20 == 0.0):
+
+				for nodeSprite in self.labLayer.nodeSprites:
+					if (x,y) == (nodeSprite.x, nodeSprite.y):
+						self.labLayer.remove(nodeSprite)
+						self.labLayer.nodeSprites.remove(nodeSprite)
+						self.pacmanLayer.updateScore(1)
+						break
 
 
 
