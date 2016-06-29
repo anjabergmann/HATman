@@ -40,20 +40,24 @@ to provide poetry transformation on port 11000.
 class HatmanService(object):
 
 	def someFancyMethod(self, command):
-		#print("INFO Doing someFancyMethod with command", command);
-		returnString = "";
-		if(command[0] == "move"):
-			#character is moving
-			#todo
-			returnString = str(command);
-		elif(command[0] == "die"):
-			#character is dying
-			#todo
-			returnString = str(command);
-		else:
-			#another command
-			#todo
-			returnString = "Hello World!".encode("utf-8");
+		# #print("INFO Doing someFancyMethod with command", command);
+		# returnString = "";
+		# if(command[0] == "move"):
+		# 	#character is moving
+		# 	#todo
+		# 	#returnString = str(command);
+		# 	returnString = ",".join(command);
+		# elif(command[0] == "die"):
+		# 	#character is dying
+		# 	#todo
+		# 	returnString = str(command);
+		# else:
+		# 	#another command
+		# 	#todo
+		# 	returnString = "Hello World!".encode("utf-8");
+
+		returnString = str(command);
+
 		try:
 			return returnString.encode("utf-8");
 		except:
@@ -96,9 +100,9 @@ class HatmanProtocol(NetstringReceiver):
 			self.transport.loseConnection();
 		elif(command[0] == "hi"):
 			self.sendString("Hello, Client!".encode("utf-8"));
-
-		#self.sendString(self.factory.doSomeFancyMethod(command));
-		self.factory.doSomeFancyMethod(command);
+		else:
+			#self.sendString(self.factory.doSomeFancyMethod(command));
+			self.factory.doSomeFancyMethod(request.decode("utf-8"));
 
 
 
