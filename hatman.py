@@ -40,9 +40,6 @@ class GameScene(Scene):
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
 		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands)
 
-		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
-		self.commandBuffer = [];
-
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
 		self.now = datetime.datetime.now();
@@ -227,7 +224,7 @@ class GameScene(Scene):
 
 
 	def updateChars(self, info):
-		self.commandBuffer.append(info);
+		self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
 
 
 	# _________________________________________________________________________________________
@@ -252,14 +249,15 @@ class GameScene(Scene):
 
 		factory.connectedProtocol.sendRequest(requestString);
 
-		while(len(self.commandBuffer) > 0):
-			commandlist = self.commandBuffer.pop(0).decode("utf-8")[1:-1].split(",");
-			print("DEBUG Commandlist:", commandlist);
-			char = commandlist[3];
-			posx = float(commandlist[4]);
-			posy = float(commandlist[5]);
-			if (char != character):
-				self.charMapping.get(char).setPosition(director, posx, posy);
+		for c in self.charLayers:
+			if(len(c.commandBuffer) > 0):
+				commandlist = c.commandBuffer.pop(0).decode("utf-8")[1:-1].split(",");
+				print("DEBUG Commandlist:", commandlist);
+				char = commandlist[3];
+				posx = float(commandlist[4]);
+				posy = float(commandlist[5]);
+				if (char != character):
+					c.setPosition(director, posx, posy);
 
 
 

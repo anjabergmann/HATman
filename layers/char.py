@@ -13,6 +13,8 @@ class CharLayer(Layer):
 	def __init__(self):
 		super().__init__()
 
+		self.commandBuffer = []
+
 		self.sprites = [];	# sprites
 		self.charRect = None; 		# rectangle around sprites for collision detection
 
