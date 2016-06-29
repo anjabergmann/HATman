@@ -53,7 +53,7 @@ class Startmenu(Menu):
 		#SOMETHING LIKE THIS AFTER INTEGRATING INTO HATMAN.PY:
 		#main_scene = GameScene()
 		#director.push(main_scene)
-		
+
 		#NOT TO FORGET: deleting 'director.init(resizable=False, caption="HATman")' in hatman.py 
 		#because we want to initialize the program here
 		
@@ -73,7 +73,7 @@ class ImageMenu(Menu):
 		
 		super(ImageMenu, self).__init__()
 
-		#sets the vertical and horizontal alignment 
+		#sets the vertical and horizontal alignment for images
 		self.menu_valign = BOTTOM
 		self.menu_halign = RIGHT
 
