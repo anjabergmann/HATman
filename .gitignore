@@ -1,5 +1,5 @@
 -# Byte-compiled / optimized / DLL files
--#__pycache__/
+-__pycache__/
 -*.py[cod]
 -*$py.class
 -
@@ -64,5 +64,5 @@
 -#Backup files
 -~* 
 -
--#*/__pycache__/
+-*/__pycache__/
 layers/__pycache__/ghost.cpython-34.pyc
