@@ -73,7 +73,7 @@ class ImageMenu(Menu):
 		
 		super(ImageMenu, self).__init__()
 
-		#sets the vertical and horizontal alignment for images
+		#sets the vertical and horizontal alignment for image menu
 		self.menu_valign = BOTTOM
 		self.menu_halign = RIGHT
 
