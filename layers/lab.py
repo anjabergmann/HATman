@@ -3,6 +3,11 @@ from cocos.layer import Layer
 from cocos.rect import Rect
 from cocos.sprite import Sprite
 
+
+# LabNode class: defines a node of the labyrinth
+# x, y... coordinates in the window
+# neighbours... for crossNodes -> the next crossNode in that direction
+#				for wayNodes -> the next wayNode in that direction (only relevant for detection of accidental crossNodes)
 class LabNode:
     def __init__(self, x, y):
         # position of the node
@@ -22,6 +27,7 @@ class LabNode:
 
     def __str__(self):
         return "labNode [x: " + str(self.x) + ", y: " + str(self.y) + "]"
+
 
 
 class LabLayer(Layer):
@@ -56,12 +62,12 @@ class LabLayer(Layer):
         # Needed for navigation
         self.crossNodes = []
 
-        #add corners to crossnodes
+        # add corners to crossnodes
         self.crossNodes.append(self.nodes[0][0])
         self.crossNodes.append(self.nodes[0][19])
         self.crossNodes.append(self.nodes[28][0])
         self.crossNodes.append(self.nodes[28][19])
-
+        # and mark as crossNodes
         self.nodes[0][0].sort = "cross"		#links unten
         self.nodes[0][19].sort = "cross"	#links oben
         self.nodes[28][0].sort = "cross"	#rechts unten
@@ -69,8 +75,8 @@ class LabLayer(Layer):
 
 
 
-        def chooseNodes(num):
-	        #choose more or less random crossnodes
+        def chooseCrossNodes(num):
+	        # choose more or less random crossnodes
 
 	        # list of possible (allowed) coordinates
 	        xpos = [0, 28]
@@ -125,10 +131,10 @@ class LabLayer(Layer):
 	        		self.crossNodes.append(self.nodes[x][y])
 
 
-        chooseNodes(25)
+        chooseCrossNodes(25)
 
 
-        def connectNodes():
+        def connectCrossNodes():
 	        #connecting adjacent crossNodes by reference
 	        for currNode in self.crossNodes:
 	        	for otherNode in self.crossNodes:
@@ -157,7 +163,8 @@ class LabLayer(Layer):
 	        		else:
 	        			pass #no connection
 
-        connectNodes()
+        connectCrossNodes()
+
 
         # __________________________________________________________________________________________
         #
@@ -169,30 +176,70 @@ class LabLayer(Layer):
         # Irrelevant for navigation
         self.wayNodes = []
 
-        #Add crossNodes and connections between two neighboured crossNodes to wayNodes[]
-        for cNode in self.crossNodes:
-        	self.wayNodes.append(cNode)
+        def connectWayNodes():
+	        #connecting adjacent wayNodes by reference
+	        for currNode in self.wayNodes:
+	        	for otherNode in self.wayNodes:
+	        		#same x coordinates -> either above or under
+	        		if (currNode.x == otherNode.x):
+	        			#current under other
+	        			if (currNode.y == otherNode.y-20):
+	        				currNode.nodeUp = otherNode
+	        				otherNode.nodeDown = currNode
+	        			#curr above other
+	        			elif (currNode.y == otherNode.y+20):
+	        				currNode.nodeDown = otherNode
+	        				otherNode.nodeUp = currNode
 
-            #connect nodes horizontally
-        	if cNode.nodeRight != None:
-        		for nodes in self.nodes:
-        			for pNode in nodes:
-        				#all possible nodes on the same height, to the right of cNode, before its next neighbour
-        				if pNode.y == cNode.y and pNode.x > cNode.x and pNode.x < cNode.nodeRight.x:
-        					self.wayNodes.append(pNode)
-        					pNode.sort = "way"
+	        		#same y coordinates -> left or right
+	        		if (currNode.y == otherNode.y):
+	        			#current left of other
+	        			if (currNode.x == otherNode.x-20):
+	        				currNode.nodeRight = otherNode
+	        				otherNode.nodeLeft = currNode
+						#current right of other
+	        			elif (currNode.x == otherNode.x+20):
+	        				currNode.nodeLeft = otherNode
+	        				otherNode.nodeRight = currNode
 
-            #connect nodes vertically
-        	if cNode.nodeDown != None:
-        		for nodes in self.nodes:
-        			for pNode in nodes:
-        				#all possible nodes on the same vertical line, from top to bottom
-        				if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
-        					#only add if it isn't already a waynode
-        					if pNode not in self.wayNodes:
-        						self.wayNodes.append(pNode)
-        						pNode.sort = "way"
 
+        def addWayNodes():
+	        #Add crossNodes and connections between two neighboured crossNodes to wayNodes[]
+	        for cNode in self.crossNodes:
+	        	self.wayNodes.append(cNode)
+
+	            #connect nodes horizontally
+	        	if cNode.nodeRight != None:
+	        		for nodes in self.nodes:
+	        			for pNode in nodes:
+	        				#all possible nodes on the same height, to the right of cNode, before its next neighbour
+	        				if pNode.y == cNode.y and pNode.x > cNode.x and pNode.x < cNode.nodeRight.x:
+	        					self.wayNodes.append(pNode)
+	        					pNode.sort = "way"
+
+	            #connect nodes vertically
+	        	if cNode.nodeDown != None:
+	        		for nodes in self.nodes:
+	        			for pNode in nodes:
+	        				#all possible nodes on the same vertical line, from top to bottom
+	        				if pNode.x == cNode.x and pNode.y < cNode.y and pNode.y > cNode.nodeDown.y:
+	        					#only add if it isn't already a waynode
+	        					if pNode not in self.wayNodes:
+	        						self.wayNodes.append(pNode)
+	        						pNode.sort = "way"
+
+        addWayNodes()
+        connectWayNodes()
+
+        # creating wayNodes can accidentally create crossNodes which are not in the crossNode array
+        # if a wayNode has 3 or 4 neighbours, it is marked as a crossNode and added to the array
+        for wNode in self.wayNodes:
+        	if ((wNode.nodeLeft != None and wNode.nodeRight != None) and (wNode.nodeUp != None or wNode.nodeDown != None)):
+        		wNode.sort = "cross"
+        		self.crossNodes.append(wNode)
+        	elif ((wNode.nodeUp != None and wNode.nodeDown != None) and (wNode.nodeLeft != None or wNode.nodeRight != None)):
+        		wNode.sort = "cross"
+        		self.crossNodes.append(wNode)
 
         # __________________________________________________________________________________________
         #
@@ -216,10 +263,9 @@ class LabLayer(Layer):
         # __________________________________________________________________________________________
 
         # Sprites for the wayNodes = dots that are eaten by pacman
-        self.wallSprites = []
         self.nodeSprites = []
 
-        # add sprites to array
+        # add nodeSprites to array, add all to layer
         for nodes in self.nodes:
         	for node in nodes:
         		if node.sort == "cross":
@@ -234,15 +280,9 @@ class LabLayer(Layer):
 
         		if node.sort == "cross" or node.sort == "way":
         			self.nodeSprites.append(tempSprite)
-        		else:
-        			self.wallSprites.append(tempSprite)
 
-        # add sprites to the layer
-        for wall in self.wallSprites:
-        	self.add(wall)
+        		self.add(tempSprite)
 
-        for node in self.nodeSprites:
-        	self.add(node)
 
 
 
