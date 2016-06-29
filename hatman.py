@@ -45,8 +45,7 @@ class GameScene(Scene):
 		self.bufferOrange = [];
 		self.bufferBlue = [];
 		self.bufferPac = [];
-		self.turns = {"r":10, "p":10, "o":10, "b":10, "pac":10};
-
+		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
 
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
@@ -86,17 +85,13 @@ class GameScene(Scene):
 			self.add(char);
 
 
-		# set myLayer to the layer of the users character
-		self.myLayer = self.pacmanLayer;
+		self.charMapping = {"r":self.ghostLayerRed, "b":self.ghostLayerBlue, "p":self.ghostLayerPink, "o":self.ghostLayerOrange, "pac":self.pacmanLayer}
 
-		if(args.character == "p"):
-			self.myLayer = self.ghostLayerPink;
-		elif(args.character == "b"):
-			self.myLayer = self.ghostLayerBlue;
-		elif(args.character == "o"):
-			self.myLayer = self.ghostLayerOrange;
-		elif(args.character == "r"):
-			self.myLayer = self.ghostLayerRed;
+
+		# set myLayer to the layer of the users character
+		self.myLayer = self.charMapping.get(character);
+
+		self.myLayer = self.pacmanLayer;
 
 		self.others.remove(self.myLayer)
 
@@ -204,63 +199,24 @@ class GameScene(Scene):
 		self.counter += 1; # increase number of received commands
 		self.commands.append(info); # add received command to commandlist
 
-		#print("DEBUG Counter:", self.counter);
 
 		# number of commands received
-		# TODO: Replace counter with len(commandlist) 
+		# TODO: Replace counter with len(commandlist)
 		if (self.counter == 5):
 
 			self.counter = 0;
 			self.turn = True;
 
 			for c in self.commands:
-			
+
 				commandlist = c.decode("utf-8")[1:-1].split(",");
-				char = commandlist[3];
-				print(commandlist)
+				print("DEBUG Commandlist:", commandlist);
+				if(commandlist[0] == "move"):
+					char = commandlist[3];
+					posx = float(commandlist[4]);
+					posy = float(commandlist[5]);
 
-
-				# if (infolist[0] == "move"):
-				posx = float(commandlist[4]);
-				posy = float(commandlist[5]);
-				#print("DEBUG update", char);
-
-				#TODO: Use method setPosition in charLayer
-				if(char == "pac"):
-					self.pacmanLayer.charRect.position = posx, posy;
-					self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
-					self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
-				elif (char == "o"):
-					self.ghostLayerOrange.charRect.position = posx, posy;
-					self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
-					self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
-				elif (char == "p"):
-					self.ghostLayerPink.charRect.position = posx, posy;
-					self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
-					self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
-				elif (char == "r"):
-					self.ghostLayerRed.charRect.position = posx, posy;
-					self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
-					self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
-				elif (char == "b"):
-					self.ghostLayerBlue.charRect.position = posx, posy;
-					self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
-					self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
-
-				# elif(infolist[0] == "changeDirection"):
-				# 	print("{} changed direction".format(char));
-
-				# 	if(char != character):
-				# 		if(char == "pac"):
-				# 			self.pacmanLayer.direction = key;
-				# 		elif(char == "o"):
-				# 			self.ghostLayerOrange.direction = key;
-				# 		elif(char == "p"):
-				# 			self.ghostLayerPink.direction = key;
-				# 		elif(char == "r"):
-				# 			self.ghostLayerRed.direction = key;
-				# 		elif(char == "b"):
-				# 			self.ghostLayerBlue.direction = key;
+					self.charMapping.get(char).setPosition(director, posx, posy);
 
 			self.commands = [];
 
@@ -273,8 +229,8 @@ class GameScene(Scene):
 
 		#print("DEBUG update()");
 
-		if (self.turns.get(character) > 0):
-
+		#if (self.turns.get(character) > 0):
+		if(self.turn):
 			self.turns.__setitem__(character, (self.turns.get(character) - 1))
 			#print("DEBUG update() if (self.turn)");
 			self.turn = False
