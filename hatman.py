@@ -253,8 +253,8 @@ class GameScene(Scene):
 		factory.connectedProtocol.sendRequest(requestString);
 
 		while(len(self.commandBuffer) > 0):
-			commandlist = self.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
-			#print("DEBUG Commandlist:", commandlist);
+			commandlist = self.commandBuffer.pop(0).decode("utf-8")[1:-1].split(",");
+			print("DEBUG Commandlist:", commandlist);
 			char = commandlist[3];
 			posx = float(commandlist[4]);
 			posy = float(commandlist[5]);
