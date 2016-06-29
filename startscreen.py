@@ -62,7 +62,9 @@ class Startmenu(Menu):
 		print("as ", self.user)
 		print("with host ", self.host)
 		print("with port ", self.port)
-		#print("as character: ", )
+		imagemenuclass = ImageMenu()
+		char = imagemenuclass.char
+		print("as character: ", char)
 
 
 		#SOMETHING LIKE THIS AFTER INTEGRATING INTO HATMAN.PY:
@@ -120,7 +122,6 @@ class ImageMenu(Menu):
 
 #CALLBACK-METHODS FOR CHOOSING CHARACTER-----------
 	def choose_pac(self, pac):
-		
 		self.pac = pac
 		self.char = self.pac
 		print("choose a character: ", self.char)
