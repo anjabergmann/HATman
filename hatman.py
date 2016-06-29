@@ -36,6 +36,9 @@ class GameScene(Scene):
 	def __init__(self):
 		super().__init__() 
 
+		self.counter = 0;	# counts number of received commands in updateChars()
+		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
+
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
 		self.now = datetime.datetime.now();
@@ -181,55 +184,66 @@ class GameScene(Scene):
 
 
 	def updateChars(self, info):
-		self.now = datetime.datetime.now();
-		self.duration = self.now - self.starttime;
-		print(self.duration);
-		infolist = info.decode("utf-8")[1:-1].split(",");
-		char = infolist[3];
-		print(infolist)
+
+		self.counter += 1; # increase number of received commands
+		print("Counter:", self.counter);
+		#number of commands received
+		if (self.counter == 5):
+			self.counter = 0;
+			self.turn = True;
+
+			print("5");
+			self.now = datetime.datetime.now();
+			self.duration = self.now - self.starttime;
+			print(self.duration);
+			infolist = info.decode("utf-8")[1:-1].split(",");
+			char = infolist[3];
+			print(infolist)
 
 
-		if (infolist[0] == "move"):
-			posx = float(infolist[4]);
-			posy = float(infolist[5]);
-			print("update", char);
-			if(char != character):
-				if(char == "pac"):
-					self.pacmanLayer.charRect.position = posx, posy;
-					self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
-					self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
-				elif (char == "o"):
-					self.ghostLayerOrange.charRect.position = posx, posy;
-					self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
-					self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
-				elif (char == "p"):
-					self.ghostLayerPink.charRect.position = posx, posy;
-					self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
-					self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
-				elif (char == "r"):
-					self.ghostLayerRed.charRect.position = posx, posy;
-					self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
-					self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
-				elif (char == "b"):
-					self.ghostLayerBlue.charRect.position = posx, posy;
-					self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
-					self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
+			if (infolist[0] == "move"):
+				posx = float(infolist[4]);
+				posy = float(infolist[5]);
+				print("update", char);
+				if(char != character):
+					if(char == "pac"):
+						self.pacmanLayer.charRect.position = posx, posy;
+						self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
+						self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
+					elif (char == "o"):
+						self.ghostLayerOrange.charRect.position = posx, posy;
+						self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
+						self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
+					elif (char == "p"):
+						self.ghostLayerPink.charRect.position = posx, posy;
+						self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
+						self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
+					elif (char == "r"):
+						self.ghostLayerRed.charRect.position = posx, posy;
+						self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
+						self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
+					elif (char == "b"):
+						self.ghostLayerBlue.charRect.position = posx, posy;
+						self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
+						self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
 
 
-		elif(infolist[0] == "changeDirection"):
-			print("{} changed direction".format(char));
+			elif(infolist[0] == "changeDirection"):
+				print("{} changed direction".format(char));
 
-			if(char != character):
-				if(char == "pac"):
-					self.pacmanLayer.direction = key;
-				elif(char == "o"):
-					self.ghostLayerOrange.direction = key;
-				elif(char == "p"):
-					self.ghostLayerPink.direction = key;
-				elif(char == "r"):
-					self.ghostLayerRed.direction = key;
-				elif(char == "b"):
-					self.ghostLayerBlue.direction = key;
+				if(char != character):
+					if(char == "pac"):
+						self.pacmanLayer.direction = key;
+					elif(char == "o"):
+						self.ghostLayerOrange.direction = key;
+					elif(char == "p"):
+						self.ghostLayerPink.direction = key;
+					elif(char == "r"):
+						self.ghostLayerRed.direction = key;
+					elif(char == "b"):
+						self.ghostLayerBlue.direction = key;
+		else:
+			self.turn = False;
 
 
 	# _________________________________________________________________________________________
@@ -238,31 +252,35 @@ class GameScene(Scene):
 	# _________________________________________________________________________________________
 
 	def update(self, director):
-		self.eatDots()
 
-		if(self.setDirection()):
-			self.starttime = datetime.datetime.now();
-			# requestString="\x02changeDirection," + args.user + ",1," + character + "," + str(self.myLayer.direction) + "\x03";
-			# factory.connectedProtocol.sendRequest(requestString);
+		if (self.turn):
 
-		self.checkBorders()
+			self.eatDots()
+			self.setDirection()
+			self.checkBorders()
 
-		if(self.myLayer.update(director)):
-			print(datetime.datetime.now())
-
-		for char in self.others:
-			char.update(director)
+			# if(self.setDirection()):
+			# 	self.starttime = datetime.datetime.now();
+				# requestString="\x02changeDirection," + args.user + ",1," + character + "," + str(self.myLayer.direction) + "\x03";
+				# factory.connectedProtocol.sendRequest(requestString);
 
 
-		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
-		requestString ="\x02move,";
-		requestString += args.user + ",1,";
-		requestString += args.character + ",";
-		requestString += str(self.myLayer.charRect.x) + "," + str(self.myLayer.charRect.y) + "\x03";
+			# if(self.myLayer.update(director)):
+			# 	print(datetime.datetime.now())
 
-		#print(requestString);
+			# for char in self.others:
+			# 	char.update(director)
 
-		factory.connectedProtocol.sendRequest(requestString);
+
+			#command = "\x02move,user,gameid,character,positionx,positiony\x03"
+			requestString ="\x02move,";
+			requestString += args.user + ",1,";
+			requestString += args.character + ",";
+			requestString += str(self.myLayer.charRect.x) + "," + str(self.myLayer.charRect.y) + "\x03";
+
+			#print(requestString);
+
+			factory.connectedProtocol.sendRequest(requestString);
 
 
 
