@@ -40,7 +40,7 @@ class GameScene(Scene):
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
 		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands)
 
-		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
+		self.turns = {"r":1000000, "p":1000000, "o":1000000, "b":1000000, "pac":1000000};
 
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
@@ -180,25 +180,23 @@ class GameScene(Scene):
 	# = if char reaches a node where neither "direction" nor "pressedKey" is a possible option
 	def checkBorders(self):
 
-		for char in self.charLayers:
-			# current position
-			x = char.charRect.center[0]
-			y = char.charRect.center[1]
-		
-			# if position is a node
-			if (x % 20 == 0.0 and y % 20 == 0.0):
+		# current position
+		x, y = self.myLayer.charRect.center;
 
-				# get le node and save in var
-				node = self.labLayer.nodes[int(x/20)-2][int(y/20)-2]
+		# if position is a node
+		if (x % 20 == 0.0 and y % 20 == 0.0):
 
-				# if le node is cossNode and has no neighbour in the desired direction -> STOP
-				if node.sort == "cross":
-					if (char.direction != None):
-						if ((char.direction == key.RIGHT and node.nodeRight == None) or
-								(char.direction == key.LEFT and node.nodeLeft == None) or
-									(char.direction == key.UP and node.nodeUp == None) or
-										(char.direction == key.DOWN and node.nodeDown == None)):
-							char.direction = None
+			# get le node and save in var
+			node = self.labLayer.nodes[int(x/20)-2][int(y/20)-2]
+
+			# if le node is cossNode and has no neighbour in the desired direction -> STOP
+			if node.sort == "cross":
+				if (self.myLayer.direction != None):
+					if ((self.myLayer.direction == key.RIGHT and node.nodeRight == None) or
+							(self.myLayer.direction == key.LEFT and node.nodeLeft == None) or
+								(self.myLayer.direction == key.UP and node.nodeUp == None) or
+									(self.myLayer.direction == key.DOWN and node.nodeDown == None)):
+						self.myLayer.direction = None
 
 
 
