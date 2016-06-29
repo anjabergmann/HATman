@@ -92,6 +92,8 @@ class ImageMenu(Menu):
 		self.menu_valign = BOTTOM
 		self.menu_halign = RIGHT
 
+		#default
+		self.char = "pac"
 
 		self.pac ="pac"
 		self.red = "r"
@@ -118,25 +120,30 @@ class ImageMenu(Menu):
 
 #CALLBACK-METHODS FOR CHOOSING CHARACTER-----------
 	def choose_pac(self, pac):
+		
 		self.pac = pac
-		print("choose a character: ", pac)
-		#TODO set and pass chosen characters to hatman
+		self.char = self.pac
+		print("choose a character: ", self.char)
 
 	def choose_red(self, red):
 		self.red = red
-		print("choose a character: ", red)
+		self.char = self.red
+		print("choose a character: ", self.char)
 
 	def choose_orange(self, orange):
 		self.orange = orange
-		print("choose a character: ", orange)
+		self.char = self.orange
+		print("choose a character: ", self.char)
 
 	def choose_blue(self, blue):
 		self.blue = blue
-		print("choose a character: ", blue)
+		self.char = self.blue
+		print("choose a character: ", self.char)
 
 	def choose_pink(self, pink):
 		self.pink = pink
-		print("choose a character: ", pink)
+		self.char = self.pink
+		print("choose a character: ", self.char)
 
 
 
