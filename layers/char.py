@@ -73,3 +73,9 @@ class CharLayer(Layer):
 			sprite.position = self.charRect.center
 
 		return True
+
+	def setPosition(self, director, positionx, positiony):
+		self.charRect.x = positionx;
+		self.charRect.y = positiony;
+		for sprite in self.sprites:
+			sprite.position = self.charRect.center;

@@ -38,6 +38,7 @@ class GameScene(Scene):
 
 		self.counter = 0;	# counts number of received commands in updateChars()
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
+		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands)
 
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
@@ -109,6 +110,13 @@ class GameScene(Scene):
 	# (= if Character reaches a node with a neighbor-node in the pressedKey-direction)
 	# return true = direction changed; false = direction didn't change
 	def setDirection(self):
+
+		#idea for refactoring: 
+		# if (positionx und positiony mod 20 = 0 (wenn überhaupt an einem Knoten))
+		#		if knotenArray[positionx/20 - 1][positionny/20 -1] ist crossNode and
+		#					knoten hat nachbarknoten in entsprechender Richtung):
+		#							wechsle Richtung
+
 		self.pressedKey = self.myLayer.pressedKey
 		if self.pressedKey != self.direction:
 			# invert direction --> always possible
@@ -186,65 +194,67 @@ class GameScene(Scene):
 	def updateChars(self, info):
 
 		self.counter += 1; # increase number of received commands
-		print("Counter:", self.counter);
-		#number of commands received
+		self.commands.append(info); # add received command to commandlist
+
+		#print("DEBUG Counter:", self.counter);
+
+		# number of commands received
+		# TODO: Replace counter with len(commandlist) 
 		if (self.counter == 5):
+
 			self.counter = 0;
 			self.turn = True;
 
-			print("5");
-			self.now = datetime.datetime.now();
-			self.duration = self.now - self.starttime;
-			print(self.duration);
-			infolist = info.decode("utf-8")[1:-1].split(",");
-			char = infolist[3];
-			print(infolist)
+			for c in self.commands:
+			
+				commandlist = c.decode("utf-8")[1:-1].split(",");
+				char = commandlist[3];
+				print(commandlist)
 
 
-			if (infolist[0] == "move"):
-				posx = float(infolist[4]);
-				posy = float(infolist[5]);
+				# if (infolist[0] == "move"):
+				posx = float(commandlist[4]);
+				posy = float(commandlist[5]);
 				print("update", char);
-				if(char != character):
-					if(char == "pac"):
-						self.pacmanLayer.charRect.position = posx, posy;
-						self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
-						self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
-					elif (char == "o"):
-						self.ghostLayerOrange.charRect.position = posx, posy;
-						self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
-						self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
-					elif (char == "p"):
-						self.ghostLayerPink.charRect.position = posx, posy;
-						self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
-						self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
-					elif (char == "r"):
-						self.ghostLayerRed.charRect.position = posx, posy;
-						self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
-						self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
-					elif (char == "b"):
-						self.ghostLayerBlue.charRect.position = posx, posy;
-						self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
-						self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
 
+				#TODO: Use method setPosition in charLayer
+				if(char == "pac"):
+					self.pacmanLayer.charRect.position = posx, posy;
+					self.pacmanLayer.pacman1.position = self.pacmanLayer.charRect.center;
+					self.pacmanLayer.pacman2.position = self.pacmanLayer.charRect.center;
+				elif (char == "o"):
+					self.ghostLayerOrange.charRect.position = posx, posy;
+					self.ghostLayerOrange.ghost1.position = self.ghostLayerOrange.charRect.center;
+					self.ghostLayerOrange.ghost2.position = self.ghostLayerOrange.charRect.center;
+				elif (char == "p"):
+					self.ghostLayerPink.charRect.position = posx, posy;
+					self.ghostLayerPink.ghost1.position = self.ghostLayerPink.charRect.center;
+					self.ghostLayerPink.ghost2.position = self.ghostLayerPink.charRect.center;
+				elif (char == "r"):
+					self.ghostLayerRed.charRect.position = posx, posy;
+					self.ghostLayerRed.ghost1.position = self.ghostLayerRed.charRect.center;
+					self.ghostLayerRed.ghost2.position = self.ghostLayerRed.charRect.center;
+				elif (char == "b"):
+					self.ghostLayerBlue.charRect.position = posx, posy;
+					self.ghostLayerBlue.ghost1.position = self.ghostLayerBlue.charRect.center;
+					self.ghostLayerBlue.ghost2.position = self.ghostLayerBlue.charRect.center;
 
-			elif(infolist[0] == "changeDirection"):
-				print("{} changed direction".format(char));
+				# elif(infolist[0] == "changeDirection"):
+				# 	print("{} changed direction".format(char));
 
-				if(char != character):
-					if(char == "pac"):
-						self.pacmanLayer.direction = key;
-					elif(char == "o"):
-						self.ghostLayerOrange.direction = key;
-					elif(char == "p"):
-						self.ghostLayerPink.direction = key;
-					elif(char == "r"):
-						self.ghostLayerRed.direction = key;
-					elif(char == "b"):
-						self.ghostLayerBlue.direction = key;
-		else:
-			self.turn = False;
+				# 	if(char != character):
+				# 		if(char == "pac"):
+				# 			self.pacmanLayer.direction = key;
+				# 		elif(char == "o"):
+				# 			self.ghostLayerOrange.direction = key;
+				# 		elif(char == "p"):
+				# 			self.ghostLayerPink.direction = key;
+				# 		elif(char == "r"):
+				# 			self.ghostLayerRed.direction = key;
+				# 		elif(char == "b"):
+				# 			self.ghostLayerBlue.direction = key;
 
+			self.commands = [];
 
 	# _________________________________________________________________________________________
 	#
@@ -253,7 +263,12 @@ class GameScene(Scene):
 
 	def update(self, director):
 
+		print("DEBUG update()");
+
 		if (self.turn):
+
+			print("DEBUG update() if (self.turn)");
+			self.turn = False
 
 			self.eatDots()
 			self.setDirection()
@@ -265,8 +280,8 @@ class GameScene(Scene):
 				# factory.connectedProtocol.sendRequest(requestString);
 
 
-			# if(self.myLayer.update(director)):
-			# 	print(datetime.datetime.now())
+			if(self.myLayer.update(director)):
+				print(datetime.datetime.now())
 
 			# for char in self.others:
 			# 	char.update(director)
@@ -278,9 +293,10 @@ class GameScene(Scene):
 			requestString += args.character + ",";
 			requestString += str(self.myLayer.charRect.x) + "," + str(self.myLayer.charRect.y) + "\x03";
 
-			#print(requestString);
+			#print("DEBUG RequestString:", requestString);
 
 			factory.connectedProtocol.sendRequest(requestString);
+
 
 
 
@@ -288,7 +304,6 @@ class GameScene(Scene):
 class networkThread(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self);
-		print("networkThread");
 
 	def run(self):
 		try:
