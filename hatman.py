@@ -252,7 +252,7 @@ class GameScene(Scene):
 		for c in self.charLayers:
 			if(len(c.commandBuffer) > 0):
 				commandlist = c.commandBuffer.pop(0).decode("utf-8")[1:-1].split(",");
-				print("DEBUG Commandlist:", commandlist);
+				#print("DEBUG Commandlist:", commandlist);
 				char = commandlist[3];
 				posx = float(commandlist[4]);
 				posy = float(commandlist[5]);
@@ -321,6 +321,11 @@ def main():
 	thread = networkThread();
 	thread.daemon = True
 	thread.start();
+
+	# prevents programme to crash due to the factory not having a
+	# connectedProtocol yet, but already trying to send stuff through it
+	# --> workaround ... refactor sometime xD
+	time.sleep(1)
 
 	# start the director for the gui stuff
 	director.run(game)
