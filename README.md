@@ -19,16 +19,15 @@ _Project Work 1 - Gamedevelopment with Python_
 
 
 # Setup:
-* **not finished yet**
+* Make sure you have all the dependencies installed
 * Start Hatman Server
-	- `python3 server.py [--port <free Port>]`
+	- `python3 server.py [--port <free Port> --iface <interface>]`
 * Start Hatman Client respectively GUI
-	- `python3 hatman.py --port <port on which the server is listening> [--user <username> --character <character>]`
+	- `python3 hatman.py --port <port on which the server is listening> [--host <interface which the server is listening on> --user <username> --character <character>]`
+
 
 
 #Probably useful links:
-* Python Plugin for Eclipse
-	- [http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclips](http://www.till.net/Themen/plone-zope-python/python-entwicklung-mit-eclipse) 
 * Cocos2d
 	- [http://cocos2d.org/](http://cocos2d.org/)
 	- [http://python.cocos2d.org/](http://python.cocos2d.org/)
@@ -41,28 +40,13 @@ _Project Work 1 - Gamedevelopment with Python_
 	- [http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/](http://krondo.com/an-introduction-to-asynchronous-programming-and-twisted/)
 	- [https://www.youtube.com/watch?v=GuNwewBU_Hw](https://www.youtube.com/watch?v=GuNwewBU_Hw)
 
+
 #To-Do
-* _(list might not be complete)_
-* Change Layers: 	**check?**
-	- Either just one layer class for pacman AND ghosts, not two separate classes
-	- Or put methods that are just for ghost or pacman into entsprechenden layer
-	- Maybe: Put change direction method into Layers ...??? 
-	- Being confused
-	- Discussion sinnvollste solution
-* Make only the played character playable by key presses 	**check**
-* Multiplayer: Make other characters playable by other player 	**check**
-* Send command from gui to server automatically 	**check**
-* Do something with received commands from server (GUI) 	**check**
-* Lifes
-* Collision detection between Pacman and Ghosts 	**check**
-* Collision detection between Pacman/Ghosts and Labyrinth walls 	**check**
-* Score
+
+* Score for ghosts
 * Pacman-can-hunt-ghosts-mode (after pacman ate one of these bigger dots)
-* Create labyrinth randomly 	**check**
 * Start-Screen
-* Highscore-Screen
-* Database
-* Login
+* More levels??
 * Hatman
 	* --> Special version that overall works similar to the normal version but with fancier design: 
 		* Pacman wears hat
@@ -76,8 +60,11 @@ _Project Work 1 - Gamedevelopment with Python_
 * All the graphical stuff (draw sprites and a fancy designed labyrinth [only pieces so that they can be used 
 		to make a random created labyrinth] and so on)
 * Music (for Hatman-Version perhaps: Moonlight Sonata)
-* Make labyrinth random
-
+* Database
+* Login
+* Highscore-Screen
+* Handling multiple games
+* Prevent clients from playing the same character in the same game
 
 
 #Q>A

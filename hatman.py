@@ -46,10 +46,6 @@ class GameScene(Scene):
 		self.duration = self.now - self.starttime;
 
 
-		self.user = args.user;              # username
-		self.character = args.character;    # character the user is playing
-
-
 		self.pressedKey = None
 		self.direction = key.RIGHT
 
@@ -220,8 +216,9 @@ class GameScene(Scene):
 						self.statslabel.element.text = 'Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives)
 						break
 
-
-
+			if (len(self.labLayer.nodeSprites) == 0):
+				print("pacman wins");
+				# TODO: New game
 
 	def updateChars(self, info):
 		self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
@@ -251,6 +248,11 @@ class GameScene(Scene):
 
 		for c in self.charLayers:
 			if(len(c.commandBuffer) > 0):
+				if (len(c.commandBuffer) > 10):
+					#skip a few updates to reduce the delay
+					c.commandBuffer.pop(0);
+					c.commandBuffer.pop(0);
+					c.commandBuffer.pop(0); 
 				commandlist = c.commandBuffer.pop(0).decode("utf-8")[1:-1].split(",");
 				#print("DEBUG Commandlist:", commandlist);
 				char = commandlist[3];
@@ -258,8 +260,13 @@ class GameScene(Scene):
 				posy = float(commandlist[5]);
 				if (char != character):
 					c.setPosition(director, posx, posy);
-
-
+			if (c != self.pacmanLayer):
+				# Collision detection between pacman and ghosts
+				if(c.charRect.center == self.pacmanLayer.charRect.center):
+					self.pacmanLayer.lives -= 1;
+					if self.pacmanLayer.lives == 0:
+						print("Ghosts win.");
+						#TODO: do something
 
 
 class networkThread(threading.Thread):

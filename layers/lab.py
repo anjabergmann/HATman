@@ -3,6 +3,7 @@ from cocos.layer import Layer
 from cocos.rect import Rect
 from cocos.sprite import Sprite
 from helper.node import LabNode
+import json
 
 
 class LabLayer(Layer):
