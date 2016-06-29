@@ -64,7 +64,7 @@ class Startmenu(Menu):
 		print("with port ", self.port)
 		imagemenuclass = ImageMenu()
 		char = imagemenuclass.char
-		print("as character: ", char)
+		print("as character: ", char) 
 
 
 		#SOMETHING LIKE THIS AFTER INTEGRATING INTO HATMAN.PY:
