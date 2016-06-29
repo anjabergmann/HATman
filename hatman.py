@@ -225,35 +225,43 @@ class GameScene(Scene):
 						break
 
 
+	# _________________________________________________________________________________________
+	#
+	# update characters
+	# _________________________________________________________________________________________
 
 
 	def updateChars(self, info):
 
 		commandlist = info.decode("utf-8")[1:-1].split(",");
-		char = commandlist[3];
-		posx = float(commandlist[4]);
-		posy = float(commandlist[5]);
+		if (commandlist[0] == "nodes"):
+			print("NODEREQUEST")
+			#reconstruct arrays
+			
+		else:
 
-		self.charMapping.get(char).setPosition(director, posx, posy);
+			char = commandlist[3];
+			posx = float(commandlist[4]);
+			posy = float(commandlist[5]);
+
+			self.charMapping.get(char).setPosition(director, posx, posy);
+
+			#add command to commandBuffer of appropriate character
+			self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
 
 
+			for thing in self.others:
+				if (len(thing.commandBuffer) > 0 and self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) > 0):
+					self.turns.__setitem__(info.decode("utf-8")[1:-1].split(",")[3], (self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) - 1))
+					print("DEBUG max:", max(self.turns, key=lambda k: self.turns[k]));
+					print("DEBUG min:", min(self.turns, key=lambda k: self.turns[k]));
+					commandlist = thing.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
+					#print("DEBUG Commandlist:", commandlist);
+					char = commandlist[3];
+					posx = float(commandlist[4]);
+					posy = float(commandlist[5]);
 
-		#add command to commandBuffer of appropriate character
-		self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
-
-
-		for thing in self.others:
-			if (len(thing.commandBuffer) > 0 and self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) > 0):
-				self.turns.__setitem__(info.decode("utf-8")[1:-1].split(",")[3], (self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) - 1))
-				print("DEBUG max:", max(self.turns, key=lambda k: self.turns[k]));
-				print("DEBUG min:", min(self.turns, key=lambda k: self.turns[k]));
-				commandlist = thing.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
-				#print("DEBUG Commandlist:", commandlist);
-				char = commandlist[3];
-				posx = float(commandlist[4]);
-				posy = float(commandlist[5]);
-
-				self.charMapping.get(char).setPosition(director, posx, posy);
+					self.charMapping.get(char).setPosition(director, posx, posy);
 
 
 
@@ -320,6 +328,8 @@ def main():
 
 		def notfail(data):
 			print("CALLBACK Initial sending succeded.");
+			print("sending node request")
+			factory.connectedProtocol.sendRequest("\x02nodes,Please send nodes!\x03")
 			#factory.connectedProtocol.sendRequest("xMiau,Miox");
 		def fail(err):
 			print("ERRBACK Initial sending failed", file=sys.stderr);
@@ -341,14 +351,15 @@ def main():
 	newDeferred();
 
 
-
 	# start the reactor for the networking stuff
 	thread = networkThread();
 	thread.daemon = True
 	thread.start();
 
+
 	# start the director for the gui stuff
 	director.run(game)
+
 
 # ------------------- end of main() -------------------------------
 
