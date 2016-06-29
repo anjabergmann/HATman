@@ -43,22 +43,22 @@ _Project Work 1 - Gamedevelopment with Python_
 
 #To-Do
 * _(list might not be complete)_
-* Change Layers:
+* Change Layers: 	**check?**
 	- Either just one layer class for pacman AND ghosts, not two separate classes
 	- Or put methods that are just for ghost or pacman into entsprechenden layer
 	- Maybe: Put change direction method into Layers ...??? 
 	- Being confused
 	- Discussion sinnvollste solution
-* Make only the played character playable by key presses
-* Multiplayer: Make other characters playable by other player
-* Send command from gui to server automatically
-* Do something with received commands from server (GUI)
+* Make only the played character playable by key presses 	**check**
+* Multiplayer: Make other characters playable by other player 	**check**
+* Send command from gui to server automatically 	**check**
+* Do something with received commands from server (GUI) 	**check**
 * Lifes
-* Collision detection between Pacman and Ghosts
-* Collision detection between Pacman/Ghosts and Labyrinth walls 
+* Collision detection between Pacman and Ghosts 	**check**
+* Collision detection between Pacman/Ghosts and Labyrinth walls 	**check**
 * Score
 * Pacman-can-hunt-ghosts-mode (after pacman ate one of these bigger dots)
-* Create labyrinth randomly
+* Create labyrinth randomly 	**check**
 * Start-Screen
 * Highscore-Screen
 * Database
@@ -73,7 +73,7 @@ _Project Work 1 - Gamedevelopment with Python_
 					it is near pacman?
 			* A ghost-ghost --> can walk through walls and doesn't care about the labrinth at all ???
 			* Key --> can lock a way for a few seconds ???
-* All the graphical stuff (draw sprites and a fancy designed labyrinth [only peaces so that they can be used 
+* All the graphical stuff (draw sprites and a fancy designed labyrinth [only pieces so that they can be used 
 		to make a random created labyrinth] and so on)
 * Music (for Hatman-Version perhaps: Moonlight Sonata)
 * Make labyrinth random
@@ -81,7 +81,7 @@ _Project Work 1 - Gamedevelopment with Python_
 
 
 #Q>A
-* Do ghosts work togehter and have a common score? --> Yes.
+* Do ghosts work together and have a common score? --> Yes.
 * What do the ghosts see? 
 	- --> Only a little snippet of the labyrinth (rectangular area around them)? --> See paperprototype
 	- --> Whole labyrinth but without Pacman? 

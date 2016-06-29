@@ -10,6 +10,9 @@ class PacmanLayer(CharLayer):
 	def __init__(self):
 		super().__init__()
 
+		self.score = 0
+		self.lives = 3
+
 		# create and add Sprites for pacman
 		self.pacman1 = Sprite(pyglet.resource.image("images/pacman1.png"))
 		self.pacman2 = Sprite(pyglet.resource.image("images/pacman2.png"))
@@ -37,6 +40,9 @@ class PacmanLayer(CharLayer):
 		# print("INFO pacmanRect.x ", self.charRect.x)
 		# print("INFO pacmanRect.y ", self.charRect.y)
 
+
+	def updateScore(self, points):
+		self.score += points
 
 
 	# Method is called with schedule() on every new frame

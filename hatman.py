@@ -13,6 +13,7 @@ from pyglet.window import key
 
 from cocos.director import director
 from cocos.scene import Scene
+from cocos.text import Label
 
 from layers.lab import LabLayer
 from layers.pacman import PacmanLayer
@@ -38,15 +39,15 @@ class GameScene(Scene):
 		self.duration = self.now - self.starttime;
 
 
-		self.user = args.user;				# username
-		self.character = args.character;	# character the user is playing
+		self.user = args.user;              # username
+		self.character = args.character;    # character the user is playing
 
 
 		self.pressedKey = None
 		self.direction = key.RIGHT
 
 
-		# add Layers to scene
+		# create char Layers
 		self.labLayer = LabLayer()
 		self.pacmanLayer = PacmanLayer()
 		self.ghostLayerBlue = GhostLayer("blue")
@@ -55,8 +56,8 @@ class GameScene(Scene):
 		self.ghostLayerPink = GhostLayer("pink")
 
 
-		self.charLayers = []	# list with all five character layers
-		self.others = []		# list with char layers that are not played by this user
+		self.charLayers = []    # list with all five character layers
+		self.others = []        # list with char layers that are not played by this user
 
 		self.charLayers.append(self.pacmanLayer)
 		self.charLayers.append(self.ghostLayerBlue)
@@ -64,6 +65,17 @@ class GameScene(Scene):
 		self.charLayers.append(self.ghostLayerPink)
 		self.charLayers.append(self.ghostLayerRed)
 
+
+#------------------------------------------------------------
+# label for score and lives
+		self.statslabel = Label('Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives), 
+		   font_name='Arial', 
+		   font_size=16, anchor_x='center', 
+		   anchor_y='center')
+		  # set the title-label at the top center of the screen
+		self.statslabel.position = 320,460
+		self.add(self.statslabel)
+#------------------------------------------------------------
 
 		# add layers to the scene
 		self.add(self.labLayer)
@@ -127,7 +139,7 @@ class GameScene(Scene):
 				y = self.myLayer.charRect.center[1]
 				
 				# change of direction is only possible when standing on a node
-				# 	-> check if position is a node
+				#   -> check if position is a node
 				if x % 20 == 0.0 and y % 20 == 0.0:
 					
 					# get le node and save in var
@@ -201,6 +213,7 @@ class GameScene(Scene):
 						self.labLayer.remove(nodeSprite)
 						self.labLayer.nodeSprites.remove(nodeSprite)
 						self.pacmanLayer.updateScore(1)
+						self.statslabel.element.text = 'Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives)
 						break
 
 
@@ -261,7 +274,7 @@ class GameScene(Scene):
 			self.starttime = datetime.datetime.now();
 			requestString="\x02changeDirection," + args.user + ",1," + args.character + "," + str(self.myLayer.direction) + "\x03";
 			factory.connectedProtocol.sendRequest(requestString);
-		self.checkBorders() #TODO: Check borders for every char
+		self.checkBorders()
 		for char in self.charLayers:
 			char.update(director);
 
