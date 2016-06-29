@@ -266,7 +266,7 @@ class networkThread(threading.Thread):
 if __name__ == "__main__":
 
 	args = parse.parseArgs();
-	director.init(resizable=False, caption="HATman")
+	#director.init(resizable=False, caption="HATman")
 	# director.window.set_fullscreen(True)
 	game = GameScene();
 

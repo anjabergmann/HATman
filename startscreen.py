@@ -14,6 +14,10 @@ class Startmenu(Menu):
 		
 		super(Startmenu, self).__init__()
 
+		# self.name = name
+		# self.host = host
+		# self.port = port
+
 		#sets the vertical and horizontal alignment
 		self.menu_valign = BOTTOM
 		self.menu_halign = LEFT
@@ -25,6 +29,7 @@ class Startmenu(Menu):
 		portitem = EntryMenuItem("Port: ", self.enter_port, "8080", max_length=7)
 		startitem = MenuItem("Start Game", self.start_game)
 		exititem = MenuItem("Exit", self.on_quit)
+
 
 		#create a list filled with MenuItem objects
 		menu_items = [nameitem, hostitem, portitem, startitem, exititem]
@@ -48,7 +53,10 @@ class Startmenu(Menu):
 
 
 	def start_game(self):
-		print("start game")
+		print("start game as ")
+		# print("start game with host ", host)
+		# print("start game with port ", port)
+
 
 		#SOMETHING LIKE THIS AFTER INTEGRATING INTO HATMAN.PY:
 		#main_scene = GameScene()
@@ -116,6 +124,8 @@ class StartscreenLayer(Layer):
 		self.add(titlelabel)
 
 		startmenu = Startmenu()
+
+
 		imgmenu = ImageMenu()
 		self.add(imgmenu) #add image menu to layer
 		self.add(startmenu) #add startmenu to layer
