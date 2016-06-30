@@ -14,22 +14,29 @@ class LabLayer(Layer):
 
 		self.nodes = self.createAllNodes()
 
-
 		self.crossNodes = cN
 		self.wayNodes = []
 		self.wallNodes = []
 
-		
+		for node in self.nodes:
+			for n in node:
+				if n in self.crossNodes:
+					n.sort = "cross"
+				
+
 		self.connectCrossNodes()
 		self.addWayNodes()
 		self.connectWayNodes()
 		self.addMissingCrossNodes()
 		self.makeWallNodes()
-
-		for keks in self.crossNodes:
-			print("Keks:",keks);
-
 		self.drawSprites()
+
+		for node in self.nodes:
+			for n in node:
+				if n in self.wayNodes and n.sort != "cross":
+					n.sort = "way"
+				elif n in self.wallNodes:
+					n.sort = "wall"
 
 
 	# _________________________________________________________________________________________
@@ -38,7 +45,6 @@ class LabLayer(Layer):
 	# _________________________________________________________________________________________
 	# creates every "point" inside the rect that is either part of a way or a barrier
 	def createAllNodes(self):
-		print("in createAllNodes")
 		nodes = [[0 for x in range(20)] for y in range(29)]
 
 		# write every node of the Labyrinth into the list
@@ -127,30 +133,44 @@ class LabLayer(Layer):
 		#connecting adjacent crossNodes by reference
 		for currNode in self.crossNodes:
 			for otherNode in self.crossNodes:
+
+				thisNode = self.nodes[int(currNode.x/20)-2][int(currNode.y/20)-2]
+				thatNode = self.nodes[int(otherNode.x/20)-2][int(otherNode.y/20)-2]
+				
 				#same x coordinates -> either above or under
-				if (currNode.x == otherNode.x):
+				if (thisNode.x == thatNode.x):
 					#current under other
-					if (currNode.y < otherNode.y):
-						currNode.nodeUp = otherNode
-						otherNode.nodeDown = currNode
+					if (thisNode.y < thatNode.y):
+						thisNode.nodeUp = thatNode
+						thatNode.nodeDown = thisNode
 					#curr above other
-					elif (currNode.y > otherNode.y):
-						currNode.nodeDown = otherNode
-						otherNode.nodeUp = currNode
+					elif (thisNode.y > thatNode.y):
+						thisNode.nodeDown = thatNode
+						thatNode.nodeUp = thisNode
 
 				#same y coordinates -> left or right
-				if (currNode.y == otherNode.y):
+				if (thisNode.y == thatNode.y):
 					#current left of other
-					if (currNode.x < otherNode.x):
-						currNode.nodeRight = otherNode
-						otherNode.nodeLeft = currNode
+					if (thisNode.x < thatNode.x):
+						thisNode.nodeRight = thatNode
+						thatNode.nodeLeft = thisNode
 					#current right of other
-					elif (currNode.x > otherNode.x):
-						currNode.nodeLeft = otherNode
-						otherNode.nodeRight = currNode
+					elif (thisNode.x > thatNode.x):
+						thisNode.nodeLeft = thatNode
+						thatNode.nodeRight = thisNode
 
 				else:
 					pass #no connection
+
+				currNode.nodeRight = thisNode.nodeRight
+				currNode.nodeLeft = thisNode.nodeLeft
+				currNode.nodeUp = thisNode.nodeUp
+				currNode.nodeDown = thisNode.nodeDown
+
+				otherNode.nodeRight = thatNode.nodeRight
+				otherNode.nodeLeft = thatNode.nodeLeft
+				otherNode.nodeUp = thatNode.nodeUp
+				otherNode.nodeDown = thatNode.nodeDown
 
 
 
@@ -165,10 +185,11 @@ class LabLayer(Layer):
 		#Add crossNodes and connections between two neighboured crossNodes to wayNodes[]
 	def addWayNodes(self):
 		for cNode in self.crossNodes:
-			self.wayNodes.append(cNode)
+			if cNode not in self.wayNodes:
+				self.wayNodes.append(cNode)
 
 			#connect nodes horizontally
-			if cNode.nodeRight != None:
+			if cNode.nodeRight is not None:
 				for nodes in self.nodes:
 					for pNode in nodes:
 						#all possible nodes on the same height, to the right of cNode, before its next neighbour
@@ -177,7 +198,7 @@ class LabLayer(Layer):
 							pNode.sort = "way"
 
 			#connect nodes vertically
-			if cNode.nodeDown != None:
+			if cNode.nodeDown is not None:
 				for nodes in self.nodes:
 					for pNode in nodes:
 						#all possible nodes on the same vertical line, from top to bottom
@@ -192,27 +213,41 @@ class LabLayer(Layer):
 		#connecting adjacent wayNodes by reference
 		for currNode in self.wayNodes:
 			for otherNode in self.wayNodes:
+
+				thisNode = self.nodes[int(currNode.x/20)-2][int(currNode.y/20)-2]
+				thatNode = self.nodes[int(otherNode.x/20)-2][int(otherNode.y/20)-2]
+
 				#same x coordinates -> either above or under
-				if (currNode.x == otherNode.x):
+				if (thisNode.x == thatNode.x):
 					#current under other
-					if (currNode.y == otherNode.y-20):
-						currNode.nodeUp = otherNode
-						otherNode.nodeDown = currNode
+					if (thisNode.y == thatNode.y-20):
+						thisNode.nodeUp = thatNode
+						thatNode.nodeDown = thisNode
 					#curr above other
-					elif (currNode.y == otherNode.y+20):
-						currNode.nodeDown = otherNode
-						otherNode.nodeUp = currNode
+					elif (thisNode.y == thatNode.y+20):
+						thisNode.nodeDown = thatNode
+						thatNode.nodeUp = thisNode
 
 				#same y coordinates -> left or right
-				if (currNode.y == otherNode.y):
+				if (thisNode.y == thatNode.y):
 					#current left of other
-					if (currNode.x == otherNode.x-20):
-						currNode.nodeRight = otherNode
-						otherNode.nodeLeft = currNode
+					if (thisNode.x == thatNode.x-20):
+						thisNode.nodeRight = thatNode
+						thatNode.nodeLeft = thisNode
 					#current right of other
-					elif (currNode.x == otherNode.x+20):
-						currNode.nodeLeft = otherNode
-						otherNode.nodeRight = currNode
+					elif (thisNode.x == thatNode.x+20):
+						thisNode.nodeLeft = thatNode
+						thatNode.nodeRight = thisNode
+
+				currNode.nodeRight = thisNode.nodeRight
+				currNode.nodeLeft = thisNode.nodeLeft
+				currNode.nodeUp = thisNode.nodeUp
+				currNode.nodeDown = thisNode.nodeDown
+
+				otherNode.nodeRight = thatNode.nodeRight
+				otherNode.nodeLeft = thatNode.nodeLeft
+				otherNode.nodeUp = thatNode.nodeUp
+				otherNode.nodeDown = thatNode.nodeDown
 
 
 
@@ -220,12 +255,13 @@ class LabLayer(Layer):
 		# creating wayNodes can accidentally create crossNodes which are not in the crossNode array
 		# if a wayNode has 3 or 4 neighbours, it is marked as a crossNode and added to the array
 		for wNode in self.wayNodes:
-			if ((wNode.nodeLeft != None and wNode.nodeRight != None) and (wNode.nodeUp != None or wNode.nodeDown != None)):
-				wNode.sort = "cross"
-				self.crossNodes.append(wNode)
-			elif ((wNode.nodeUp != None and wNode.nodeDown != None) and (wNode.nodeLeft != None or wNode.nodeRight != None)):
-				wNode.sort = "cross"
-				self.crossNodes.append(wNode)
+			if wNode.sort =="way":
+				if ((wNode.nodeLeft is not None and wNode.nodeRight is not None) and (wNode.nodeUp is not None or wNode.nodeDown is not None)):
+					wNode.sort = "cross"
+					self.crossNodes.append(wNode)
+				elif ((wNode.nodeUp is not None and wNode.nodeDown is not None) and (wNode.nodeLeft is not None or wNode.nodeRight is not None)):
+					wNode.sort = "cross"
+					self.crossNodes.append(wNode)
 
 
 	# __________________________________________________________________________________________
@@ -239,6 +275,7 @@ class LabLayer(Layer):
 				if n not in self.wayNodes:
 					self.wallNodes.append(n)
 					n.sort = "wall"
+				
 
 
 

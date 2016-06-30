@@ -54,7 +54,7 @@ class HatmanService(object):
 # methods to create all cross nodes
 #-------------------------------------------------------
 	def createAllNodes(self):
-		print("in createAllNodes")
+		print("creating all nodes")
 		nodes = [[0 for x in range(20)] for y in range(29)]
 
 		# write every node of the Labyrinth into the list
@@ -67,7 +67,7 @@ class HatmanService(object):
 
 
 	def chooseCrossNodes(self, num):
-		print("in chooseNodes")
+		print("choosing new crossNodes")
 		# choose more or less random crossnodes
 		cNodes = []
 
@@ -140,11 +140,9 @@ class HatmanService(object):
 
 
 	def sendCrossNodes(self):
-		print("in sendCrossNodes")
+		print("sending crossNodes")
 		coords = list(map(str, self.crossNodes))
-		#print (coords)
 		string = "\x02nodes,"+json.dumps(coords)+",\x03"
-		#print(string)
 
 		try:
 			return string.encode("utf-8")

@@ -59,11 +59,6 @@ class GameScene(Scene):
 		self.direction = key.RIGHT
 
 		#---------------------------------------------------------------------------------------------
-		# create lablayer with nodes from server
-		print(serverNodes)
-		self.labLayer = LabLayer(serverNodes)
-
-		#---------------------------------------------------------------------------------------------
 		# create char Layers
 		self.pacmanLayer = PacmanLayer()
 		self.ghostLayerBlue = GhostLayer("blue")
@@ -160,10 +155,10 @@ class GameScene(Scene):
 					if node.sort == "cross":
 						way = False
 						# check if the there is a way in the direction of the pressed key
-						if ((self.pressedKey == key.RIGHT and node.nodeRight != None) or
-								(self.pressedKey == key.LEFT and node.nodeLeft != None) or
-									(self.pressedKey == key.UP and node.nodeUp != None) or
-										(self.pressedKey == key.DOWN and node.nodeDown != None)):
+						if ((self.pressedKey == key.RIGHT and node.nodeRight is not None) or
+								(self.pressedKey == key.LEFT and node.nodeLeft is not None) or
+									(self.pressedKey == key.UP and node.nodeUp is not None) or
+										(self.pressedKey == key.DOWN and node.nodeDown is not None)):
 							way = True
 						# if there is a way, change direction
 						if way:
@@ -198,10 +193,10 @@ class GameScene(Scene):
 				# if le node is cossNode and has no neighbour in the desired direction -> STOP
 				if node.sort == "cross":
 					if (char.direction != None):
-						if ((char.direction == key.RIGHT and node.nodeRight == None) or
-								(char.direction == key.LEFT and node.nodeLeft == None) or
-									(char.direction == key.UP and node.nodeUp == None) or
-										(char.direction == key.DOWN and node.nodeDown == None)):
+						if ((char.direction == key.RIGHT and node.nodeRight is None) or
+								(char.direction == key.LEFT and node.nodeLeft is None) or
+									(char.direction == key.UP and node.nodeUp is None) or
+										(char.direction == key.DOWN and node.nodeDown is None)):
 							char.direction = None
 
 
@@ -235,7 +230,7 @@ class GameScene(Scene):
 
 
 	def initNodes(self, commandlist):
-		print("NODEREQUEST")
+		print("got nodes from server")
 		# reconstruct array
 		for i in range(1,len(commandlist)-1):
 			# strip the command of quotes
@@ -244,10 +239,11 @@ class GameScene(Scene):
 			
 			# extract the coordinates of the node
 			coords = command.split(';')
-			x = float(coords[0])
-			y = float(coords[1])
+			x = int(coords[0])
+			y = int(coords[1])
 
-			serverNodes.append(LabNode(x, y))
+			serverNodes.append(LabNode(x, y, "cross"))
+
 
 		game = GameScene();
 		# start the cocos2d director
@@ -263,7 +259,6 @@ class GameScene(Scene):
 	def updateChars(self, info):
 
 		commandlist = info.decode("utf-8")[1:-1].split(",");
-		print(commandlist[0])
 		if (commandlist[0] == "nodes"):
 			self.initNodes(commandlist)
 
@@ -388,7 +383,7 @@ def main():
 		time.sleep(0.01);
 
 	game.labLayer = LabLayer(serverNodes);
-	game.add(game.labLayer);
+	game.add(game.labLayer, -1);
 
 	# start the director for the gui stuff
 	director.run(game)
