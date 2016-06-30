@@ -377,7 +377,7 @@ def main():
 	def newDeferred():
 
 		def doCallback(data):
-			print("CALLBACKCALLBACK");
+			#print("CALLBACKCALLBACK");
 			d = factory.deferred;
 			d.addCallback(game.updateChars);
 			d.addCallback(doCallback);
