@@ -14,8 +14,8 @@ class PacmanLayer(CharLayer):
 		self.lives = 3
 
 		# create and add Sprites for pacman
-		self.pacman1 = Sprite(pyglet.resource.image("images/pacman1.png"))
-		self.pacman2 = Sprite(pyglet.resource.image("images/pacman2.png"))
+		self.pacman1 = Sprite("images/pacman1.png")
+		self.pacman2 = Sprite("images/pacman2.png")
 
 		self.sprites.append(self.pacman1)
 		self.sprites.append(self.pacman2)

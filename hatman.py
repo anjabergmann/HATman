@@ -7,6 +7,7 @@ from pyglet.window import key
 from cocos.director import director
 from cocos.scene import Scene
 from cocos.text import Label
+from cocos.sprite import Sprite
 
 from layers.lab import LabLayer
 from layers.pacman import PacmanLayer
@@ -75,16 +76,16 @@ class GameScene(Scene):
 
 		self.others = self.charLayers;
 
-	#------------------------------------------------------------
-	# label for score and lives
+		#------------------------------------------------------------
+		# label for score and lives
 		self.statslabel = Label('Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives), 
 			font_name='Arial', 
 			font_size=16, anchor_x='center', 
 			anchor_y='center')
 			# set the title-label at the top center of the screen
 		self.statslabel.position = 320,460
-		self.add(self.statslabel)
-	#------------------------------------------------------------
+		self.add(self.statslabel, 1)
+		#------------------------------------------------------------
 
 		#---------------------------------------------------------------------------------------------
 		# add layers to the scene
@@ -107,10 +108,34 @@ class GameScene(Scene):
 		self.schedule(self.update)
 
 
+		#---------------------------------------------------------------------------------------------
+		# if the players character is a ghost ->
+		# replace the sprite with one that has a vision field added
+		if self.myLayer == self.ghostLayerBlue:
+			self.myLayer = GhostLayer("blue",True)
+			self.add(self.myLayer)
+
+		if self.myLayer == self.ghostLayerRed:
+			self.myLayer = GhostLayer("red",True)
+			self.add(self.myLayer)
+
+		if self.myLayer == self.ghostLayerOrange:
+			self.myLayer = GhostLayer("orange",True)
+			self.add(self.myLayer)
+
+		if self.myLayer == self.ghostLayerPink:
+			self.myLayer = GhostLayer("pink",True)
+			self.add(self.myLayer)
+
+
+
+
+
 #---------------------- init end ---------------------------------
 
 
 
+				
 	# _________________________________________________________________________________________
 	#
 	# Change direction

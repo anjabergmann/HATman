@@ -7,13 +7,13 @@ from layers.char import CharLayer
 
 class GhostLayer(CharLayer):
 
-	def __init__(self, color="blue"):
+	def __init__(self, color="blue", vision=False):
 		super().__init__()
 
 		# create and add Sprites for ghost
-		self.ghost1 = Sprite(pyglet.resource.image("images/" + color + "1.png"))
-		self.ghost2 = Sprite(pyglet.resource.image("images/" + color + "2.png"))
-		self.eyes = Sprite(pyglet.resource.image("images/eyesDown.png"))
+		self.ghost1 = Sprite("images/" + color + "1.png")
+		self.ghost2 = Sprite("images/" + color + "2.png")
+		self.eyes = Sprite("images/eyesDown.png")
 
 		self.sprites.append(self.ghost1)
 		self.sprites.append(self.ghost2)
@@ -22,11 +22,19 @@ class GhostLayer(CharLayer):
 		self.charRect = Rect(40, 40, self.ghost1.width * 0.12, self.ghost1.height * 0.12)
 		self.charRect.center = (40, 40);
 
-
 		for ghost in self.sprites:
 			self.add(ghost)
 			ghost.position = self.charRect.center
 			ghost.scale = 0.12
+
+
+		# if this is my player add a vision field
+		if vision:
+			visionSprite = Sprite("images/vision.png")
+			self.sprites.append(visionSprite)
+			self.add(visionSprite)
+			visionSprite.position = self.charRect.center
+
 
 		# Animate ghost
 		self.ghost1.do(Repeat(Blink(1, 0.3)))
