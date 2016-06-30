@@ -6,7 +6,7 @@ from helper.node import LabNode
 
 
 class LabLayer(Layer):
-	def __init__(self):
+	def __init__(self, cN):
 		super(LabLayer, self).__init__()
 
 		# Size of the labyrinth
@@ -14,7 +14,7 @@ class LabLayer(Layer):
 
 		self.nodes = self.createAllNodes()
 
-		self.crossNodes = self.chooseCrossNodes(25)
+		self.crossNodes = cN
 		self.wayNodes = []
 		self.wallNodes = []
 

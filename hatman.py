@@ -31,6 +31,8 @@ init = "\x02hi,Hello Server!\x03"
 factory = HatmanClientFactory(init)
 d = factory.deferred
 
+serverNodes = []
+
 
 
 # Contains all needed Layers
@@ -42,8 +44,6 @@ class GameScene(Scene):
 		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands except if the server sends nodes)
 
 		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
-
-		self.serverNodes = []
 
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
@@ -58,19 +58,27 @@ class GameScene(Scene):
 		self.pressedKey = None
 		self.direction = key.RIGHT
 
+		#---------------------------------------------------------------------------------------------
+		# create lablayer with nodes from server
+		#factory.connectedProtocol.sendRequest("\x02nodes,Please send nodes!\x03")
+		print(serverNodes)
+		self.labLayer = LabLayer(serverNodes)
+		self.add(self.labLayer)
 
+		#---------------------------------------------------------------------------------------------
 		# create char Layers
-		self.labLayer = LabLayer()
 		self.pacmanLayer = PacmanLayer()
 		self.ghostLayerBlue = GhostLayer("blue")
 		self.ghostLayerRed = GhostLayer("red")
 		self.ghostLayerOrange = GhostLayer("orange")
 		self.ghostLayerPink = GhostLayer("pink")
 
-
+		#---------------------------------------------------------------------------------------------
 		self.charLayers = []    # list with all five character layers
 		self.others = []        # list with char layers that are not played by this user
-
+		
+		#---------------------------------------------------------------------------------------------
+		# add character layers to lists
 		self.charLayers.append(self.pacmanLayer)
 		self.charLayers.append(self.ghostLayerBlue)
 		self.charLayers.append(self.ghostLayerOrange)
@@ -79,8 +87,8 @@ class GameScene(Scene):
 
 		self.others = self.charLayers;
 
-#------------------------------------------------------------
-# label for score and lives
+		#---------------------------------------------------------------------------------------------
+		# label for score and lives
 		self.statslabel = Label('Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives), 
 		   font_name='Arial', 
 		   font_size=16, anchor_x='center', 
@@ -88,29 +96,24 @@ class GameScene(Scene):
 		  # set the title-label at the top center of the screen
 		self.statslabel.position = 320,460
 		self.add(self.statslabel)
-#------------------------------------------------------------
 
+		#---------------------------------------------------------------------------------------------
 		# add layers to the scene
-		self.add(self.labLayer)
-
-		# choose pacman position 'randomly'
-		self.pacmanLayer.charRect.center = (self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].x, self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].y)
+		# choose positions 'randomly'
+		#self.pacmanLayer.charRect.center = (self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].x, self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].y)
 		self.add(self.pacmanLayer)
 
 		for i in range(1,len(self.charLayers)):
-			self.charLayers[i].charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
+		#	self.charLayers[i].charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
 			self.add(self.charLayers[i]);
 
-
-		self.charMapping = {"r":self.ghostLayerRed, "b":self.ghostLayerBlue, "p":self.ghostLayerPink, "o":self.ghostLayerOrange, "pac":self.pacmanLayer}
-
-
+		#---------------------------------------------------------------------------------------------
 		# set myLayer to the layer of the users character
+		self.charMapping = {"r":self.ghostLayerRed, "b":self.ghostLayerBlue, "p":self.ghostLayerPink, "o":self.ghostLayerOrange, "pac":self.pacmanLayer}
 		self.myLayer = self.charMapping.get(character);
-
 		self.others.remove(self.myLayer)
 
-
+		#---------------------------------------------------------------------------------------------
 		# add schedule method
 		self.schedule(self.update)
 
@@ -227,20 +230,13 @@ class GameScene(Scene):
 						self.statslabel.element.text = 'Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives)
 						break
 
-
-	# _________________________________________________________________________________________
+# _________________________________________________________________________________________
 	#
-	# update characters
+	# initialize crossnodes
 	# _________________________________________________________________________________________
 
 
-	def updateChars(self, info):
-
-		#-------------------------------------------------------
-		# FOR NODE REQUESTS
-		#-------------------------------------------------------
-		commandlist = info.decode("utf-8")[1:-1].split(",");
-		if (commandlist[0] == "nodes"):
+	def initNodes(self, commandlist):
 			print("NODEREQUEST")
 			# reconstruct array
 			for i in range(1,len(commandlist)-1):
@@ -253,14 +249,22 @@ class GameScene(Scene):
 				x = coords[0]
 				y = coords[1]
 
-				self.serverNodes.append(LabNode(x, y))
-
-			self.labLayer.crossNodes = self.serverNodes
+				serverNodes.append(LabNode(x, y))
 
 
-		#-------------------------------------------------------
-		# FOR MOVE REQUESTS
-		#-------------------------------------------------------
+	# _________________________________________________________________________________________
+	#
+	# update characters
+	# _________________________________________________________________________________________
+
+
+	def updateChars(self, info):
+
+		commandlist = info.decode("utf-8")[1:-1].split(",");
+		print(commandlist[0])
+		if (commandlist[0] == "nodes"):
+			self.initNodes(commandlist)
+
 		elif (commandlist[0] == "move"):
 
 			char = commandlist[3];
@@ -353,7 +357,6 @@ def main():
 			print("CALLBACK Initial sending succeded.");
 			print("sending node request")
 			factory.connectedProtocol.sendRequest("\x02nodes,Please send nodes!\x03")
-			#factory.connectedProtocol.sendRequest("xMiau,Miox");
 		def fail(err):
 			print("ERRBACK Initial sending failed", file=sys.stderr);
 			print(err);
@@ -373,12 +376,10 @@ def main():
 	tryToSend(init);
 	newDeferred();
 
-
 	# start the reactor for the networking stuff
 	thread = networkThread();
 	thread.daemon = True
 	thread.start();
-
 
 	# start the director for the gui stuff
 	director.run(game)
