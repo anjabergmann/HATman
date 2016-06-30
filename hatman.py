@@ -183,22 +183,14 @@ class GameScene(Scene):
 
 			# get le node and save in var
 			node = self.labLayer.nodes[int(x/20)-2][int(y/20)-2]
-				# if le node is cossNode and has no neighbour in the desired direction -> STOP
-				if node.sort == "cross":
-					if (char.direction != None):
-						if ((char.direction == key.RIGHT and node.nodeRight is None) or
-								(char.direction == key.LEFT and node.nodeLeft is None) or
-									(char.direction == key.UP and node.nodeUp is None) or
-										(char.direction == key.DOWN and node.nodeDown is None)):
-							char.direction = None
 
 			# if le node is cossNode and has no neighbour in the desired direction -> STOP
 			if node.sort == "cross":
 				if (self.myLayer.direction != None):
-					if ((self.myLayer.direction == key.RIGHT and node.nodeRight == None) or
-							(self.myLayer.direction == key.LEFT and node.nodeLeft == None) or
-								(self.myLayer.direction == key.UP and node.nodeUp == None) or
-									(self.myLayer.direction == key.DOWN and node.nodeDown == None)):
+					if ((self.myLayer.direction == key.RIGHT and node.nodeRight is None) or
+							(self.myLayer.direction == key.LEFT and node.nodeLeft is None) or
+								(self.myLayer.direction == key.UP and node.nodeUp is None) or
+									(self.myLayer.direction == key.DOWN and node.nodeDown is None)):
 						self.myLayer.direction = None
 
 
