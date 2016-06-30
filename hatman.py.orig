@@ -264,9 +264,13 @@ class GameScene(Scene):
 			serverNodes.append(LabNode(x, y, "cross"))
 
 
+<<<<<<< HEAD
+		game = GameScene();
+=======
 		#game = GameScene();
 		# start the cocos2d director
 		#director.run(game)
+>>>>>>> 6a41cd2876644f31dfac1506bd34c5fba45782b4
 
 
 	# _________________________________________________________________________________________
@@ -377,7 +381,7 @@ def main():
 	def newDeferred():
 
 		def doCallback(data):
-			#print("CALLBACKCALLBACK");
+			print("CALLBACKCALLBACK");
 			d = factory.deferred;
 			d.addCallback(game.updateChars);
 			d.addCallback(doCallback);
