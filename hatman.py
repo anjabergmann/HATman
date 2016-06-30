@@ -282,30 +282,7 @@ class GameScene(Scene):
 			self.initNodes(commandlist)
 
 		elif (commandlist[0] == "move"):
-
-			char = commandlist[3];
-			posx = float(commandlist[4]);
-			posy = float(commandlist[5]);
-
-			self.charMapping.get(char).setPosition(director, posx, posy);
-
-			#add command to commandBuffer of appropriate character
-			self.charMapping.get(char).commandBuffer.append(info);
-
-
-			for thing in self.others:
-				if (len(thing.commandBuffer) > 0 and self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) > 0):
-					self.turns.__setitem__(info.decode("utf-8")[1:-1].split(",")[3], (self.turns.get(info.decode("utf-8")[1:-1].split(",")[3]) - 1))
-					print("DEBUG max:", max(self.turns, key=lambda k: self.turns[k]));
-					print("DEBUG min:", min(self.turns, key=lambda k: self.turns[k]));
-					commandlist = thing.commandBuffer.pop().decode("utf-8")[1:-1].split(",");
-					#print("DEBUG Commandlist:", commandlist);
-					char = commandlist[3];
-					posx = float(commandlist[4]);
-					posy = float(commandlist[5]);
-
-					self.charMapping.get(char).setPosition(director, posx, posy);
-					print("buffer",thing.commandBuffer)
+			self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
 
 
 
