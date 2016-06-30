@@ -14,6 +14,7 @@ from layers.ghost import GhostLayer
 
 from helper import parse, client
 from helper.client import HatmanClientProtocol, HatmanClientFactory
+from helper.node import LabNode
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
@@ -38,9 +39,11 @@ class GameScene(Scene):
 		super().__init__() 
 
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
-		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands)
+		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands except if the server sends nodes)
 
 		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
+
+		self.serverNodes = []
 
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
@@ -233,12 +236,32 @@ class GameScene(Scene):
 
 	def updateChars(self, info):
 
+		#-------------------------------------------------------
+		# FOR NODE REQUESTS
+		#-------------------------------------------------------
 		commandlist = info.decode("utf-8")[1:-1].split(",");
 		if (commandlist[0] == "nodes"):
 			print("NODEREQUEST")
-			#reconstruct arrays
-			
-		else:
+			# reconstruct array
+			for i in range(1,len(commandlist)-1):
+				# strip the command of quotes
+				command = commandlist[i][2:-1]
+				command = command.strip('"')
+				
+				# extract the coordinates of the node
+				coords = command.split(';')
+				x = coords[0]
+				y = coords[1]
+
+				self.serverNodes.append(LabNode(x, y))
+
+			self.labLayer.crossNodes = self.serverNodes
+
+
+		#-------------------------------------------------------
+		# FOR MOVE REQUESTS
+		#-------------------------------------------------------
+		elif (commandlist[0] == "move"):
 
 			char = commandlist[3];
 			posx = float(commandlist[4]);

@@ -22,4 +22,4 @@ class LabNode:
 		self.nodeRect = Rect(self.x, self.y, 10, 10)
 
 	def __str__(self):
-		return "[" + str(self.x) + ";" + str(self.y) + "]"
+		return str(self.x) + ";" + str(self.y)

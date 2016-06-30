@@ -32,6 +32,10 @@ def parse_args():
 ########################################################
 
 class HatmanService(object):
+	def __init__(self):
+		self.nodes = self.createAllNodes()
+		self.crossNodes = self.chooseCrossNodes(25)
+
 
 #-------------------------------------------------------
 # someFancyMethod
@@ -49,7 +53,7 @@ class HatmanService(object):
 #-------------------------------------------------------
 # methods to create all cross nodes
 #-------------------------------------------------------
-	def createAllNodes():
+	def createAllNodes(self):
 		print("in createAllNodes")
 		nodes = [[0 for x in range(20)] for y in range(29)]
 
@@ -62,10 +66,21 @@ class HatmanService(object):
 		return nodes
 
 
-	def chooseCrossNodes(nodes,num):
+	def chooseCrossNodes(self, num):
 		print("in chooseNodes")
 		# choose more or less random crossnodes
-		cnodes = []
+		cNodes = []
+
+		# add corners to crossnodes and mark as crossNodes
+		self.nodes[0][0].sort = "cross"		#links unten
+		self.nodes[0][19].sort = "cross"	#links oben
+		self.nodes[28][0].sort = "cross"	#rechts unten
+		self.nodes[28][19].sort = "cross"	#rechts oben
+		cNodes.append(self.nodes[0][0])
+		cNodes.append(self.nodes[0][19])
+		cNodes.append(self.nodes[28][0])
+		cNodes.append(self.nodes[28][19])
+
 
 		# list of possible (allowed) coordinates
 		xpos = [0, 28]
@@ -115,22 +130,20 @@ class HatmanService(object):
 						break
 
 			# set sort to cross and add to crossNodes
-			if nodes[x][y] not in cNodes:
-				nodes[x][y].sort = "cross"
-				cNodes.append(nodes[x][y])
+			if self.nodes[x][y] not in cNodes:
+				self.nodes[x][y].sort = "cross"
+				cNodes.append(self.nodes[x][y])
 
-		return cnodes
+		return cNodes
 
 
-	nodes = createAllNodes()
-	crossNodes = chooseCrossNodes(nodes,25)
 
 
 	def sendCrossNodes(self):
 		print("in sendCrossNodes")
-		coords = map(str, crossNodes)
+		coords = list(map(str, self.crossNodes))
 		#print (coords)
-		string = json.dumps(coords)
+		string = "\x02nodes,"+json.dumps(coords)+",\x03"
 		#print(string)
 
 		try:
