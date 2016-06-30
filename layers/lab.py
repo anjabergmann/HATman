@@ -14,6 +14,7 @@ class LabLayer(Layer):
 
 		self.nodes = self.createAllNodes()
 
+
 		self.crossNodes = cN
 		self.wayNodes = []
 		self.wallNodes = []
@@ -24,6 +25,9 @@ class LabLayer(Layer):
 		self.connectWayNodes()
 		self.addMissingCrossNodes()
 		self.makeWallNodes()
+
+		for keks in self.crossNodes:
+			print("Keks:",keks);
 
 		self.drawSprites()
 
