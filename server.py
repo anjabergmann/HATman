@@ -42,7 +42,7 @@ class HatmanService(object):
 #-------------------------------------------------------
 	def someFancyMethod(self, command):
 		returnString = str(command);
-
+		print(returnString)
 		try:
 			return returnString.encode("utf-8");
 		except:

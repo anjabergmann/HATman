@@ -89,13 +89,11 @@ class GameScene(Scene):
 
 		#---------------------------------------------------------------------------------------------
 		# add layers to the scene
-		# choose positions 'randomly'
-		#self.pacmanLayer.charRect.center = (self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].x, self.labLayer.crossNodes[len(self.labLayer.crossNodes)-1].y)
+		self.pacmanLayer.charRect.center = (40,420)
 		self.add(self.pacmanLayer)
 
 		for i in range(1,len(self.charLayers)):
-		#	self.charLayers[i].charRect.center = (self.labLayer.crossNodes[0].x, self.labLayer.crossNodes[0].y)
-			self.add(self.charLayers[i]);
+			self.add(self.charLayers[i])
 
 		#---------------------------------------------------------------------------------------------
 		# set myLayer to the layer of the users character
@@ -239,7 +237,6 @@ class GameScene(Scene):
 						self.labLayer.remove(nodeSprite)
 						self.labLayer.nodeSprites.remove(nodeSprite)
 						self.pacmanLayer.updateScore(1)
-						self.statslabel.element.text = 'Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives)
 						break
 
 			if (len(self.labLayer.nodeSprites) == 0):
@@ -267,9 +264,9 @@ class GameScene(Scene):
 			serverNodes.append(LabNode(x, y, "cross"))
 
 
-		game = GameScene();
+		#game = GameScene();
 		# start the cocos2d director
-		director.run(game)
+		#director.run(game)
 
 
 	# _________________________________________________________________________________________
@@ -279,8 +276,8 @@ class GameScene(Scene):
 
 
 	def updateChars(self, info):
-
 		commandlist = info.decode("utf-8")[1:-1].split(",");
+
 		if (commandlist[0] == "nodes"):
 			self.initNodes(commandlist)
 
@@ -293,7 +290,7 @@ class GameScene(Scene):
 			self.charMapping.get(char).setPosition(director, posx, posy);
 
 			#add command to commandBuffer of appropriate character
-			self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
+			self.charMapping.get(char).commandBuffer.append(info);
 
 
 			for thing in self.others:
@@ -308,6 +305,7 @@ class GameScene(Scene):
 					posy = float(commandlist[5]);
 
 					self.charMapping.get(char).setPosition(director, posx, posy);
+					print("buffer",thing.commandBuffer)
 
 
 
@@ -323,7 +321,7 @@ class GameScene(Scene):
 		self.setDirection()
 		self.checkBorders()
 		self.myLayer.update(director);
-
+		self.statslabel.element.text = 'Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives)
 
 		#command = "\x02move,user,gameid,character,positionx,positiony\x03"
 		requestString ="\x02move,";
@@ -402,7 +400,7 @@ def main():
 	def newDeferred():
 
 		def doCallback(data):
-			#print("CALLBACKCALLBACK");
+			print("CALLBACKCALLBACK");
 			d = factory.deferred;
 			d.addCallback(game.updateChars);
 			d.addCallback(doCallback);
@@ -418,7 +416,7 @@ def main():
 	thread.start();
 
 	while(len(serverNodes) == 0):
-		time.sleep(0.01);
+		time.sleep(0.001);
 
 	game.labLayer = LabLayer(serverNodes);
 	game.add(game.labLayer, -1);
