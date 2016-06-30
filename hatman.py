@@ -63,7 +63,6 @@ class GameScene(Scene):
 		#factory.connectedProtocol.sendRequest("\x02nodes,Please send nodes!\x03")
 		print(serverNodes)
 		self.labLayer = LabLayer(serverNodes)
-		self.add(self.labLayer)
 
 		#---------------------------------------------------------------------------------------------
 		# create char Layers
@@ -246,8 +245,8 @@ class GameScene(Scene):
 				
 				# extract the coordinates of the node
 				coords = command.split(';')
-				x = coords[0]
-				y = coords[1]
+				x = float(coords[0])
+				y = float(coords[1])
 
 				serverNodes.append(LabNode(x, y))
 
@@ -357,6 +356,7 @@ def main():
 			print("CALLBACK Initial sending succeded.");
 			print("sending node request")
 			factory.connectedProtocol.sendRequest("\x02nodes,Please send nodes!\x03")
+			newDeferred();
 		def fail(err):
 			print("ERRBACK Initial sending failed", file=sys.stderr);
 			print(err);
@@ -374,12 +374,18 @@ def main():
 
 
 	tryToSend(init);
-	newDeferred();
+
 
 	# start the reactor for the networking stuff
 	thread = networkThread();
 	thread.daemon = True
 	thread.start();
+
+	while(len(serverNodes) == 0):
+		time.sleep(0.01);
+
+	game.labLayer = LabLayer(serverNodes);
+	game.add(game.labLayer);
 
 	# start the director for the gui stuff
 	director.run(game)
