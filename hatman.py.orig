@@ -43,7 +43,6 @@ class GameScene(Scene):
 		self.turn = True;	# variable that checks if we should send a command to server; if True: send command; if False: we already sent a command and wait until we received for other commanads (from the other players) before we sent an own command again
 		self.commands = [];	# list of received commands for every turn (= always contains 0 to 5 commands except if the server sends nodes)
 
-		self.turns = {"r":100, "p":100, "o":100, "b":100, "pac":100};
 		# variables for measuring time (for debbuging purposes)
 		self.starttime = datetime.datetime.now();
 		self.now = datetime.datetime.now();
@@ -61,12 +60,19 @@ class GameScene(Scene):
 		self.ghostLayerOrange = GhostLayer("orange")
 		self.ghostLayerPink = GhostLayer("pink")
 
-		#---------------------------------------------------------------------------------------------
+<<<<<<< HEAD
+
 		self.charLayers = []	# list with all five character layers
 		self.others = []		# list with char layers that are not played by this user
+
+=======
+		#---------------------------------------------------------------------------------------------
+		self.charLayers = []    # list with all five character layers
+		self.others = []        # list with char layers that are not played by this user
 		
 		#---------------------------------------------------------------------------------------------
 		# add character layers to lists
+>>>>>>> labserver
 		self.charLayers.append(self.pacmanLayer)
 		self.charLayers.append(self.ghostLayerBlue)
 		self.charLayers.append(self.ghostLayerOrange)
@@ -75,8 +81,13 @@ class GameScene(Scene):
 
 		self.others = self.charLayers;
 
+<<<<<<< HEAD
 	#------------------------------------------------------------
 	# label for score and lives
+=======
+		#---------------------------------------------------------------------------------------------
+		# label for score and lives
+>>>>>>> labserver
 		self.statslabel = Label('Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives), 
 			font_name='Arial', 
 			font_size=16, anchor_x='center', 
@@ -84,7 +95,10 @@ class GameScene(Scene):
 			# set the title-label at the top center of the screen
 		self.statslabel.position = 320,460
 		self.add(self.statslabel)
+<<<<<<< HEAD
 	#------------------------------------------------------------
+=======
+>>>>>>> labserver
 
 		#---------------------------------------------------------------------------------------------
 		# add layers to the scene
@@ -181,16 +195,9 @@ class GameScene(Scene):
 		# if position is a node
 		if (x % 20 == 0.0 and y % 20 == 0.0):
 
+<<<<<<< HEAD
 			# get le node and save in var
 			node = self.labLayer.nodes[int(x/20)-2][int(y/20)-2]
-				# if le node is cossNode and has no neighbour in the desired direction -> STOP
-				if node.sort == "cross":
-					if (char.direction != None):
-						if ((char.direction == key.RIGHT and node.nodeRight is None) or
-								(char.direction == key.LEFT and node.nodeLeft is None) or
-									(char.direction == key.UP and node.nodeUp is None) or
-										(char.direction == key.DOWN and node.nodeDown is None)):
-							char.direction = None
 
 			# if le node is cossNode and has no neighbour in the desired direction -> STOP
 			if node.sort == "cross":
@@ -200,6 +207,16 @@ class GameScene(Scene):
 								(self.myLayer.direction == key.UP and node.nodeUp == None) or
 									(self.myLayer.direction == key.DOWN and node.nodeDown == None)):
 						self.myLayer.direction = None
+=======
+				# if le node is cossNode and has no neighbour in the desired direction -> STOP
+				if node.sort == "cross":
+					if (char.direction != None):
+						if ((char.direction == key.RIGHT and node.nodeRight is None) or
+								(char.direction == key.LEFT and node.nodeLeft is None) or
+									(char.direction == key.UP and node.nodeUp is None) or
+										(char.direction == key.DOWN and node.nodeDown is None)):
+							char.direction = None
+>>>>>>> labserver
 
 
 
@@ -225,9 +242,16 @@ class GameScene(Scene):
 						self.statslabel.element.text = 'Score: {}\t\t\t Lives: {}'.format(self.pacmanLayer.score, self.pacmanLayer.lives)
 						break
 
+<<<<<<< HEAD
 			if (len(self.labLayer.nodeSprites) == 0):
 				print("pacman wins");
 				# TODO: New game
+
+	def updateChars(self, info):
+		self.charMapping.get(info.decode("utf-8")[1:-1].split(",")[3]).commandBuffer.append(info);
+
+
+=======
 # _________________________________________________________________________________________
 	#
 	# initialize crossnodes
@@ -295,6 +319,7 @@ class GameScene(Scene):
 
 
 
+>>>>>>> labserver
 	# _________________________________________________________________________________________
 	#
 	# Update method (called on every new frame)
@@ -400,11 +425,18 @@ def main():
 	thread.daemon = True
 	thread.start();
 
+<<<<<<< HEAD
+	# prevents programme to crash due to the factory not having a
+	# connectedProtocol yet, but already trying to send stuff through it
+	# --> workaround ... refactor sometime xD
+	time.sleep(1)
+=======
 	while(len(serverNodes) == 0):
 		time.sleep(0.01);
 
 	game.labLayer = LabLayer(serverNodes);
 	game.add(game.labLayer, -1);
+>>>>>>> labserver
 
 	# start the director for the gui stuff
 	director.run(game)
