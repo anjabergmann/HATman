@@ -60,7 +60,6 @@ class GameScene(Scene):
 
 		#---------------------------------------------------------------------------------------------
 		# create lablayer with nodes from server
-		#factory.connectedProtocol.sendRequest("\x02nodes,Please send nodes!\x03")
 		print(serverNodes)
 		self.labLayer = LabLayer(serverNodes)
 		self.add(self.labLayer)
@@ -237,19 +236,23 @@ class GameScene(Scene):
 
 
 	def initNodes(self, commandlist):
-			print("NODEREQUEST")
-			# reconstruct array
-			for i in range(1,len(commandlist)-1):
-				# strip the command of quotes
-				command = commandlist[i][2:-1]
-				command = command.strip('"')
-				
-				# extract the coordinates of the node
-				coords = command.split(';')
-				x = coords[0]
-				y = coords[1]
+		print("NODEREQUEST")
+		# reconstruct array
+		for i in range(1,len(commandlist)-1):
+			# strip the command of quotes
+			command = commandlist[i][2:-1]
+			command = command.strip('"')
+			# extract the coordinates of the node
+			coords = command.split(';')
+			x = int(coords[0])
+			y = int(coords[1])
 
-				serverNodes.append(LabNode(x, y))
+			serverNodes.append(LabNode(x, y))
+
+
+		game = GameScene();
+		# start the cocos2d director
+		director.run(game)
 
 
 	# _________________________________________________________________________________________
